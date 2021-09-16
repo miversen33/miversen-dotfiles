@@ -12,5 +12,6 @@ endif
 call plug#begin()
 Plug 'tpope/vim-sensible'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'puremourning/vimspector'
 call plug#end()
 
