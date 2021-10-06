@@ -1,3 +1,9 @@
+# export VERSION="1.0"
+# TODO(Mike): Make this a "global" shell init script. It should check to see if the current shell is 
+# Have global sets (aliases, environment exports, etc
+# - bash (jump to bash function)
+# - zsh (jump to zsh function)
+# - Auto update itself (probably using git if possible?)
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -5,10 +11,14 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# This should do a dynamic check to see what editors are available. By default, prefer vscode, nvim, vim, vi, nano (in that order)
 export EDITOR="vscode"
 export TERM="xterm-256color"
-export LC_ALL=C.UTF-8
+export HAS_INTERNET=$(wget -q --spider https://raw.githubusercontent.com/miversen33/miversen-dotfiles/master/shells/zsh/.zshrc)
+
+#if [ ! -f "$HOME/.zsh_update" && $HAS_INTERNET ]; then
+  # We haven't checked for an update, lets do that now
+#  headLine = $(wget -O - -q https://raw.githubusercontent.com/miversen33/miversen-dotfiles/master/shells/zsh/.zshrc | head -n 1)
+#fi
 
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
@@ -111,10 +121,9 @@ fi
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-#source /usr/share/zsh-theme-powerlevel9k/powerlevel9k.zsh-theme
 #source /etc/profile.d/apps-bin-path.sh
 
-
+[ -f /usr/bin/nvim ] && alias {{vim}}="{{nvim}}" # Sets nvim as alias to vim
 [ -d ${HOME}/.local/bin ] && export PATH="$PATH:$HOME/.local/bin" # Adds local bin to path
 [ -d /opt/gradle/current/bin ] && export PATH="$PATH:/opt/gradle/current/bin" # Adds gradle to path if it exists
 [ -d /opt/kotlinc/current/bin ] && export PATH="$PATH:/opt/kotlinc/current/bin" # Adds kotlin compiler to path if it exists
