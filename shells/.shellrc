@@ -1,9 +1,26 @@
-# TODO(Mike): Make this a "global" shell init script. It should check to see if the current shell is 
-# [x] have global sets (aliases, environment exports, etc
-# [x] bash (jump to bash function)
-# [x] zsh (jump to zsh function)
-# [ ] Auto update itself (probably using git if possible?)
-# confirmations, etc.) must go above this block; everything else may go below.
+# miversen33 shellrc. This can be used to setup 
+SCRIPT_PATH=$(readlink -m $0)
+SHELLRC_UPDATE_FILE="/tmp/shellrc-update"
+
+check_rc_update(){
+  # This doesn't catch the fact that the rc may be completely diverged from the head. We need to account for that
+  git fetch
+  if [ $(git rev-list HEAD...origin/master --count $SCRIPT_PATH) ] && [[ ! -f "$SHELLRC_UPDATE_FILE" || $(($(date +%s) - $(date +%s -r "$SHELLRC_UPDATE_FILE"))) -gt 86400 ]]; then
+      printf "Shell RC is out of date. Update? [Y/N] "
+      read do_update
+      do_update="$(echo $do_update | tr '[:lower:]' '[:upper:]')"
+      if [ "$do_update" = "Y" ] || [ "$do_update" = "YES" ]; then
+        git pull $1
+        rm -f "$SHELLRC_UPDATE_FILE"
+        cleanup
+        source $SCRIPT_PATH
+        exit
+      else
+        echo "Ignoring Update for 24 hours"
+        touch "$SHELLRC_UPDATE_FILE"
+      fi;
+  fi
+}
 
 profile_rc() {
   export EDITOR="vim"
@@ -39,12 +56,12 @@ profile_rc() {
 
   #source /etc/profile.d/apps-bin-path.sh
 
-  [ -f /usr/bin/nvim ] && alias vim="nvim" # Sets nvim as alias to vim
-  [ -d ${HOME}/.local/bin ] && export PATH="$PATH:$HOME/.local/bin" # Adds local bin to path
-  [ -d /opt/gradle/current/bin ] && export PATH="$PATH:/opt/gradle/current/bin" # Adds gradle to path if it exists
-  [ -d /opt/kotlinc/current/bin ] && export PATH="$PATH:/opt/kotlinc/current/bin" # Adds kotlin compiler to path if it exists
-  [ -d /opt/Unity/current ] && export PATH="$PATH:/opt/Unity/current" # Adds kotlin compiler to path if it exists
-  if [ -d ${HOME}/perl5 ]; then #The perl shits
+  [ -f "/usr/bin/nvim" ] && alias vim="nvim" # Sets nvim as alias to vim
+  [ -d "$HOME/.local/bin" ] && export PATH="$PATH:$HOME/.local/bin" # Adds local bin to path
+  [ -d "/opt/gradle/current/bin" ] && export PATH="$PATH:/opt/gradle/current/bin" # Adds gradle to path if it exists
+  [ -d "/opt/kotlinc/current/bin" ] && export PATH="$PATH:/opt/kotlinc/current/bin" # Adds kotlin compiler to path if it exists
+  [ -d "/opt/Unity/current" ] && export PATH="$PATH:/opt/Unity/current" # Adds kotlin compiler to path if it exists
+  if [ -d "$HOME/perl5" ]; then #The perl shits
     export PATH="$PATH:$HOME/perl5/bin"; # Adds perl5 (perlbrew) to path if it exists
     export PERL5LIB="$HOME/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}";
     export PERL_LOCAL_LIB_ROOT="$HOME/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}";
@@ -52,7 +69,7 @@ profile_rc() {
     export PERL_MM_OPT="INSTALL_BASE=$HOME/perl5";
     \. $HOME/perl5/perlbrew/etc/bashrc # Executes perlbrew bashrc because ¯\_(ツ)_/¯
   fi
-  if [ -d "${HOME}.nvm" ]; then  # nvm shit
+  if [ -d "$HOME.nvm" ]; then  # nvm shit
     export NVM_DIR="$HOME/.nvm"
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
     [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
@@ -255,6 +272,18 @@ reload() {
   fi
 }
 
+cleanup() {
+  unset SHELLRC_UPDATE_FILE
+  unset SCRIPT_PATH
+
+  unset profile_rc
+  unset zsh_rc
+  unset bash_rc
+  unset check_rc_update
+  unset cleanup
+}
+
+check_rc_update
 profile_rc
 
 if [ -n "${ZSH_VERSION+set}" ]; then
@@ -266,10 +295,4 @@ if [ -n "${BASH_VERSION+set}" ]; then
   bash_rc
 fi
 
-
-# export HAS_INTERNET=$(wget -q --spider https://raw.githubusercontent.com/miversen33/miversen-dotfiles/master/shells/zsh/.zshrc)
-
-#if [ ! -f "$HOME/.zsh_update" && $HAS_INTERNET ]; then
-  # We haven't checked for an update, lets do that now
-#  headLine = $(wget -O - -q https://raw.githubusercontent.com/miversen33/miversen-dotfiles/master/shells/zsh/.zshrc | head -n 1)
-#fi
+cleanup
