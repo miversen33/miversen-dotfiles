@@ -6,7 +6,7 @@ if empty(glob(data_dir . '/autoload/plug.vim'))
 endif
 
 " == Options ==
-
+set clipboard+=unnamedplus
 
 " == Plugins ==
 call plug#begin()
