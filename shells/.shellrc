@@ -3,7 +3,7 @@
 # [x] have global sets (aliases, environment exports, etc
 # [x] bash (jump to bash function)
 # [x] zsh (jump to zsh function)
-# - Auto update itself (probably using git if possible?)
+# [ ] Auto update itself (probably using git if possible?)
 # confirmations, etc.) must go above this block; everything else may go below.
 
 profile_rc() {
