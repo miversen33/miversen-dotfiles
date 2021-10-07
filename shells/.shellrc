@@ -21,7 +21,8 @@ check_rc_update(){
         git -C $REPO_DIRECTORY pull $1
         rm -f "$SHELLRC_UPDATE_FILE"
         cleanup
-        source $SCRIPT_PATH
+        touch "$SHELLRC_UPDATE_FILE"
+        source $RC_PATH
         [ $? ] && exit
       else
         echo "Ignoring Update for 24 hours"
