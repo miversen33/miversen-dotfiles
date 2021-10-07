@@ -258,7 +258,6 @@ cleanup() {
   unset cleanup
 }
 
-check_rc_update
 profile_rc
 
 if [ -n "${ZSH_VERSION+set}" ]; then
@@ -270,4 +269,5 @@ if [ -n "${BASH_VERSION+set}" ]; then
   bash_rc
 fi
 
+check_rc_update
 cleanup
