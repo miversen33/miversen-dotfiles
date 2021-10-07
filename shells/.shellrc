@@ -1,28 +1,28 @@
 # miversen33 shellrc. This can be used to setup 
-SCRIPT_PATH=$(readlink -m $0)
-SHELLRC_UPDATE_FILE="/tmp/shellrc-update"
-REPO_DIRECTORY="$(dirname $SCRIPT_PATH)/../"
+# SCRIPT_PATH=$(readlink -m $0)
+# SHELLRC_UPDATE_FILE="/tmp/shellrc-update"
+# REPO_DIRECTORY="$(dirname $SCRIPT_PATH)/../"
 
-check_rc_update(){
+# check_rc_update(){
   # This doesn't catch the fact that the rc may be completely diverged from the head. We need to account for that
-  [[ -f "$SHELLRC_UPDATE_FILE" && $(($(date +%s) - $(date +%s -r "$SHELLRC_UPDATE_FILE"))) -lt 86400 ]] && return
-  git -C $REPO_DIRECTORY fetch
-  if [ $(git -C $REPO_DIRECTORY rev-list HEAD...origin/master --count $SCRIPT_PATH) ] && [[ ! -f "$SHELLRC_UPDATE_FILE" || $(($(date +%s) - $(date +%s -r "$SHELLRC_UPDATE_FILE"))) -gt 86400 ]]; then
-      printf "Shell RC is out of date. Update? [Y/N] "
-      read do_update
-      do_update="$(echo $do_update | tr '[:lower:]' '[:upper:]')"
-      if [ "$do_update" = "Y" ] || [ "$do_update" = "YES" ]; then
-        git -C $REPO_DIRECTORY pull $1
-        rm -f "$SHELLRC_UPDATE_FILE"
-        cleanup
-        source $SCRIPT_PATH
-        exit
-      else
-        echo "Ignoring Update for 24 hours"
-        touch "$SHELLRC_UPDATE_FILE"
-      fi;
-  fi
-}
+#  [[ -f "$SHELLRC_UPDATE_FILE" && $(($(date +%s) - $(date +%s -r "$SHELLRC_UPDATE_FILE"))) -lt 86400 ]] && return
+#  git -C $REPO_DIRECTORY fetch
+#  if [ $(git -C $REPO_DIRECTORY rev-list HEAD...origin/master --count $SCRIPT_PATH) ] && [[ ! -f "$SHELLRC_UPDATE_FILE" || $(($(date +%s) - $(date +%s -r "$SHELLRC_UPDATE_FILE"))) -gt 86400 ]]; then
+#      printf "Shell RC is out of date. Update? [Y/N] "
+#      read do_update
+#      do_update="$(echo $do_update | tr '[:lower:]' '[:upper:]')"
+#      if [ "$do_update" = "Y" ] || [ "$do_update" = "YES" ]; then
+#        git -C $REPO_DIRECTORY pull $1
+#        rm -f "$SHELLRC_UPDATE_FILE"
+#        cleanup
+#        source $SCRIPT_PATH
+#        exit
+#      else
+#        echo "Ignoring Update for 24 hours"
+#        touch "$SHELLRC_UPDATE_FILE"
+#      fi;
+#  fi
+#}
 
 profile_rc() {
   export EDITOR="vim"
@@ -279,7 +279,7 @@ cleanup() {
   unset cleanup
 }
 
-check_rc_update
+# check_rc_update
 profile_rc
 
 if [ -n "${ZSH_VERSION+set}" ]; then
