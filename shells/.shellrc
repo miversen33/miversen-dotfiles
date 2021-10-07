@@ -1,33 +1,40 @@
 # miversen33 shellrc. This can be used to setup 
-# SCRIPT_PATH=$(readlink -m $0)
-# SHELLRC_UPDATE_FILE="/tmp/shellrc-update"
-# REPO_DIRECTORY="$(dirname $SCRIPT_PATH)/../"
 
-# check_rc_update(){
+#TODO(Mike):
+# [ ] Installer
+# [ ] Merge existing rc files into this (as a sort of template?)
+
+RC_PATH=0
+check_rc_update(){
   # This doesn't catch the fact that the rc may be completely diverged from the head. We need to account for that
-#  [[ -f "$SHELLRC_UPDATE_FILE" && $(($(date +%s) - $(date +%s -r "$SHELLRC_UPDATE_FILE"))) -lt 86400 ]] && return
-#  git -C $REPO_DIRECTORY fetch
-#  if [ $(git -C $REPO_DIRECTORY rev-list HEAD...origin/master --count $SCRIPT_PATH) ] && [[ ! -f "$SHELLRC_UPDATE_FILE" || $(($(date +%s) - $(date +%s -r "$SHELLRC_UPDATE_FILE"))) -gt 86400 ]]; then
-#      printf "Shell RC is out of date. Update? [Y/N] "
-#      read do_update
-#      do_update="$(echo $do_update | tr '[:lower:]' '[:upper:]')"
-#      if [ "$do_update" = "Y" ] || [ "$do_update" = "YES" ]; then
-#        git -C $REPO_DIRECTORY pull $1
-#        rm -f "$SHELLRC_UPDATE_FILE"
-#        cleanup
-#        source $SCRIPT_PATH
-#        exit
-#      else
-#        echo "Ignoring Update for 24 hours"
-#        touch "$SHELLRC_UPDATE_FILE"
-#      fi;
-#  fi
-#}
+  REPO_DIRECTORY="$(dirname $RC_PATH)/../"
+  SHELLRC_UPDATE_FILE="/tmp/shellrc-update"
+  
+  [[ -f "$SHELLRC_UPDATE_FILE" && $(($(date +%s) - $(date +%s -r "$SHELLRC_UPDATE_FILE"))) -lt 86400 ]] && return
+  
+  git -C $REPO_DIRECTORY fetch
+  if [ $(git -C $REPO_DIRECTORY rev-list HEAD...origin/master --count $SCRIPT_PATH) ] && [[ ! -f "$SHELLRC_UPDATE_FILE" || $(($(date +%s) - $(date +%s -r "$SHELLRC_UPDATE_FILE"))) -gt 86400 ]]; then
+      printf "Shell RC is out of date. Update? [Y/N] "
+      read do_update
+      do_update="$(echo $do_update | tr '[:lower:]' '[:upper:]')"
+      if [ "$do_update" = "Y" ] || [ "$do_update" = "YES" ]; then
+        git -C $REPO_DIRECTORY pull $1
+        rm -f "$SHELLRC_UPDATE_FILE"
+        cleanup
+        source $SCRIPT_PATH
+        [ $? ] && exit
+      else
+        echo "Ignoring Update for 24 hours"
+        touch "$SHELLRC_UPDATE_FILE"
+      fi;
+  fi
+}
 
 profile_rc() {
   export EDITOR="vim"
   export TERM="xterm-256color"
   export LANG=en_US.UTF-8
+  # [ ! -e "$HOME/.shellrc" ] && 
   # User configuration
 
   # export MANPATH="/usr/local/man:$MANPATH"
@@ -76,6 +83,7 @@ profile_rc() {
 
 zsh_rc () {
   export SHELL_RC="$HOME/.zshrc"
+  RC_PATH=$(readlink -f "${(%):-%x}")
   # Oh my zsh stuff
   if [ -f "$HOME/.oh-my-zsh/oh-my-zsh.sh" ]; then
       export ZSH="$HOME/.oh-my-zsh"
@@ -148,117 +156,88 @@ zsh_rc () {
       source $ZSH/oh-my-zsh.sh
   fi
 
-  # if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  #  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-  # fi
-
   # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
   [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 }
 
 bash_rc () {
   export SHELL_RC="$HOME/.bashrc"
+  RC_PATH=$(readlink -f "$BASH_SOURCE")
   # Path to your oh-my-bash installation.
-  export OSH=$HOME/.oh-my-bash
+  if [ -f $HOME/.oh-my-bash ]; then
+    export OSH=$HOME/.oh-my-bash
 
-  # Set name of the theme to load. Optionally, if you set this to "random"
-  # it'll load a random theme each time that oh-my-bash is loaded.
-  OSH_THEME="font"
+    # Set name of the theme to load. Optionally, if you set this to "random"
+    # it'll load a random theme each time that oh-my-bash is loaded.
+    OSH_THEME="font"
 
-  # Uncomment the following line to use case-sensitive completion.
-  # CASE_SENSITIVE="true"
+    # Uncomment the following line to use case-sensitive completion.
+    # CASE_SENSITIVE="true"
 
-  # Uncomment the following line to use hyphen-insensitive completion. Case
-  # sensitive completion must be off. _ and - will be interchangeable.
-  # HYPHEN_INSENSITIVE="true"
+    # Uncomment the following line to use hyphen-insensitive completion. Case
+    # sensitive completion must be off. _ and - will be interchangeable.
+    # HYPHEN_INSENSITIVE="true"
 
-  # Uncomment the following line to disable bi-weekly auto-update checks.
-  # DISABLE_AUTO_UPDATE="true"
+    # Uncomment the following line to disable bi-weekly auto-update checks.
+    # DISABLE_AUTO_UPDATE="true"
 
-  # Uncomment the following line to change how often to auto-update (in days).
-  # export UPDATE_OSH_DAYS=13
+    # Uncomment the following line to change how often to auto-update (in days).
+    # export UPDATE_OSH_DAYS=13
 
-  # Uncomment the following line to disable colors in ls.
-  # DISABLE_LS_COLORS="true"
+    # Uncomment the following line to disable colors in ls.
+    # DISABLE_LS_COLORS="true"
 
-  # Uncomment the following line to disable auto-setting terminal title.
-  # DISABLE_AUTO_TITLE="true"
+    # Uncomment the following line to disable auto-setting terminal title.
+    # DISABLE_AUTO_TITLE="true"
 
-  # Uncomment the following line to enable command auto-correction.
-  # ENABLE_CORRECTION="true"
+    # Uncomment the following line to enable command auto-correction.
+    # ENABLE_CORRECTION="true"
 
-  # Uncomment the following line to display red dots whilst waiting for completion.
-  # COMPLETION_WAITING_DOTS="true"
+    # Uncomment the following line to display red dots whilst waiting for completion.
+    # COMPLETION_WAITING_DOTS="true"
 
-  # Uncomment the following line if you want to disable marking untracked files
-  # under VCS as dirty. This makes repository status check for large repositories
-  # much, much faster.
-  # DISABLE_UNTRACKED_FILES_DIRTY="true"
+    # Uncomment the following line if you want to disable marking untracked files
+    # under VCS as dirty. This makes repository status check for large repositories
+    # much, much faster.
+    # DISABLE_UNTRACKED_FILES_DIRTY="true"
 
-  # Uncomment the following line if you want to change the command execution time
-  # stamp shown in the history command output.
-  # The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-  # HIST_STAMPS="mm/dd/yyyy"
+    # Uncomment the following line if you want to change the command execution time
+    # stamp shown in the history command output.
+    # The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
+    # HIST_STAMPS="mm/dd/yyyy"
 
-  # Would you like to use another custom folder than $OSH/custom?
-  # OSH_CUSTOM=/path/to/new-custom-folder
+    # Would you like to use another custom folder than $OSH/custom?
+    # OSH_CUSTOM=/path/to/new-custom-folder
 
-  # Which completions would you like to load? (completions can be found in ~/.oh-my-bash/completions/*)
-  # Custom completions may be added to ~/.oh-my-bash/custom/completions/
-  # Example format: completions=(ssh git bundler gem pip pip3)
-  # Add wisely, as too many completions slow down shell startup.
-  completions=(
-    git
-    composer
-    ssh
-  )
+    # Which completions would you like to load? (completions can be found in ~/.oh-my-bash/completions/*)
+    # Custom completions may be added to ~/.oh-my-bash/custom/completions/
+    # Example format: completions=(ssh git bundler gem pip pip3)
+    # Add wisely, as too many completions slow down shell startup.
+    completions=(
+      git
+      composer
+      ssh
+    )
 
-  # Which aliases would you like to load? (aliases can be found in ~/.oh-my-bash/aliases/*)
-  # Custom aliases may be added to ~/.oh-my-bash/custom/aliases/
-  # Example format: aliases=(vagrant composer git-avh)
-  # Add wisely, as too many aliases slow down shell startup.
-  aliases=(
-    general
-  )
+    # Which aliases would you like to load? (aliases can be found in ~/.oh-my-bash/aliases/*)
+    # Custom aliases may be added to ~/.oh-my-bash/custom/aliases/
+    # Example format: aliases=(vagrant composer git-avh)
+    # Add wisely, as too many aliases slow down shell startup.
+    aliases=(
+      general
+    )
 
-  # Which plugins would you like to load? (plugins can be found in ~/.oh-my-bash/plugins/*)
-  # Custom plugins may be added to ~/.oh-my-bash/custom/plugins/
-  # Example format: plugins=(rails git textmate ruby lighthouse)
-  # Add wisely, as too many plugins slow down shell startup.
-  plugins=(
-    git
-    bashmarks
-  )
+    # Which plugins would you like to load? (plugins can be found in ~/.oh-my-bash/plugins/*)
+    # Custom plugins may be added to ~/.oh-my-bash/custom/plugins/
+    # Example format: plugins=(rails git textmate ruby lighthouse)
+    # Add wisely, as too many plugins slow down shell startup.
+    plugins=(
+      git
+      bashmarks
+    )
 
-  source $OSH/oh-my-bash.sh
-
-  # User configuration
-  # export MANPATH="/usr/local/man:$MANPATH"
-
-  # You may need to manually set your language environment
-  # export LANG=en_US.UTF-8
-
-  # Preferred editor for local and remote sessions
-  # if [[ -n $SSH_CONNECTION ]]; then
-  #   export EDITOR='vim'
-  # else
-  #   export EDITOR='mvim'
-  # fi
-
-  # Compilation flags
-  # export ARCHFLAGS="-arch x86_64"
-
-  # ssh
-  # export SSH_KEY_PATH="~/.ssh/rsa_id"
-
-  # Set personal aliases, overriding those provided by oh-my-bash libs,
-  # plugins, and themes. Aliases can be placed here, though oh-my-bash
-  # users are encouraged to define aliases within the OSH_CUSTOM folder.
-  # For a full list of active aliases, run `alias`.
-  #
-  # Example aliases
-  # alias bashconfig="mate ~/.bashrc"
-  # alias ohmybash="mate ~/.oh-my-bash"
+    source $OSH/oh-my-bash.sh
+  fi
 }
 
 reload() {
@@ -279,7 +258,7 @@ cleanup() {
   unset cleanup
 }
 
-# check_rc_update
+check_rc_update
 profile_rc
 
 if [ -n "${ZSH_VERSION+set}" ]; then
