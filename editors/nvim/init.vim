@@ -7,29 +7,34 @@ endif
 
 " == Custom Functions ==
 
-function! WinMove(key)
-    let t:curwin = winnr()
-    exec "wincmd ".a:key
-    if (t:curwin == winnr())
-        if (match(a:key,'[jk]'))
-            wincmd v
-        else
-            wincmd s
-        endif
-        exec "wincmd ".a:key
-    endif
-endfunction
 
-nnoremap <silent> <C-j> :call WinMove('h')<CR>
-nnoremap <silent> <C-k> :call WinMove('j')<CR>
-nnoremap <silent> <C-i> :call WinMove('k')<CR>
-nnoremap <silent> <C-l> :call WinMove('l')<CR>
+
+" function! WinMove(key)
+"     let t:curwin = winnr()
+"     exec "wincmd ".a:key
+"     if (t:curwin == winnr())
+"         if (match(a:key,'[jk]'))
+"             wincmd v
+"         else
+"             wincmd s
+"         endif
+"         exec "wincmd ".a:key
+"     endif
+" endfunction
+
+" nnoremap <silent> <C-j> :call WinMove('h')<CR>
+" nnoremap <silent> <C-k> :call WinMove('j')<CR>
+" nnoremap <silent> <C-i> :call WinMove('k')<CR>
+" nnoremap <silent> <C-l> :call WinMove('l')<CR>
 
 if has('nvim')
   inoremap <silent><expr> <c-space> coc#refresh()
 else
   inoremap <silent><expr> <c-@> coc#refresh()
 endif
+
+let g:netrw_banner = 0
+let g:netrw_winsize = 15
 
 " == Options ==
 syntax on " highlight syntax
@@ -44,13 +49,17 @@ set incsearch " show search results as you type
 set spell spelllang=en_us
 set nobackup
 set nowritebackup
+set foldmethod=indent
+set foldlevel=99
 set cmdheight=2
+set hidden
 
 " == Plugins ==
 call plug#begin('~/.local/share/nvim/plugged')
 " Plug 'tpope/vim-sensible'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " Plug 'puremourning/vimspector'
+Plug 'sheerun/vim-polyglot'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'jiangmiao/auto-pairs'
@@ -60,5 +69,6 @@ Plug 'tpope/vim-sleuth'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
+" Plug 'preservim/nerdtree'
 call plug#end()
 
