@@ -9,9 +9,9 @@ endif
 
 
 
-" function! WinMove(key)
-"     let t:curwin = winnr()
-"     exec "wincmd ".a:key
+function! WinMove(key)
+    let t:curwin = winnr()
+    exec "wincmd ".a:key
 "     if (t:curwin == winnr())
 "         if (match(a:key,'[jk]'))
 "             wincmd v
@@ -20,12 +20,12 @@ endif
 "         endif
 "         exec "wincmd ".a:key
 "     endif
-" endfunction
+endfunction
 
-" nnoremap <silent> <C-j> :call WinMove('h')<CR>
-" nnoremap <silent> <C-k> :call WinMove('j')<CR>
-" nnoremap <silent> <C-i> :call WinMove('k')<CR>
-" nnoremap <silent> <C-l> :call WinMove('l')<CR>
+nnoremap <silent> <C-h> :call WinMove('h')<CR>
+nnoremap <silent> <C-j> :call WinMove('j')<CR>
+nnoremap <silent> <C-k> :call WinMove('k')<CR>
+nnoremap <silent> <C-l> :call WinMove('l')<CR>
 
 if has('nvim')
   inoremap <silent><expr> <c-space> coc#refresh()
@@ -33,8 +33,17 @@ else
   inoremap <silent><expr> <c-@> coc#refresh()
 endif
 
+
+" ===netrw settings
 let g:netrw_banner = 0
-let g:netrw_winsize = 15
+let g:netrw_liststyle = 3
+let g:netrw_browse_split = 4
+let g:netrw_altv = 1
+let g:netrw_winsize = 25
+" augroup ProjectDrawer
+"   autocmd!  
+"   autocmd VimEnter * :Vexplore
+"  augroup END
 
 " == Options ==
 syntax on " highlight syntax
@@ -42,11 +51,11 @@ filetype plugin on
 
 set clipboard+=unnamedplus
 set number " show line numbers
-set noswapfile " disable the swapfile
+" set noswapfile " disable the swapfile
 set hlsearch " highlight all results
 set ignorecase " ignore case in search
 set incsearch " show search results as you type
-set spell spelllang=en_us
+" set spell spelllang=en_us
 set nobackup
 set nowritebackup
 set foldmethod=indent
@@ -69,6 +78,7 @@ Plug 'tpope/vim-sleuth'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-vinegar'
 " Plug 'preservim/nerdtree'
 call plug#end()
 
