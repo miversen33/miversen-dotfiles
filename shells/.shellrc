@@ -270,5 +270,5 @@ if [ -n "${BASH_VERSION+set}" ]; then
   bash_rc
 fi
 
-check_rc_update
+# check_rc_update
 cleanup
