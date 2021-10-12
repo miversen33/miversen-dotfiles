@@ -33,7 +33,6 @@ else
   inoremap <silent><expr> <c-@> coc#refresh()
 endif
 
-
 " ===netrw settings
 let g:netrw_banner = 0
 let g:netrw_liststyle = 3
@@ -51,34 +50,48 @@ filetype plugin on
 
 set clipboard+=unnamedplus
 set number " show line numbers
-" set noswapfile " disable the swapfile
 set hlsearch " highlight all results
 set ignorecase " ignore case in search
 set incsearch " show search results as you type
-" set spell spelllang=en_us
 set nobackup
 set nowritebackup
 set foldmethod=indent
 set foldlevel=99
 set cmdheight=2
 set hidden
+set encoding=utf-8
 
 " == Plugins ==
 call plug#begin('~/.local/share/nvim/plugged')
 " Plug 'tpope/vim-sensible'
 " Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " Plug 'puremourning/vimspector'
-Plug 'sheerun/vim-polyglot'
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
-Plug 'jiangmiao/auto-pairs'
-Plug 'machakann/vim-sandwich'
-Plug 'preservim/nerdcommenter'
-Plug 'tpope/vim-sleuth'
-Plug 'editorconfig/editorconfig-vim'
-Plug 'airblade/vim-gitgutter'
-Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-vinegar'
+" Plug 'sheerun/vim-polyglot'
+" Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+" Plug 'junegunn/fzf.vim'
+" Plug 'jiangmiao/auto-pairs'
+" Plug 'machakann/vim-sandwich'
+" Plug 'preservim/nerdcommenter'
+" Plug 'tpope/vim-sleuth'
+" Plug 'editorconfig/editorconfig-vim'
+" Plug 'airblade/vim-gitgutter'
+" Plug 'tpope/vim-fugitive'
+" Plug 'tpope/vim-vinegar'
 " Plug 'preservim/nerdtree'
+Plug 'kristijanhusak/vim-hybrid-material'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'jmcantrell/vim-virtualenv'
+Plug 'vim-ctrlspace/vim-ctrlspace'
 call plug#end()
 
+" == Options ==
+" Theme options
+set background=dark
+colorscheme hybrid_reverse
+let g:airline_theme = 'deus'
+" let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#left_alt_sep = '>'
+let g:airline_statusline_ontop = 1
+set tabline=0
+let g:CtrlSpaceDefaultMappingKey = "<C-space> "
