@@ -57,7 +57,12 @@ profile_rc() {
 
   #source /etc/profile.d/apps-bin-path.sh
 
-  [ -f "/usr/bin/nvim" ] && alias vim="nvim" # Sets nvim as alias to vim
+  if [ -f "/usr/bin/nvim" ]; then
+    alias vim="nvim" # Sets nvim as alias to vim
+    export VIMRC="$HOME/.config/nvim/init.vim"
+  else;
+    export VIMRC="$HOME/.vimrc"
+  fi;
   [ -d "$HOME/.local/bin" ] && export PATH="$PATH:$HOME/.local/bin" # Adds local bin to path
   [ -d "/opt/gradle/current/bin" ] && export PATH="$PATH:/opt/gradle/current/bin" # Adds gradle to path if it exists
   [ -d "/opt/kotlinc/current/bin" ] && export PATH="$PATH:/opt/kotlinc/current/bin" # Adds kotlin compiler to path if it exists
