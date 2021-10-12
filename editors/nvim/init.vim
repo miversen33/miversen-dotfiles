@@ -10,14 +10,25 @@ endif
 function! WinMove(key)
     let t:curwin = winnr()
     exec "wincmd ".a:key
-"     if (t:curwin == winnr())
-"         if (match(a:key,'[jk]'))
-"             wincmd v
-"         else
-"             wincmd s
-"         endif
-"         exec "wincmd ".a:key
-"     endif
+endfunction
+
+function! AutoHighlightToggle()
+  let @/ = ''
+  if exists('#auto_highlight')
+    au! auto_highlight
+    augroup! auto_highlight
+    setl updatetime=4000
+    echo 'Highlight current word: off'
+    return 0
+  else
+    augroup auto_highlight
+      au!
+      au CursorHold * let @/ = '\V\<'.escape(expand('<cword>'), '\').'\>'
+    augroup end
+    setl updatetime=500
+    echo 'Highlight current word: ON'
+    return 1
+  endif
 endfunction
 
 " == Remaps ==
@@ -27,6 +38,11 @@ nnoremap <silent> <C-k> :call WinMove('k')<CR>
 nnoremap <silent> <C-l> :call WinMove('l')<CR>
 nnoremap <silent> <C-p> :CtrlSpace O<CR>
 nnoremap <silent> <C-[> :Files<CR>
+" Highlight all instances of word under cursor, when idle.
+" Useful when studying strange source code.
+" Type z/ to toggle highlighting on/off.
+nnoremap z/ :if AutoHighlightToggle()<Bar>set hls<Bar>endif<CR>
+
 nmap <F8> :TagbarToggle<CR>
 
 " Coc settings
@@ -61,6 +77,7 @@ call plug#begin('~/.local/share/nvim/plugged')
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " Plug 'puremourning/vimspector'
 Plug 'sheerun/vim-polyglot'
+Plug 'ryanoasis/vim-devicons'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 " Plug 'jiangmiao/auto-pairs'
@@ -77,6 +94,7 @@ Plug 'jmcantrell/vim-virtualenv'
 Plug 'majutsushi/tagbar'
 Plug 'tomtom/tcomment_vim'
 Plug 'davidhalter/jedi-vim'
+Plug 'vim-autoformat/vim-autoformat'
 " Plug 'pappasam/coc-jedi', { 'do': 'yarn install --frozen-lockfile && yarn build', 'branch': 'main' }
 " This appears fucky. For some reason the installation doesn't fail but
 " doesn't work
@@ -95,7 +113,9 @@ let g:CtrlSpaceDefaultMappingKey = "<C-space> "
 let g:jedi#completions_command = "<Tab>"
 
 " Fzf Options
-let g:fzf_preview_window = ['right:50%', 'ctrl-/']
+let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
+
+let g:python3_host_prog="/usr/bin/python3"
 
 " == General Options ==
 syntax on
@@ -114,7 +134,6 @@ set cmdheight=2
 set hidden
 set encoding=utf-8
 set list listchars=space:·,tab:🠮\ ,extends:›,precedes:‹,nbsp:·,trail:·
-filetype plugin on
 " NOTE: Please see `:h coc-status` for integrations with external plugins that
 " provide custom statusline: lightline.vim, vim-airline.
 set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
