@@ -31,7 +31,7 @@ nmap <F8> :TagbarToggle<CR>
 
 " Coc settings
 if has('nvim')
-  inoremap <silent><expr> <Tab> coc#refresh()
+  inoremap <silent><expr> <C-space> coc#refresh()
 else
   inoremap <silent><expr> <c-@> coc#refresh()
 endif
@@ -39,11 +39,11 @@ endif
 " Use tab for trigger completion with characters ahead and navigate.
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
 " other plugin before putting this into your config.
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+" inoremap <silent><expr> <TAB>
+      " \ pumvisible() ? "\<C-n>" :
+      " \ <SID>check_back_space() ? "\<TAB>" :
+      " \ coc#refresh()
+" inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 " ===netrw settings
 let g:netrw_banner = 0
@@ -113,7 +113,7 @@ set foldlevel=99
 set cmdheight=2
 set hidden
 set encoding=utf-8
-set list listchars=space:·,tab:»\ ,extends:›,precedes:‹,nbsp:·,trail:·
+set list listchars=space:·,tab:🠮\ ,extends:›,precedes:‹,nbsp:·,trail:·
 filetype plugin on
 " NOTE: Please see `:h coc-status` for integrations with external plugins that
 " provide custom statusline: lightline.vim, vim-airline.
