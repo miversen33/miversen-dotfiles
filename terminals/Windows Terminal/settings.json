@@ -133,9 +133,9 @@
             "yellow": "#C19C00"
         },
         {
-            "background": "#042229",
+            "background": "#0C0C0C",
             "black": "#0C0C0C",
-            "blue": "#0037DA",
+            "blue": "#0082DA",
             "brightBlack": "#767676",
             "brightBlue": "#3B78FF",
             "brightCyan": "#61D6D6",
@@ -149,7 +149,7 @@
             "foreground": "#B6ADFF",
             "green": "#13A10E",
             "name": "Dark Solarized",
-            "purple": "#881798",
+            "purple": "#8E1CC7",
             "red": "#FF5454",
             "selectionBackground": "#FFFFFF",
             "white": "#CCCCCC",
