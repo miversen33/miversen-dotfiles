@@ -7,8 +7,6 @@ endif
 
 " == Custom Functions ==
 
-
-
 function! WinMove(key)
     let t:curwin = winnr()
     exec "wincmd ".a:key
@@ -26,6 +24,7 @@ nnoremap <silent> <C-h> :call WinMove('h')<CR>
 nnoremap <silent> <C-j> :call WinMove('j')<CR>
 nnoremap <silent> <C-k> :call WinMove('k')<CR>
 nnoremap <silent> <C-l> :call WinMove('l')<CR>
+nnoremap <silent> <C-p> :CtrlSpace O<CR>
 
 if has('nvim')
   inoremap <silent><expr> <c-space> coc#refresh()
@@ -60,7 +59,8 @@ set foldlevel=99
 set cmdheight=2
 set hidden
 set encoding=utf-8
-
+set list
+set listchars=space:·
 " == Plugins ==
 call plug#begin('~/.local/share/nvim/plugged')
 " Plug 'tpope/vim-sensible'
@@ -82,7 +82,6 @@ Plug 'kristijanhusak/vim-hybrid-material'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'jmcantrell/vim-virtualenv'
-Plug 'vim-ctrlspace/vim-ctrlspace'
 call plug#end()
 
 " == Options ==
@@ -90,8 +89,7 @@ call plug#end()
 set background=dark
 colorscheme hybrid_reverse
 let g:airline_theme = 'deus'
-" let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#left_alt_sep = '>'
 let g:airline_statusline_ontop = 1
-set tabline=0
 let g:CtrlSpaceDefaultMappingKey = "<C-space> "
