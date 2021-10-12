@@ -25,6 +25,7 @@ nnoremap <silent> <C-j> :call WinMove('j')<CR>
 nnoremap <silent> <C-k> :call WinMove('k')<CR>
 nnoremap <silent> <C-l> :call WinMove('l')<CR>
 nnoremap <silent> <C-p> :CtrlSpace O<CR>
+nnoremap <silent> <C-[> :Files<CR>
 
 if has('nvim')
   inoremap <silent><expr> <c-space> coc#refresh()
@@ -67,8 +68,8 @@ call plug#begin('~/.local/share/nvim/plugged')
 " Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " Plug 'puremourning/vimspector'
 " Plug 'sheerun/vim-polyglot'
-" Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-" Plug 'junegunn/fzf.vim'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 " Plug 'jiangmiao/auto-pairs'
 " Plug 'machakann/vim-sandwich'
 " Plug 'preservim/nerdcommenter'
@@ -93,3 +94,6 @@ let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#left_alt_sep = '>'
 let g:airline_statusline_ontop = 1
 let g:CtrlSpaceDefaultMappingKey = "<C-space> "
+
+" Fzf Options
+let g:fzf_preview_window = ['right:50%', 'ctrl-/']
