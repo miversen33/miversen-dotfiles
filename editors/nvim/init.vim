@@ -32,9 +32,9 @@ endfunction
 " endfunction
 
 " == Remaps ==
-nnoremap <silent> <C-h> :call WinMove('h')<CR>
-nnoremap <silent> <C-j> :call WinMove('j')<CR>
-nnoremap <silent> <C-k> :call WinMove('k')<CR>
+nnoremap <silent> <C-j> :call WinMove('h')<CR>
+nnoremap <silent> <C-k> :call WinMove('j')<CR>
+nnoremap <silent> <C-i> :call WinMove('k')<CR>
 nnoremap <silent> <C-l> :call WinMove('l')<CR>
 nnoremap <silent> <C-f> :Autoformat<CR>
 nnoremap <silent> <C-[> :Files<CR>
@@ -92,7 +92,7 @@ Plug 'junegunn/fzf.vim'
 Plug 'kristijanhusak/vim-hybrid-material'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-" Plug 'jmcantrell/vim-virtualenv'
+Plug 'jmcantrell/vim-virtualenv'
 Plug 'majutsushi/tagbar'
 Plug 'tomtom/tcomment_vim'
 " Plug 'davidhalter/jedi-vim'
@@ -111,6 +111,9 @@ let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#left_alt_sep = '>'
 let g:airline_statusline_ontop = 1
 let g:CtrlSpaceDefaultMappingKey = "<C-space> "
+let g:airline_powerline_fonts = 1
+" autocmd VimEnter * :AirlineToggleWhitespace
+" let g:airline#extensions#whitespace#enabled = 1
 
 let g:jedi#completions_command = "<Tab>"
 
