@@ -12,6 +12,10 @@ function! WinMove(key)
   exec "wincmd ".a:key
 endfunction
 
+function! ToggleVExplore()
+
+endfunction
+
 " function! AutoHighlightToggle()
 "   let @/ = ''
 "   if exists('#auto_highlight')
@@ -32,12 +36,16 @@ endfunction
 " endfunction
 
 " == Remaps ==
-nnoremap <silent> <C-j> :call WinMove('h')<CR>
-nnoremap <silent> <C-k> :call WinMove('j')<CR>
-nnoremap <silent> <C-i> :call WinMove('k')<CR>
-nnoremap <silent> <C-l> :call WinMove('l')<CR>
+
+noremap <silent> <C-j> :call WinMove('h')<CR>
+noremap <silent> <C-k> :call WinMove('j')<CR>
+noremap <silent> <C-i> :call WinMove('k')<CR>
+noremap <silent> <C-l> :call WinMove('l')<CR>
 nnoremap <silent> <C-f> :Autoformat<CR>
-nnoremap <silent> <C-[> :Files<CR>
+noremap <silent> <C-[> :Files<CR>
+noremap <silent> <C-o> :split<CR>
+noremap <silent> <C-p> :vsplit<CR>
+noremap <silent> <C-\> :Vexplore<CR>
 " Highlight all instances of word under cursor, when idle.
 " Useful when studying strange source code.
 " Type z/ to toggle highlighting on/off.
@@ -64,15 +72,15 @@ endif
 " ===netrw settings
 let g:netrw_banner = 0
 let g:netrw_liststyle = 3
-let g:netrw_browse_split = 4
+let g:netrw_browse_split = 2
 let g:netrw_altv = 1
 let g:netrw_winsize = 25
 let g:netrw_preview = 1
 let g:netrw_silent=1
 " augroup ProjectDrawer
-"   autocmd!
-"   autocmd VimEnter * :Vexplore
-"  augroup END
+  " autocmd!
+  " autocmd VimEnter * :Vexplore
+" augroup END
 
 " == Plugins ==
 call plug#begin('~/.local/share/nvim/plugged')
@@ -88,7 +96,7 @@ Plug 'junegunn/fzf.vim'
 " Plug 'editorconfig/editorconfig-vim'
 " Plug 'airblade/vim-gitgutter'
 " Plug 'tpope/vim-fugitive'
-" Plug 'tpope/vim-vinegar'
+Plug 'tpope/vim-vinegar'
 Plug 'kristijanhusak/vim-hybrid-material'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
