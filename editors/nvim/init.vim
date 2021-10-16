@@ -12,9 +12,9 @@ function! WinMove(key)
   exec "wincmd ".a:key
 endfunction
 
-function! ToggleVExplore()
+" function! ToggleVExplore()
 
-endfunction
+" endfunction
 
 " function! AutoHighlightToggle()
 "   let @/ = ''
@@ -45,7 +45,7 @@ nnoremap <silent> <C-f> :Autoformat<CR>
 noremap <silent> <C-[> :Files<CR>
 noremap <silent> <C-o> :split<CR>
 noremap <silent> <C-p> :vsplit<CR>
-noremap <silent> <C-\> :Vexplore<CR>
+" noremap <silent> <C-\> :Vexplore<CR>
 " Highlight all instances of word under cursor, when idle.
 " Useful when studying strange source code.
 " Type z/ to toggle highlighting on/off.
@@ -54,11 +54,22 @@ noremap <silent> <C-\> :Vexplore<CR>
 nmap <F8> :TagbarToggle<CR>
 
 " Coc settings
-if has('nvim')
-  inoremap <silent><expr> <C-space> coc#refresh()
-else
-  inoremap <silent><expr> <c-@> coc#refresh()
-endif
+" if has('nvim')
+  " inoremap <silent><expr> <C-space> coc#refresh()
+" else
+  " inoremap <silent><expr> <c-@> coc#refresh()
+" endif
+
+" use <tab> for trigger completion and navigate to the next complete item
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~ '\s'
+endfunction
+
+inoremap <silent><expr> <Tab>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<Tab>" :
+      \ coc#refresh()
 
 " Use tab for trigger completion with characters ahead and navigate.
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
@@ -103,11 +114,10 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'jmcantrell/vim-virtualenv'
 Plug 'majutsushi/tagbar'
 Plug 'tomtom/tcomment_vim'
-" Plug 'davidhalter/jedi-vim'
 Plug 'vim-autoformat/vim-autoformat'
-" Plug 'pappasam/coc-jedi', { 'do': 'yarn install --frozen-lockfile && yarn build', 'branch': 'main' }
-" This appears fucky. For some reason the installation doesn't fail but
-" doesn't work
+Plug 'ervandew/supertab'
+" Language Servers 
+" Plug 'davidhalter/jedi-vim'
 call plug#end()
 
 " == Options ==
@@ -123,7 +133,8 @@ let g:airline_powerline_fonts = 1
 " autocmd VimEnter * :AirlineToggleWhitespace
 " let g:airline#extensions#whitespace#enabled = 1
 
-let g:jedi#completions_command = "<Tab>"
+" let g:jedi#completions_command = "<Tab>"
+" let g:jedi#use_splits_not_buffers = "left"
 
 " Fzf Options
 let g:fzf_layout = { 'window': { 'width': 0.95, 'height': 0.8 } }
