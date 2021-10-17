@@ -57,7 +57,8 @@ profile_rc() {
 
   #source /etc/profile.d/apps-bin-path.sh
 
-  if [ -f "/usr/bin/nvim" ]; then
+  # Instead of checking existence, we should use `which`  
+  if [ $(which nvim) ]; then
     alias vim="nvim" # Sets nvim as alias to vim
     export VIMRC="$HOME/.config/nvim/init.vim"
   else;
@@ -67,6 +68,7 @@ profile_rc() {
   [ -d "/opt/gradle/current/bin" ] && export PATH="$PATH:/opt/gradle/current/bin" # Adds gradle to path if it exists
   [ -d "/opt/kotlinc/current/bin" ] && export PATH="$PATH:/opt/kotlinc/current/bin" # Adds kotlin compiler to path if it exists
   [ -d "/opt/Unity/current" ] && export PATH="$PATH:/opt/Unity/current" # Adds kotlin compiler to path if it exists
+  [ -d "$HOME/.cargo/bin" ] && export PATH="$PATH:$HOME/.cargo/bin" # Adds cargo (rust) to path
   if [ -d "$HOME/perl5" ]; then #The perl shits
     export PATH="$PATH:$HOME/perl5/bin"; # Adds perl5 (perlbrew) to path if it exists
     export PERL5LIB="$HOME/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}";
