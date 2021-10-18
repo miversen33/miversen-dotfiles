@@ -5,18 +5,12 @@ if empty(glob(data_dir . '/autoload/plug.vim'))
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
-" let g:exploreToggled = 0
-
 " == Custom Functions ==
 
 function! WinMove(key)
   let t:curwin = winnr()
   exec "wincmd ".a:key
 endfunction
-
-" function! ToggleLExplore()
-  
-" endfunction
 
 " == Remaps ==
 
@@ -34,7 +28,7 @@ nnoremap <silent> <C-e> :Lexplore<CR>
 " Type z/ to toggle highlighting on/off.
 " nnoremap z/ :if AutoHighlightToggle()<Bar>set hls<Bar>endif<CR>
 
-nmap <F8> :TagbarToggle<CR>
+nmap <silent> <C-m> :TagbarToggle<CR>
 
 " use <tab> for trigger completion and navigate to the next complete item
 function! s:check_back_space() abort
@@ -47,23 +41,10 @@ inoremap <silent><expr> <Tab>
       \ <SID>check_back_space() ? "\<Tab>" :
       \ coc#refresh()
 
-" ===netrw settings
-let g:netrw_banner = 0
-let g:netrw_liststyle = 3
-let g:netrw_browse_split = 2
-let g:netrw_altv = 1
-let g:netrw_winsize = 25
-let g:netrw_preview = 1
-let g:netrw_silent=1
-" augroup ProjectDrawer
-  " autocmd!
-  " autocmd VimEnter * :Vexplore
-" augroup END
-
 " == Plugins ==
 call plug#begin('~/.local/share/nvim/plugged')
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-" Plug 'puremourning/vimspector'
+Plug 'puremourning/vimspector'
 Plug 'sheerun/vim-polyglot'
 Plug 'ryanoasis/vim-devicons'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -74,7 +55,6 @@ Plug 'junegunn/fzf.vim'
 " Plug 'editorconfig/editorconfig-vim'
 " Plug 'airblade/vim-gitgutter'
 " Plug 'tpope/vim-fugitive'
-" Plug 'tpope/vim-vinegar'
 Plug 'kristijanhusak/vim-hybrid-material'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -84,6 +64,9 @@ Plug 'tomtom/tcomment_vim'
 Plug 'vim-autoformat/vim-autoformat'
 Plug 'ervandew/supertab'
 Plug 'tpope/vim-eunuch'
+Plug 'tpope/vim-surround'
+Plug 'vim-test/vim-test'
+Plug 'tpope/vim-dispatch'
 " Language Servers 
 call plug#end()
 
@@ -99,11 +82,6 @@ let g:airline_statusline_ontop = 1
 let g:CtrlSpaceDefaultMappingKey = "<C-space> "
 let g:airline_powerline_fonts = 1
 
-" == Dirvish
-let g:dirvish_mode = 2
-let g:dirvish_relative_paths = 1
-let g:dirvish_mode = ':sort ,^\v(.*[\/])|\ze,'
-
 " autocmd VimEnter * :AirlineToggleWhitespace
 " let g:airline#extensions#whitespace#enabled = 1
 
@@ -111,8 +89,21 @@ let g:dirvish_mode = ':sort ,^\v(.*[\/])|\ze,'
 let g:fzf_layout = { 'window': { 'width': 0.95, 'height': 0.8 } }
 let g:fzf_tags_command = 'ctags -R'
 let g:fzf_commands_expect = 'alt-enter,ctrl-x'
+let g:fzf_action = {
+  \ 'ctrl-t': 'tab split',
+  \ 'ctrl-x': 'split',
+  \ 'ctrl-v': 'vsplit' }
 
 let g:python3_host_prog="/usr/bin/python3"
+
+" Vimspector config
+let g:vimspector_enable_mappings='VISUAL_STUDIO'
+" mnemonic 'di' = 'debug inspect' (pick your own, if you prefer!)
+
+" for normal mode - the word under the cursor
+nmap <Leader>di <Plug>VimspectorBalloonEval
+" for visual mode, the visually selected text
+xmap <Leader>di <Plug>VimspectorBalloonEval
 
 " == General Options ==
 syntax on
@@ -131,6 +122,22 @@ set hidden
 set encoding=utf-8
 set list
 set listchars=tab:->,space:·
+set cursorline
 " NOTE: Please see `:h coc-status` for integrations with external plugins that
 " provide custom statusline: lightline.vim, vim-airline.
 " set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+
+" ===netrw settings
+let g:netrw_banner = 0
+let g:netrw_liststyle = 3
+let g:netrw_browse_split = 2
+let g:netrw_altv = 1
+let g:netrw_winsize = 25
+let g:netrw_preview = 1
+let g:netrw_silent=1
+let g:netrw_keepdir=0
+" augroup ProjectDrawer
+  " autocmd!
+  " autocmd VimEnter * :Vexplore
+" augroup END
+
