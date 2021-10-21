@@ -23,6 +23,8 @@ noremap <silent> <C-[> :Files<CR>
 noremap <silent> <C-o> :split<CR>
 noremap <silent> <C-p> :vsplit<CR>
 nnoremap <silent> <C-e> :Lexplore<CR>
+tnoremap <Esc> <C-\><C-n>
+
 " Highlight all instances of word under cursor, when idle.
 " Useful when studying strange source code.
 " Type z/ to toggle highlighting on/off.
@@ -67,7 +69,8 @@ Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-surround'
 Plug 'vim-test/vim-test'
 Plug 'tpope/vim-dispatch'
-" Language Servers 
+Plug 'alaviss/nim.nvim'
+" Plug 'voldikss/vim-floaterm'
 call plug#end()
 
 " == Options ==
@@ -78,7 +81,7 @@ colorscheme hybrid_reverse
 let g:airline_theme = 'deus'
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#left_alt_sep = '>'
-let g:airline_statusline_ontop = 1
+" let g:airline_statusline_ontop = 1
 let g:CtrlSpaceDefaultMappingKey = "<C-space> "
 let g:airline_powerline_fonts = 1
 
@@ -94,6 +97,12 @@ let g:fzf_action = {
   \ 'ctrl-x': 'split',
   \ 'ctrl-v': 'vsplit' }
 
+" Floaterm options
+" let g:floaterm_keymap_new    = '<F7>'
+" let g:floaterm_keymap_prev   = '<F8>'
+" let g:floaterm_keymap_next   = '<F9>'
+" let g:floaterm_keymap_toggle = '<F12>'
+
 let g:python3_host_prog="/usr/bin/python3"
 
 " Vimspector config
@@ -107,7 +116,6 @@ xmap <Leader>di <Plug>VimspectorBalloonEval
 
 " == General Options ==
 syntax on
-filetype plugin on
 
 set clipboard+=unnamedplus
 set number " show line numbers
@@ -123,6 +131,16 @@ set encoding=utf-8
 set list
 set listchars=tab:->,space:·
 set cursorline
+set nocp
+set splitright
+set splitbelow
+
+if version >= 600
+  filetype plugin indent on
+
+endif
+
+
 " NOTE: Please see `:h coc-status` for integrations with external plugins that
 " provide custom statusline: lightline.vim, vim-airline.
 " set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
@@ -134,10 +152,11 @@ let g:netrw_browse_split = 2
 let g:netrw_altv = 1
 let g:netrw_winsize = 25
 let g:netrw_preview = 1
+let b:netrw_alto=0
 let g:netrw_silent=1
 let g:netrw_keepdir=0
-" augroup ProjectDrawer
-  " autocmd!
-  " autocmd VimEnter * :Vexplore
+" augroup VimStartup
+"   au!
+"   au VimEnter * if expand("%") == "" | e . | endif
 " augroup END
-
+"
