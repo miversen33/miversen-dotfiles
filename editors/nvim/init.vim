@@ -12,6 +12,8 @@ function! WinMove(key)
   exec "wincmd ".a:key
 endfunction
 
+autocmd BufEnter * silent! lcd %:p:h
+
 " == Remaps ==
 
 noremap <silent> <C-j> :call WinMove('h')<CR>
@@ -23,12 +25,22 @@ noremap <silent> <C-[> :Files<CR>
 noremap <silent> <C-o> :split<CR>
 noremap <silent> <C-p> :vsplit<CR>
 nnoremap <silent> <C-e> :Lexplore<CR>
-tnoremap <Esc> <C-\><C-n>
+if has("nvim")
+  au TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>
+  au FileType fzf tunmap <buffer> <Esc>
+endif
+" tnoremap <Esc> <C-\><C-n>
 
 " Highlight all instances of word under cursor, when idle.
 " Useful when studying strange source code.
 " Type z/ to toggle highlighting on/off.
 " nnoremap z/ :if AutoHighlightToggle()<Bar>set hls<Bar>endif<CR>
+
+" for normal mode - the word under the cursor
+nmap <Leader>di <Plug>VimspectorBalloonEval
+" for visual mode, the visually selected text
+xmap <Leader>di <Plug>VimspectorBalloonEval
+
 
 nmap <silent> <C-m> :TagbarToggle<CR>
 
@@ -51,12 +63,6 @@ Plug 'sheerun/vim-polyglot'
 Plug 'ryanoasis/vim-devicons'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-" Plug 'jiangmiao/auto-pairs'
-" Plug 'machakann/vim-sandwich'
-" Plug 'tpope/vim-sleuth'
-" Plug 'editorconfig/editorconfig-vim'
-" Plug 'airblade/vim-gitgutter'
-" Plug 'tpope/vim-fugitive'
 Plug 'kristijanhusak/vim-hybrid-material'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -70,7 +76,6 @@ Plug 'tpope/vim-surround'
 Plug 'vim-test/vim-test'
 Plug 'tpope/vim-dispatch'
 Plug 'alaviss/nim.nvim'
-" Plug 'voldikss/vim-floaterm'
 call plug#end()
 
 " == Options ==
@@ -89,7 +94,9 @@ let g:airline_powerline_fonts = 1
 " let g:airline#extensions#whitespace#enabled = 1
 
 " Fzf Options
-let g:fzf_layout = { 'window': { 'width': 0.95, 'height': 0.8 } }
+" let g:fzf_layout = { 'window': { 'width': 0.95, 'height': 0.8 } }
+let g:fzf_layout = { 'window': 'enew' }
+
 let g:fzf_tags_command = 'ctags -R'
 let g:fzf_commands_expect = 'alt-enter,ctrl-x'
 let g:fzf_action = {
@@ -97,22 +104,22 @@ let g:fzf_action = {
   \ 'ctrl-x': 'split',
   \ 'ctrl-v': 'vsplit' }
 
-" Floaterm options
-" let g:floaterm_keymap_new    = '<F7>'
-" let g:floaterm_keymap_prev   = '<F8>'
-" let g:floaterm_keymap_next   = '<F9>'
-" let g:floaterm_keymap_toggle = '<F12>'
-
 let g:python3_host_prog="/usr/bin/python3"
+
+" ===netrw settings
+let g:netrw_banner = 0
+let g:netrw_liststyle = 3
+let g:netrw_browse_split = 2
+let g:netrw_altv = 1
+let g:netrw_winsize = 25
+let g:netrw_preview = 1
+let b:netrw_alto=0
+let g:netrw_silent=1
+let g:netrw_keepdir=0
 
 " Vimspector config
 let g:vimspector_enable_mappings='VISUAL_STUDIO'
 " mnemonic 'di' = 'debug inspect' (pick your own, if you prefer!)
-
-" for normal mode - the word under the cursor
-nmap <Leader>di <Plug>VimspectorBalloonEval
-" for visual mode, the visually selected text
-xmap <Leader>di <Plug>VimspectorBalloonEval
 
 " == General Options ==
 syntax on
@@ -137,7 +144,6 @@ set splitbelow
 
 if version >= 600
   filetype plugin indent on
-
 endif
 
 
@@ -145,18 +151,3 @@ endif
 " provide custom statusline: lightline.vim, vim-airline.
 " set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
-" ===netrw settings
-let g:netrw_banner = 0
-let g:netrw_liststyle = 3
-let g:netrw_browse_split = 2
-let g:netrw_altv = 1
-let g:netrw_winsize = 25
-let g:netrw_preview = 1
-let b:netrw_alto=0
-let g:netrw_silent=1
-let g:netrw_keepdir=0
-" augroup VimStartup
-"   au!
-"   au VimEnter * if expand("%") == "" | e . | endif
-" augroup END
-"
