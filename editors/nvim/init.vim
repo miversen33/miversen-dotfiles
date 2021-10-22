@@ -76,6 +76,7 @@ Plug 'tpope/vim-surround'
 Plug 'vim-test/vim-test'
 Plug 'tpope/vim-dispatch'
 Plug 'alaviss/nim.nvim'
+Plug 'mfussenegger/nvim-dap'
 call plug#end()
 
 " == Options ==

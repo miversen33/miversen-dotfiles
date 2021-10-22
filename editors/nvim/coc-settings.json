@@ -28,7 +28,7 @@
     ".venv",
     "__pycache__",
     "venv"
-  ]
+  ],
   "languageserver": {
     "sql": {
       "command": "sql-language-server",
