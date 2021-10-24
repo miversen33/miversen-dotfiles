@@ -25,10 +25,15 @@ noremap <silent> <C-[> :Files<CR>
 noremap <silent> <C-o> :split<CR>
 noremap <silent> <C-p> :vsplit<CR>
 nnoremap <silent> <C-e> :Lexplore<CR>
+" nnoremap <silent> <C-D>h :call CocActionAsync('doHover')<cr>
 if has("nvim")
   au TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>
   au FileType fzf tunmap <buffer> <Esc>
 endif
+inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
+imap <c-space> <Plug>(asyncomplete_force_refresh)
 " tnoremap <Esc> <C-\><C-n>
 
 " Highlight all instances of word under cursor, when idle.
@@ -50,14 +55,21 @@ function! s:check_back_space() abort
   return !col || getline('.')[col - 1]  =~ '\s'
 endfunction
 
-inoremap <silent><expr> <Tab>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<Tab>" :
-      \ coc#refresh()
+" inoremap <silent><expr> <Tab>
+"       \ pumvisible() ? "\<C-n>" :
+"       \ <SID>check_back_space() ? "\<Tab>" :
+"       \ coc#refresh()
 
 " == Plugins ==
 call plug#begin('~/.local/share/nvim/plugged')
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'prabirshrestha/vim-lsp'
+Plug 'honza/vim-snippets'
+Plug 'sirver/ultisnips'
+Plug 'thomasfaingnaert/vim-lsp-ultisnips'
+Plug 'prabirshrestha/asyncomplete.vim'
+Plug 'prabirshrestha/asyncomplete-lsp.vim'
+" Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'mattn/vim-lsp-settings'
 Plug 'puremourning/vimspector'
 Plug 'sheerun/vim-polyglot'
 Plug 'ryanoasis/vim-devicons'
@@ -70,13 +82,14 @@ Plug 'jmcantrell/vim-virtualenv'
 Plug 'majutsushi/tagbar'
 Plug 'tomtom/tcomment_vim'
 Plug 'vim-autoformat/vim-autoformat'
-Plug 'ervandew/supertab'
+" Plug 'ervandew/supertab'
 Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-surround'
 Plug 'vim-test/vim-test'
 Plug 'tpope/vim-dispatch'
 Plug 'alaviss/nim.nvim'
 Plug 'mfussenegger/nvim-dap'
+
 call plug#end()
 
 " == Options ==
@@ -142,11 +155,13 @@ set cursorline
 set nocp
 set splitright
 set splitbelow
+set foldmethod=expr
+  \ foldexpr=lsp#ui#vim#folding#foldexpr()
+  \ foldtext=lsp#ui#vim#folding#foldtext()
 
 if version >= 600
   filetype plugin indent on
 endif
-
 
 " NOTE: Please see `:h coc-status` for integrations with external plugins that
 " provide custom statusline: lightline.vim, vim-airline.
