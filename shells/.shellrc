@@ -80,7 +80,7 @@ profile_rc() {
     export PERL_MM_OPT="INSTALL_BASE=$HOME/perl5";
     [ -f $HOME/perl5/perlbrew/etc/bashrc ] && \. $HOME/perl5/perlbrew/etc/bashrc # Executes perlbrew bashrc if it exists because ¯\_(ツ)_/¯
   fi
-  if [ -d "$HOME.nvm" ]; then  # nvm shit
+  if [ -d "$HOME/.nvm" ]; then  # nvm shit
     export NVM_DIR="$HOME/.nvm"
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
     [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
@@ -90,6 +90,7 @@ profile_rc() {
     export PATH=${NODE_PARENT}/bin:${PATH}
     export NODE_PATH=${NODE_PARENT}/lib/node_modules
   fi
+  if [ -f "$HOME/.profile" ] && source "$HOME/.profile"
 }
 
 zsh_rc () {
