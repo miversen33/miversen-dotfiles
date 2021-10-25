@@ -12,7 +12,26 @@ function! WinMove(key)
   exec "wincmd ".a:key
 endfunction
 
+" function! HighlightWordUnderCursor()
+"     let disabled_ft = ["qf", "fugitive", "nerdtree", "gundo", "diff", "fzf", "floaterm"]
+"     if &diff || &buftype == "terminal" || index(disabled_ft, &filetype) >= 0
+"         return
+"     endif
+"     if getline(".")[col(".")-1] !~# '[[:punct:][:blank:]]'
+"         hi MatchWord cterm=undercurl gui=undercurl guibg=#3b404a
+"         exec 'match' 'MatchWord' '/\V\<'.expand('<cword>').'\>/'
+"     else
+"         match none
+"     endif
+" endfunction
+"
+" augroup MatchWord
+"   autocmd!
+"   autocmd! CursorHold,CursorHoldI * call HighlightWordUnderCursor()
+" augroup END
+
 autocmd BufEnter * silent! lcd %:p:h
+autocmd BufAdd netrw_* :let b:vim_current_word_disabled_in_this_buffer = 1
 
 " == Remaps ==
 
@@ -83,6 +102,7 @@ Plug 'majutsushi/tagbar'
 Plug 'tomtom/tcomment_vim'
 Plug 'vim-autoformat/vim-autoformat'
 " Plug 'ervandew/supertab'
+Plug 'dominikduda/vim_current_word'
 Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-surround'
 Plug 'vim-test/vim-test'
@@ -108,8 +128,7 @@ let g:airline_powerline_fonts = 1
 " let g:airline#extensions#whitespace#enabled = 1
 
 " Fzf Options
-" let g:fzf_layout = { 'window': { 'width': 0.95, 'height': 0.8 } }
-let g:fzf_layout = { 'window': 'enew' }
+let g:fzf_layout = { 'window': { 'width': 0.95, 'height': 0.8 } }
 
 let g:fzf_tags_command = 'ctags -R'
 let g:fzf_commands_expect = 'alt-enter,ctrl-x'
@@ -119,6 +138,8 @@ let g:fzf_action = {
   \ 'ctrl-v': 'vsplit' }
 
 let g:python3_host_prog="/usr/bin/python3"
+
+let g:vim_current_word#highlight_delay = 500
 
 " ===netrw settings
 let g:netrw_banner = 0
