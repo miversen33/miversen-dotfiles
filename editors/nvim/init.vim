@@ -109,7 +109,7 @@ Plug 'vim-test/vim-test'
 Plug 'tpope/vim-dispatch'
 Plug 'alaviss/nim.nvim'
 Plug 'mfussenegger/nvim-dap'
-
+" Plug 'chrisbra/Colorizer'
 call plug#end()
 
 " == Options ==
