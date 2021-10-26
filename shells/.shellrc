@@ -56,6 +56,10 @@ profile_rc() {
 
   #source /etc/profile.d/apps-bin-path.sh
 
+  # if [ ! -n "${MYVIMRC+set}" ] && [ ! -n "${SSH_CLIENT+set}" ] && [ -x "$(command -v tmux)" ] && [ -z "$TMUX" ] && [ "${TERM:0:6}" != "screen" ] ; then
+    # tmux attach -t default || tmux new -s default
+  # fi
+
   if [ -x "$(command -v nvim)" ]; then
     export EDITOR="nvim"
     alias vim="nvim" # Sets nvim as alias to vim
@@ -67,7 +71,6 @@ profile_rc() {
   fi;
   [ -d "$HOME/.local/bin" ] && export PATH="$PATH:$HOME/.local/bin" # Adds local bin to path
   [ -d "$HOME/.nimble/bin" ] && export PATH="$PATH:$HOME/.nimble/bin" # Adds nimble to path if it exists
-  # [ -d "/opt/nim/current/bin" ] && export PATH="$PATH:/opt/nim/current/bin" # Adds nim to path if it exists
   [ -d "/opt/gradle/current/bin" ] && export PATH="$PATH:/opt/gradle/current/bin" # Adds gradle to path if it exists
   [ -d "/opt/kotlinc/current/bin" ] && export PATH="$PATH:/opt/kotlinc/current/bin" # Adds kotlin compiler to path if it exists
   [ -d "/opt/Unity/current" ] && export PATH="$PATH:/opt/Unity/current" # Adds kotlin compiler to path if it exists
@@ -82,6 +85,7 @@ profile_rc() {
   fi
   if [ -d "$HOME/.nvm" ]; then  # nvm shit
     export NVM_DIR="$HOME/.nvm"
+
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
     [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
   fi
@@ -90,7 +94,10 @@ profile_rc() {
     export PATH=${NODE_PARENT}/bin:${PATH}
     export NODE_PATH=${NODE_PARENT}/lib/node_modules
   fi
-  if [ -f "$HOME/.profile" ] && source "$HOME/.profile"
+  if [ ! -n "${MYVIMRC+set}" ] && [ ! -n "${SSH_CLIENT+set}" ] && [ ! -n "${TMUX+set}" ]; then
+      tmux -2 a -t default || tmux -2 new -s default;
+  fi
+# if [ -f "$HOME/.profile" ] && source "$HOME/.profile"
 }
 
 zsh_rc () {
