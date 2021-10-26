@@ -60,6 +60,9 @@ profile_rc() {
     # tmux attach -t default || tmux new -s default
   # fi
 
+  # if [ -x "$(command -v tmux)" ]; then
+     # alias tmux="tmux -2 a -t default || tmux -2 new -s default"
+  # fi
   if [ -x "$(command -v nvim)" ]; then
     export EDITOR="nvim"
     alias vim="nvim" # Sets nvim as alias to vim
@@ -96,6 +99,7 @@ profile_rc() {
   fi
   if [ ! -n "${MYVIMRC+set}" ] && [ ! -n "${SSH_CLIENT+set}" ] && [ ! -n "${TMUX+set}" ]; then
       tmux -2 a -t default || tmux -2 new -s default;
+      exit 0
   fi
 # if [ -f "$HOME/.profile" ] && source "$HOME/.profile"
 }
