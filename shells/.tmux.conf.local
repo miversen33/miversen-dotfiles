@@ -14,13 +14,27 @@
 # then uncomment the following line to make Meta + arrow keys mapping work
 #set -ga terminal-overrides "*:kUP3=\e[1;9A,*:kDN3=\e[1;9B,*:kRIT3=\e[1;9C,*:kLFT3=\e[1;9D"
 
+# -- keybindings ---------------------------------------------------------------
+
+bind -r j select-pane -L
+bind -r i select-pane -U
+bind -r k select-pane -D
+bind -r l select-pane -R
+bind C-n new-window
+bind . previous-window
+bind , next-window
+
+# -- settings overrides --------------------------------------------------------
+
+set -g automatic-rename on
+set -g status-interval 2
 
 # -- windows & pane creation ---------------------------------------------------
 
 # places the status bar at either the top or bottom. possible values are:
 #   - top
 #   - bottom (default)
-set -g status-position "top"
+set -g status-position "bottom"
 
 # new window retains current path, possible values are:
 #   - true
