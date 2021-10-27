@@ -1,3 +1,5 @@
+" REFACTOR AND ADD CONTROL KEY TO DO CUSTOM SHITS
+" ALSO ADD USE OF TABS
 " Auto loads vim-plug
 let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
 if empty(glob(data_dir . '/autoload/plug.vim'))
