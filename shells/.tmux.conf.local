@@ -21,8 +21,8 @@ bind -r i select-pane -U
 bind -r k select-pane -D
 bind -r l select-pane -R
 bind C-n new-window
-bind , previous-window
-bind . next-window
+bind . previous-window
+bind , next-window
 
 # -- settings overrides --------------------------------------------------------
 
