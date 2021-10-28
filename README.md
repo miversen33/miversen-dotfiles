@@ -5,7 +5,7 @@ This repo contains all the dotfiles for any and all projects/themes that are inv
 Consider everything you see here to only work on Linux unless its explicitly called out otherwise
 
 ## TODO
-- [ ] ~~Create Installation Script (Consider having this be part of the shellrc?)~~ **Current Target**
+- [ ] Create Installation Script (Consider having this be part of the shellrc?
 - [ ] Fold .p10k.sh into shellrc
 
 ### Neovim Configuration
