@@ -270,6 +270,10 @@ reload() {
   fi
 }
 
+ide() {
+  tmux split-window -v \; resize-pane -y 10
+}
+
 cleanup() {
   unset SHELLRC_UPDATE_FILE
   unset SCRIPT_PATH
