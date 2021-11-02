@@ -14,6 +14,17 @@ au User asyncomplete_setup call asyncomplete#register_source({
     \ 'completor': {opt, ctx -> nim#suggest#sug#GetAllCandidates({start, candidates -> asyncomplete#complete(opt['name'], ctx, start, candidates)})}
     \ })
 
+au User lsp_setup call lsp#register_server({
+   \ 'name': 'nimlsp',
+   \ 'cmd': {server_info->[s:nimlspexecutable]},
+   \ 'whitelist': ['nim'],
+   \ })
+
+function! s:check_back_space() abort
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1]  =~ '\s'
+endfunction
+
 " Key Mappings
 
 noremap <silent> <SPACE> <Nop>
@@ -38,15 +49,21 @@ inoremap <silent> <C-u> <esc>viwUi
 noremap <silent> <C-u> viwU
 inoremap <silent> <C-d> <esc>ddi
 noremap <silent> <leader>' viw<esc>a"<esc>bi"<esc>lel
-noremap <silent> <C-_> :Commentary<CR>
-inoremap <silent> <C-_> <esc>:Commentary<CR>i
+noremap <silent> <C-_> :Commentary<CR>: .+1<CR>
+inoremap <silent> <C-_> <esc>:Commentary<CR><CR>i
 nmap <silent> <C-m> :TagbarToggle<CR>
+inoremap <silent> <leader>.
+  \ pumvisible() ? "\<C-n>" :
+  \ <SID>check_back_space() ? "\<TAB>" :
+  \ asyncomplete#force_refresh()
+inoremap <expr><S-leader>. pumvisible() ? "\<C-p>" : "\<C-h>"
 
 " Plugins
 call plug#begin("$HOME/.local/share/nvim/plugged")
 
 Plug 'tpope/vim-commentary'
 Plug 'prabirshrestha/vim-lsp'
+Plug 'prabirshrestha/async.vim'
 Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'prabirshrestha/asyncomplete-lsp.vim'
 Plug 'mattn/vim-lsp-settings'
@@ -60,7 +77,7 @@ Plug 'majutsushi/tagbar'
 Plug 'vim-autoformat/vim-autoformat'
 Plug 'mfussenegger/nvim-dap'
 Plug 'alaviss/nim.nvim', { 'for': 'nim' }
-Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
 Plug 'wfxr/minimap.vim', {'do': ':!cargo install --locked code-minimap'}
 
 call plug#end()
@@ -77,6 +94,7 @@ set hlsearch " highlight all results
 set ignorecase " ignore case in search
 set incsearch " show search results as you type
 set foldmethod=indent
+set foldlevel=99
 set encoding=utf-8
 set list
 set listchars=tab:->,space:·
@@ -85,11 +103,34 @@ set nocp
 set splitright
 set splitbelow
 
+let g:lsp_log_verbose = 1
+let g:lsp_log_file = expand('/tmp/vim-lsp.log')
+let g:asyncomplete_log_file = expand('/tmp/asyncomplete.log')
+" let g:asyncomplete_auto_popup = 0
+
+" Theme Settings
+
 colorscheme hybrid_reverse
 let g:airline_theme = 'deus'
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#left_alt_sep = '>'
 let g:airline_powerline_fonts = 1
+
+" Code Minimap settings
+let g:minimap_width = 10
+let g:minimap_auto_start = 1
+let g:minimap_auto_start_win_enter = 1
+let g:minimap_block_filetypes=['tagbar', 'nofile']
+let g:minimap_block_buftypes=['nofile', 'nowrite', 'quickfix', 'terminal', 'prompt']
+let g:minimap_git_colors=1
+let g:minimap_diffadd_color='DiffAdd'
+let g:minimap_diffremove_color='DiffDelete'
+let g:minimap_diff_color='DiffChange'
+let g:minimap_highlight_search=1
+let g:minimap_search_color='Search'
+
+
+" Markdown settings
 
 " set to 1, nvim will open the preview window after entering the markdown buffer
 " default: 0
@@ -181,4 +222,7 @@ let g:mkdp_page_title = '「${name}」'
 " recognized filetypes
 " these filetypes will have MarkdownPreview... commands
 let g:mkdp_filetypes = ['markdown']
+
+" Nimble settings
+let s:nimlspexecutable = "nimlsp"
 
