@@ -8,3 +8,4 @@ List of dependencies for the editor to work properly
 - [ ] [Python 3.6+](https://www.python.org/downloads/)
 - [ ] [Universal Ctags](https://ctags.io/)
 - [ ] [fzf](https://github.com/junegunn/fzf#using-linux-package-managers)
+- [ ] [Silver Watcher](https://github.com/ggreer/the_silver_searcher#installing)
