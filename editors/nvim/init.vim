@@ -75,10 +75,8 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'jmcantrell/vim-virtualenv', { 'for': 'python' }
 Plug 'majutsushi/tagbar'
 Plug 'vim-autoformat/vim-autoformat'
-Plug 'mfussenegger/nvim-dap'
 Plug 'alaviss/nim.nvim', { 'for': 'nim' }
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
-Plug 'wfxr/minimap.vim', {'do': ':!cargo install --locked code-minimap'}
 
 call plug#end()
 
@@ -115,20 +113,6 @@ let g:airline_theme = 'deus'
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#left_alt_sep = '>'
 let g:airline_powerline_fonts = 1
-
-" Code Minimap settings
-let g:minimap_width = 10
-let g:minimap_auto_start = 1
-let g:minimap_auto_start_win_enter = 1
-let g:minimap_block_filetypes=['tagbar', 'nofile']
-let g:minimap_block_buftypes=['nofile', 'nowrite', 'quickfix', 'terminal', 'prompt']
-let g:minimap_git_colors=1
-let g:minimap_diffadd_color='DiffAdd'
-let g:minimap_diffremove_color='DiffDelete'
-let g:minimap_diff_color='DiffChange'
-let g:minimap_highlight_search=1
-let g:minimap_search_color='Search'
-
 
 " Markdown settings
 
