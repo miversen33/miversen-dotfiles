@@ -10,6 +10,8 @@ call plug#end()
 
 noremap <silent> <A-k> :m .+1<CR>==
 noremap <silent> <A-i> :m .-2<CR>==
+noremap <silent> <A-Down> :m .+1<CR>==
+noremap <silent> <A-Up>:m .-2<CR>==
 noremap <silent> <A-a> :tabp<CR>
 noremap <silent> <A-d> :tabn<CR>
 noremap <silent> <A-j> :bprevious<CR>
@@ -24,3 +26,5 @@ noremap <C-s> :w<CR> :echo "Saved File"<CR>
 inoremap <C-s> <esc>:w<CR> :echo "Saved File"<CR>
 noremap <C-f> /
 inoremap <C-f> <esc>/
+
+set number
