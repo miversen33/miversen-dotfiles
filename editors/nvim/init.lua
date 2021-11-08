@@ -38,8 +38,9 @@ map('n', '<C-s>',    ':w<CR> :echo "Saved File"<CR>', noremap)
 map('i', '<C-s>',    '<esc>:w<CR> :echo "Saved File"<CR>', noremap)
 map('n', '<C-f>',    '/', noremap)
 map('i', '<C-f>',    '<esc>/', noremap)
-map('', '<C-_>',    ':Commentary<CR>: .+1<CR>', silent_noremap)
+map('',  '<C-_>',    ':Commentary<CR>: .+1<CR>', silent_noremap)
 map('i', '<C-_>',    '<esc>:Commentary<CR><CR>i', silent_noremap)
+map('n', '<Enter>',  ':Vista!!<CR>', silent_noremap)
 
 -- Options
 vim.opt.number        = true
