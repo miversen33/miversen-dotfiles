@@ -111,26 +111,28 @@ end)
 
 -- Settings
 
+local lsps = { pyright='pyright', jedi='jedi', nimlsp='nimls' }
 local nvim_lsp = require('lspconfig')
 local luasnip  = require('luasnip')
 local cmp      = require('cmp')
-require'lspconfig'.nimls.setup{}
--- require'lspconfig'.vimls.setup{}
+
+-- Checking for LSPs
 
 local nvim_capabilities = vim.lsp.protocol.make_client_capabilities()
 nvim_capabilities = require('cmp_nvim_lsp').update_capabilities(nvim_capabilities)
 
-local lsps = { 'pyright', 'nimls', }
-for _, lsp in ipairs(lsps) do
-  nvim_lsp[lsp].setup {
-    on_attach = function(client)
-        require 'illuminate'.on_attach(client)
-    end,
-    capabilities = nvim_capabilities,
-    flags = {
-      debounce_text_changes = 150,
+for nvim_lsp_name, lsp in pairs(lsps) do
+  if vim.fn.executable(nvim_lsp_name) == 1 then
+    nvim_lsp[lsp].setup {
+      on_attach = function(client)
+          require 'illuminate'.on_attach(client)
+      end,
+      capabilities = nvim_capabilities,
+      flags = {
+        debounce_text_changes = 150,
+      }
     }
-  }
+  end
 end
 
 cmp.setup {
