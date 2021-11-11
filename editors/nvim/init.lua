@@ -36,6 +36,8 @@ map('n', '<C-i>',    '<C-W><C-k>:echo "Pane Up"<CR>', noremap)
 map('n', '<C-k>',    '<C-W><C-j>:echo "Pane Down"<CR>', noremap)
 map('n', '<C-s>',    ':w<CR> :echo "Saved File"<CR>', noremap)
 map('i', '<C-s>',    '<esc>:w<CR> :echo "Saved File"<CR>', noremap)
+map('i', '<S-Tab>',  '<esc>:<<<CR>i', silent_noremap)
+map('n', '<S-Tab>',  ':<<<CR>', silent_noremap)
 map('n', '<C-f>',    '/', noremap)
 map('i', '<C-f>',    '<esc>/', noremap)
 map('',  '<C-_>',    ':Commentary<CR>: .+1<CR>', silent_noremap)
@@ -45,21 +47,26 @@ map('n', '<Enter>',  ':Vista!!<CR>', silent_noremap)
 -- Options
 vim.opt.number        = true
 vim.opt.termguicolors = true
-vim.opt.numberwidth = 2
-vim.opt.wrap        = true
-vim.opt.background  = 'dark'
-vim.opt.hlsearch    = true
-vim.opt.ignorecase  = true
-vim.opt.incsearch   = true
-vim.opt.hidden      = true
-vim.opt.foldmethod  = 'indent'
-vim.opt.foldlevel   = 99
-vim.opt.list        = true
-vim.opt.listchars   = 'tab:-->,space:·'
-vim.opt.cursorline  = true
-vim.opt.splitright  = true
-vim.opt.splitbelow  = true
-vim.o.completeopt   = 'menuone,noselect'
+vim.opt.tabstop       = 4
+vim.opt.shiftwidth    = 4
+vim.opt.softtabstop   = 4
+vim.opt.numberwidth   = 2
+vim.opt.wrap          = true
+vim.opt.background    = 'dark'
+vim.opt.hlsearch      = true
+vim.opt.ignorecase    = true
+vim.opt.incsearch     = true
+vim.opt.hidden        = true
+vim.opt.foldmethod    = 'indent'
+vim.opt.foldlevel     = 99
+vim.opt.list          = true
+vim.opt.listchars     = 'tab:-->,space:·'
+vim.opt.cursorline    = true
+vim.opt.splitright    = true
+vim.opt.splitbelow    = true
+vim.opt.expandtab     = true
+vim.opt.smarttab      = true
+vim.o.completeopt     = 'menuone,noselect'
 vim.cmd[[colorscheme hybrid_reverse]]
 vim.g.airline_theme = 'deus'
 vim.g['airline#extensions#tabline#enabled'] = 1
@@ -110,8 +117,21 @@ require('packer').startup(function()
 end)
 
 -- Settings
+local lsps = { pyright='pyright', jedi='jedi', nimlsp='nimls', perlpls='pls', perlls='perlls', deno='denols' }
+require'lspconfig'.perlpls.setup{}
 
-local lsps = { pyright='pyright', jedi='jedi', nimlsp='nimls' }
+
+local lspsettings = {
+    pls = {
+        perl = {
+            perlcritic = {
+            enabled = false
+        }
+      }
+    }
+}
+
+
 local nvim_lsp = require('lspconfig')
 local luasnip  = require('luasnip')
 local cmp      = require('cmp')
@@ -129,9 +149,12 @@ for nvim_lsp_name, lsp in pairs(lsps) do
       end,
       capabilities = nvim_capabilities,
       flags = {
-        debounce_text_changes = 150,
+          debounce_text_changes = 150,
       }
     }
+    if lspsettings[lsp] ~= nil then
+        nvim_lsp[lsp].setup.settings = lspsettings[lsp]
+    end
   end
 end
 
