@@ -78,6 +78,7 @@ profile_rc() {
   [ -d "/opt/kotlinc/current/bin" ] && export PATH="$PATH:/opt/kotlinc/current/bin" # Adds kotlin compiler to path if it exists
   [ -d "/opt/Unity/current" ] && export PATH="$PATH:/opt/Unity/current" # Adds kotlin compiler to path if it exists
   [ -d "$HOME/.cargo/bin" ] && export PATH="$PATH:$HOME/.cargo/bin" # Adds cargo (rust) to path
+  [ -d "$HOME/.deno/bin" ] && export PATH="$PATH:$HOME/.deno/bin" # Adds deno (ls) to path https://github.com/denoland/deno
   if [ -d "$HOME/perl5" ]; then #The perl shits
     export PATH="$PATH:$HOME/perl5/bin"; # Adds perl5 (perlbrew) to path if it exists
     export PERL5LIB="$HOME/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}";
