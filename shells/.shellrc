@@ -63,15 +63,6 @@ profile_rc() {
   # if [ -x "$(command -v tmux)" ]; then
      # alias tmux="tmux -2 a -t default || tmux -2 new -s default"
   # fi
-  if [ -x "$(command -v nvim)" ]; then
-    export EDITOR="nvim"
-    alias vim="nvim" # Sets nvim as alias to vim
-    export VIMRC="$HOME/.config/nvim/init.vim"
-  else;
-    export EDITOR="vim"
-    unalias vim 2>/dev/null
-    export VIMRC="$HOME/.vimrc"
-  fi;
   [ -d "$HOME/.local/bin" ] && export PATH="$PATH:$HOME/.local/bin" # Adds local bin to path
   [ -d "$HOME/.nimble/bin" ] && export PATH="$PATH:$HOME/.nimble/bin" # Adds nimble to path if it exists
   [ -d "/opt/gradle/current/bin" ] && export PATH="$PATH:/opt/gradle/current/bin" # Adds gradle to path if it exists
@@ -99,6 +90,16 @@ profile_rc() {
     export PATH=${NODE_PARENT}/bin:${PATH}
     export NODE_PATH=${NODE_PARENT}/lib/node_modules
   fi
+  if [ -x "$(command -v nvim)" ]; then
+    export EDITOR="nvim"
+    alias vim="nvim" # Sets nvim as alias to vim
+    export VIMRC="$HOME/.config/nvim/init.vim"
+  else;
+    export EDITOR="vim"
+    unalias vim 2>/dev/null
+    export VIMRC="$HOME/.vimrc"
+  fi;
+
   if [ ! -n "${MYVIMRC+set}" ] && [ ! -n "${TMUX+set}" ] && [ "${TERM_PROGRAM}" != "vscode" ] && [ ! -f $HOME/.notmux ] && [[ ! -n "${SSH_CLIENT+set}" ||  -f $HOME/.isproxy ]]; then
       tmux -2 a -t default || tmux -2 new -s default;
       exit 0
