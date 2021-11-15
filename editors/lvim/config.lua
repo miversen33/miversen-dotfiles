@@ -100,6 +100,15 @@ lvim.builtin.treesitter.ensure_installed = {
 lvim.builtin.treesitter.ignore_install = { "haskell" }
 lvim.builtin.treesitter.highlight.enabled = true
 
+-- Theme Details
+local components = require("lvim.core.lualine.components")
+
+lvim.builtin.lualine.style = "lvim"
+-- lvim.builtin.lualine.sections.lualine_a = { components.mode, components.branch }
+-- lvim.builtin.lualine.sections.lualine_b = { components.mode.filename, components.diff }
+-- lvim.builtin.lualine.sections.lualine_x = { components.encoding, }
+-- lvim.builtin.lualine.sections.lualine_y = { components.filetype, }
+-- lvim.builtin.lualine.sections.lualine_z = { components.progress, }
 -- generic LSP settings
 
 -- ---@usage disable automatic installation of servers
@@ -179,20 +188,20 @@ lvim.builtin.treesitter.highlight.enabled = true
 --     },
 -- }
 lvim.plugins = {
+  -- Language Plugins
+  {'alaviss/nim.nvim'},
+
+  -- Utility Plugins
   {'tpope/vim-commentary'},
   {'getomni/neovim'},
   {'nathanaelkane/vim-indent-guides'},
   {'RRethy/vim-illuminate'},
   {'liuchengxu/vista.vim'},
-  -- use {
-     -- 'rmagatti/auto-session',
-    --  config = function()
-    --  require('auto-session').setup {
-    --    log_level = 'info',
-    --    auto_session_suppress_dirs = {'~/', '~/Projects'}
-    -- }
-  -- end
 }
+
+-- Vim Options
+vim.g.indent_guides_enable_on_vim_startup = 1
+vim.g.indent_guides_exclude_filetypes = {'help', 'nerdtree', 'dashboard'}
 
 -- Autocommands (https://neovim.io/doc/user/autocmd.html)
 -- lvim.autocommands.custom_groups = {
