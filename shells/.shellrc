@@ -90,10 +90,15 @@ profile_rc() {
     export PATH=${NODE_PARENT}/bin:${PATH}
     export NODE_PATH=${NODE_PARENT}/lib/node_modules
   fi
-  if [ -x "$(command -v nvim)" ]; then
+
+  if [ -x "$(command -v lvim)" ]; then
+    export EDITOR="lvim"
+    alias vim="lvim"
+    export VIMRC="$HOME/.config/lvim/config.lua"
+  elif [ -x "$(command -v nvim)" ]; then
     export EDITOR="nvim"
     alias vim="nvim" # Sets nvim as alias to vim
-    export VIMRC="$HOME/.config/nvim/init.vim"
+    export VIMRC="$HOME/.config/nvim/init.lua"
   else;
     export EDITOR="vim"
     unalias vim 2>/dev/null
