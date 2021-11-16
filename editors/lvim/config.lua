@@ -9,9 +9,10 @@ an executable
 -- THESE ARE EXAMPLE CONFIGS FEEL FREE TO CHANGE TO WHATEVER YOU WANT
 
 -- general
-lvim.log.level = "warn"
+vim.log.level = "warn"
 lvim.format_on_save = true
 lvim.colorscheme = "onedarker"
+lvim.transparent_window = true
 
 -- keymappings [view all the defaults by pressing <leader>Lk]
 lvim.leader = "space"
@@ -33,9 +34,10 @@ lvim.keys.normal_mode["<C-i>"]    = '<C-W><C-k>:echo "Pane Up"<CR>'
 lvim.keys.normal_mode["<C-k>"]    = '<C-W><C-j>:echo "Pane Down"<CR>'
 lvim.keys.normal_mode["<C-s>"]    = ':w<CR> :echo "Saved File"<CR>'
 lvim.keys.normal_mode['<S-Tab>']  = ':<<CR>'
-lvim.keys.normal_mode['<C-f>']    = '/'
-lvim.keys.normal_mode['<Enter>']  = ':Vista!!<CR>'
+lvim.keys.normal_mode['<C-f>']    = ':noh<CR>'
+lvim.keys.normal_mode['<Enter>']  = ':SymbolsOutline<CR>'
 lvim.keys.normal_mode['<C-_>']    = ':Commentary<CR>: .+1<CR>'
+lvim.keys.normal_mode['<leader>t']= ':TroubleToggle<CR>'
 
 lvim.keys.insert_mode['<C-_>']    = '<esc>:Commentary<CR><CR>i'
 lvim.keys.insert_mode["<C-s>"]    = "<esc>:w<cr>"
@@ -100,15 +102,24 @@ lvim.builtin.treesitter.ensure_installed = {
 lvim.builtin.treesitter.ignore_install = { "haskell" }
 lvim.builtin.treesitter.highlight.enabled = true
 
+-- LSP Lualine Integration
+local lsp_status = require('lsp-status')
+lsp_status.register_progress()
+
 -- Theme Details
+lvim.builtin.lualine.options.theme = "codedark"
+
 local components = require("lvim.core.lualine.components")
 
-lvim.builtin.lualine.style = "lvim"
--- lvim.builtin.lualine.sections.lualine_a = { components.mode, components.branch }
--- lvim.builtin.lualine.sections.lualine_b = { components.mode.filename, components.diff }
--- lvim.builtin.lualine.sections.lualine_x = { components.encoding, }
--- lvim.builtin.lualine.sections.lualine_y = { components.filetype, }
--- lvim.builtin.lualine.sections.lualine_z = { components.progress, }
+lvim.builtin.lualine.style = "none"
+lvim.builtin.lualine.options.section_separators = { left='\u{E0B0}', right='\u{E0B2}' }
+lvim.builtin.lualine.options.component_separators = { right='\u{E0B3}'}
+lvim.builtin.lualine.sections.lualine_a = { components.branch, }
+lvim.builtin.lualine.sections.lualine_b = { components.filename }
+lvim.builtin.lualine.sections.lualine_c = { components.diff }
+lvim.builtin.lualine.sections.lualine_x = { components.diagnostics, }
+lvim.builtin.lualine.sections.lualine_y = { components.filetype, components.encoding, components.location, components.progress }
+lvim.builtin.lualine.sections.lualine_z = { components.lsp }
 -- generic LSP settings
 
 -- ---@usage disable automatic installation of servers
@@ -124,6 +135,9 @@ lvim.builtin.lualine.style = "lvim"
 
 -- you can set a custom on_attach function that will be used for all the language servers
 -- See <https://github.com/neovim/nvim-lspconfig#keybindings-and-completion>
+lvim.lsp.on_attach_callback = function(client, bufnr)
+  return lsp_status.on_attach
+end
 -- lvim.lsp.on_attach_callback = function(client, bufnr)
 --   local function buf_set_option(...)
 --     vim.api.nvim_buf_set_option(bufnr, ...)
@@ -191,18 +205,36 @@ lvim.plugins = {
   -- Language Plugins
   {'alaviss/nim.nvim'},
 
+  -- Theme Plugins
+  {'rafamadriz/neon'},
+  {'tomasiser/vim-code-dark'},
+  {'marko-cerovac/material.nvim'},
+  {'folke/tokyonight.nvim'},
+  {'sainnhe/sonokai'},
+  {'sainnhe/edge'},
+  {'tanvirtin/monokai.nvim'},
+
   -- Utility Plugins
   {'tpope/vim-commentary'},
   {'getomni/neovim'},
   {'nathanaelkane/vim-indent-guides'},
   {'RRethy/vim-illuminate'},
-  {'liuchengxu/vista.vim'},
+  {'nvim-lua/lsp-status.nvim'},
+  {'simrat39/symbols-outline.nvim'}, -- https://github.com/simrat39/symbols-outline.nvim#default-keymaps
+  {'folke/trouble.nvim'}, -- https://github.com/folke/trouble.nvim#commands
+  {'folke/lsp-colors.nvim'},
+  {'iamcco/markdown-preview.nvim'},
+  -- {'itchyny/vim-cursorword'},
+  -- {'turbio/bracey.vim'}, 
+  -- {'folke/persistence.nvim'},
 }
 
 -- Vim Options
 vim.g.indent_guides_enable_on_vim_startup = 1
-vim.g.indent_guides_exclude_filetypes = {'help', 'nerdtree', 'dashboard'}
-
+vim.g.indent_guides_exclude_filetypes = {'help', 'nerdtree', 'dashboard', 'lsp-installer', 'packer', 'TelescopePrompt', 'Outline'}
+vim.g.mkdp_auto_start = 1
+vim.g.mkdp_open_to_the_world = 1
+vim.g.mkdp_echo_preview_url = 1
 -- Autocommands (https://neovim.io/doc/user/autocmd.html)
 -- lvim.autocommands.custom_groups = {
 --   { "BufWinEnter", "*.lua", "setlocal ts=8 sw=8" },
