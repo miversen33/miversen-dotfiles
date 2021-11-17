@@ -22,7 +22,12 @@ vim.g.mkdp_echo_preview_url = 1
 vim.opt.clipboard = 'unnamedplus'
 vim.opt.expandtab = true
 vim.opt.scrolloff = 8
-vim.opt.listchars = {tab = '-->' , space='·'}
+vim.opt.list = true
+vim.g.showbreak = '↪'
+vim.opt.listchars = {
+  tab = '-->' , multispace='·', nbsp='␣',
+  trail='•', extends='⟩', precedes='⟨'
+}
 
 -- keymappings [view all the defaults by pressing <leader>Lk]
 lvim.leader = "space"
@@ -237,12 +242,10 @@ lvim.plugins = {
   {'folke/trouble.nvim'}, -- https://github.com/folke/trouble.nvim#commands
   {'folke/lsp-colors.nvim'},
   {'iamcco/markdown-preview.nvim'},
-  {'roxma/vim-tmux-clipboard'},
   -- {'itchyny/vim-cursorword'},
   -- {'turbio/bracey.vim'},
   -- {'folke/persistence.nvim'},
 }
-
 -- Autocommands (https://neovim.io/doc/user/autocmd.html)
 -- lvim.autocommands.custom_groups = {
 --   { "BufWinEnter", "*.lua", "setlocal ts=8 sw=8" },
