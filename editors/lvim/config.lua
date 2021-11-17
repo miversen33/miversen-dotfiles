@@ -12,7 +12,17 @@ an executable
 vim.log.level = "warn"
 lvim.format_on_save = true
 lvim.colorscheme = "onedarker"
-lvim.transparent_window = true
+
+-- Vim Options
+vim.g.indent_guides_enable_on_vim_startup = 1
+vim.g.indent_guides_exclude_filetypes = {'help', 'nerdtree', 'dashboard', 'lsp-installer', 'packer', 'TelescopePrompt', 'Outline'}
+vim.g.mkdp_auto_start = 1
+vim.g.mkdp_open_to_the_world = 1
+vim.g.mkdp_echo_preview_url = 1
+vim.opt.clipboard = 'unnamedplus'
+vim.opt.expandtab = true
+vim.opt.scrolloff = 8
+vim.opt.listchars = {tab = '-->' , space='·'}
 
 -- keymappings [view all the defaults by pressing <leader>Lk]
 lvim.leader = "space"
@@ -38,6 +48,9 @@ lvim.keys.normal_mode['<C-f>']    = ':noh<CR>'
 lvim.keys.normal_mode['<Enter>']  = ':SymbolsOutline<CR>'
 lvim.keys.normal_mode['<C-_>']    = ':Commentary<CR>: .+1<CR>'
 lvim.keys.normal_mode['<leader>t']= ':TroubleToggle<CR>'
+lvim.keys.visual_mode['<C-_>']    = ':Commentary<CR>: .1+<CR>'
+lvim.keys.visual_mode['<S-Tab>']  = ':<<CR>'
+lvim.keys.visual_block_mode['<C-_>'] = ':Commentary<CR>: .1+<CR>'
 
 lvim.keys.insert_mode['<C-_>']    = '<esc>:Commentary<CR><CR>i'
 lvim.keys.insert_mode["<C-s>"]    = "<esc>:w<cr>"
@@ -224,17 +237,12 @@ lvim.plugins = {
   {'folke/trouble.nvim'}, -- https://github.com/folke/trouble.nvim#commands
   {'folke/lsp-colors.nvim'},
   {'iamcco/markdown-preview.nvim'},
+  {'roxma/vim-tmux-clipboard'},
   -- {'itchyny/vim-cursorword'},
-  -- {'turbio/bracey.vim'}, 
+  -- {'turbio/bracey.vim'},
   -- {'folke/persistence.nvim'},
 }
 
--- Vim Options
-vim.g.indent_guides_enable_on_vim_startup = 1
-vim.g.indent_guides_exclude_filetypes = {'help', 'nerdtree', 'dashboard', 'lsp-installer', 'packer', 'TelescopePrompt', 'Outline'}
-vim.g.mkdp_auto_start = 1
-vim.g.mkdp_open_to_the_world = 1
-vim.g.mkdp_echo_preview_url = 1
 -- Autocommands (https://neovim.io/doc/user/autocmd.html)
 -- lvim.autocommands.custom_groups = {
 --   { "BufWinEnter", "*.lua", "setlocal ts=8 sw=8" },
