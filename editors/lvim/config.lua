@@ -133,7 +133,7 @@ lvim.builtin.lualine.style = "none"
 lvim.builtin.lualine.options.section_separators = { left='\u{E0B0}', right='\u{E0B2}' }
 lvim.builtin.lualine.options.component_separators = { right='\u{E0B3}'}
 lvim.builtin.lualine.sections.lualine_a = { components.branch, }
-lvim.builtin.lualine.sections.lualine_b = { components.filename }
+lvim.builtin.lualine.sections.lualine_b = { '%F' }
 lvim.builtin.lualine.sections.lualine_c = { components.diff }
 lvim.builtin.lualine.sections.lualine_x = { components.diagnostics, }
 lvim.builtin.lualine.sections.lualine_y = { components.filetype, components.encoding, components.location, components.progress }
