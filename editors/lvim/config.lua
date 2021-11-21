@@ -33,10 +33,10 @@ vim.opt.listchars = {
 lvim.leader = "space"
 -- add your own keymapping
 lvim.keys.normal_mode["<C-s>"]    = ":w<cr>"
-lvim.keys.normal_mode["<A-k>"]    = ':m .+1<CR>=='
-lvim.keys.normal_mode["<A-i>"]    = ':m .-2<CR>=='
 lvim.keys.normal_mode["<A-Down>"] = ':m .+1<CR>=='
 lvim.keys.normal_mode["<A-Up>"]   = ':m .-2<CR>=='
+lvim.keys.normal_mode["<C-Down>"] = 'yyp'
+lvim.keys.normal_mode["<C-Up>"]   = 'yykp'
 lvim.keys.normal_mode["<A-j>"]    = ':tabp<CR>:echo "Tab Left"<CR>'
 lvim.keys.normal_mode["<A-k>"]    = ':tabn<CR>:echo "Tab Right"<CR>'
 lvim.keys.normal_mode["<A-h>"]    = ':BufferPrevious<CR>:echo "Buffer Left"<CR>'
@@ -59,6 +59,8 @@ lvim.keys.visual_block_mode['<C-_>'] = ':Commentary<CR>: .1+<CR>'
 
 lvim.keys.insert_mode['<C-_>']    = '<esc>:Commentary<CR><CR>i'
 lvim.keys.insert_mode["<C-s>"]    = "<esc>:w<cr>"
+lvim.keys.insert_mode["<C-Up>"] = '<esc>yypi'
+lvim.keys.insert_mode["<C-Down>"] = '<esc>yykpi'
 
 -- unmap a default keymapping
 -- lvim.keys.normal_mode["<C-Up>"] = ""
