@@ -59,8 +59,9 @@ lvim.keys.visual_block_mode['<C-_>'] = ':Commentary<CR>: .1+<CR>'
 
 lvim.keys.insert_mode['<C-_>']    = '<esc>:Commentary<CR><CR>i'
 lvim.keys.insert_mode["<C-s>"]    = "<esc>:w<cr>"
-lvim.keys.insert_mode["<C-Up>"] = '<esc>yypi'
+lvim.keys.insert_mode["<C-Up>"]   = '<esc>yypi'
 lvim.keys.insert_mode["<C-Down>"] = '<esc>yykpi'
+lvim.keys.insert_mode['<S-Tab>']  = '<esc>:<<CR>i'
 
 -- unmap a default keymapping
 -- lvim.keys.normal_mode["<C-Up>"] = ""
@@ -244,6 +245,7 @@ lvim.plugins = {
   {'folke/trouble.nvim'}, -- https://github.com/folke/trouble.nvim#commands
   {'folke/lsp-colors.nvim'},
   {'iamcco/markdown-preview.nvim'},
+  {'norcalli/nvim-colorizer.lua'},
   -- {'itchyny/vim-cursorword'},
   -- {'turbio/bracey.vim'},
   -- {'folke/persistence.nvim'},
@@ -252,3 +254,12 @@ lvim.plugins = {
 -- lvim.autocommands.custom_groups = {
 --   { "BufWinEnter", "*.lua", "setlocal ts=8 sw=8" },
 -- }
+
+-- Plugin configuration
+require('colorizer').setup{
+  'css';
+  'javascript';
+  html = {
+    mode = 'background'
+  }
+}
