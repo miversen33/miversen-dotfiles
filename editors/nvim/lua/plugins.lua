@@ -42,11 +42,12 @@ require('packer').startup(function(use)
   use 'projekt0n/github-nvim-theme' -- (github_dark, github_dark_default, github_dimmed, github_light, github_light_default)
   use 'nvim-lualine/lualine.nvim' -- Neovim status line
   use 'kyazdani42/nvim-web-devicons' -- Devicons
-  use 'romgrk/barbar.nvim' -- Neovim Tab/Buffer Bar -- Use this until we get cokeline setup. Cokeline 
+  -- use 'romgrk/barbar.nvim' -- Neovim Tab/Buffer Bar -- Use this until we get cokeline setup. Cokeline 
   -- is the route we want to go
-  -- use 'noib3/nvim-cokeline' -- Neovim Tab/Buffer Bar. More customizable than barbar, potentially use this?
+  use 'noib3/nvim-cokeline' -- Neovim Tab/Buffer Bar. More customizable than barbar, potentially use this?
   -- use 'navarasu/onedark.nvim' -- (onedark: onedark_style=darker, cool, deep, warm, warmer) 
   use 'edluffy/specs.nvim' -- Neovim cursorline jump highlighter
+  use 'onsails/lspkind-nvim' -- Neovim lsp pictograms
   -- use 'tomasr/molokai' -- Molokai Theme
   -- use 'karb94/neoscroll.nvim' -- Neovim Better Scrolling
   -- use 'SmiteshP/nvim-gps' -- Neovim status bar component for locating yourself within your code
@@ -106,7 +107,7 @@ require('packer').startup(function(use)
   -- use 'ethanholz/nvim-lastplace' -- Neovim open file in the last place you were (if the file has been opened before?)
   -- use 'abecodes/tabout.nvim' -- Neovim tab escape parens?
   -- use 'rcarriga/nvim-notify' -- Neovim notifications?
-  -- use 'romgrk/nvim-treesitter-context' -- Neovim code context
+  use 'romgrk/nvim-treesitter-context' -- Neovim code context
   -- use 'chipsenkbeil/distant.nvim' -- Neovim remote file editing (Note: Dependency https://github.com/chipsenkbeil/distant)
   -- use 'AckslD/nvim-neoclip.lua' -- Neovim Clipboard/register manager
     -- Also going to need to figure out how to get clipboard to play fair with tmux if we are running inside that. Or over ssh.
@@ -125,14 +126,16 @@ require('packer').startup(function(use)
 end)
 
 -- Plugin Configurations
-local excluded_filetypes = {'lsp-installer', 'lspinfo', 'Outline', 'help', 'packer', 'netrw', 'qf', 'dbui'}
+
+local excluded_filetypes = {'lsp-installer', 'lspinfo', 'Outline', 'help', 'packer', 'netrw', 'qf', 'dbui', 'Trouble'}
 vim.g['indent_blankline_filetype_exclude'] = excluded_filetypes
 vim.g['db_ui_auto_execute_table_helpers'] = 1
 
 require('indent_blankline').setup({
   show_current_context = true,
   show_current_context_start = true,
-  space_char_blankline = ' ',
+  use_treesitter = true
+  -- space_char_blankline = ' ',
 })
 
 
@@ -152,18 +155,17 @@ require('lualine').setup{
       {
         'filename',
         symbols = {
-          path = 1,
-          -- modified = '⊙',
-          unnamed = ''
+          modified = '',
+          readonly = '',
+          unamed = ''
         }
-      },
-      'diff',
+      }
+      -- 'diff',
     },
     lualine_c = {
       {
         'diagnostics',
-        -- symbols = {},
-        -- update_in_insert = true
+        update_in_insert = true
       }
     },
     lualine_x = {
@@ -186,6 +188,10 @@ require('lualine').setup{
     lualine_b = {
     },
     lualine_c = {
+      {
+        'filetype',
+        icon_only = true
+      },
       'filename', 
     },
     lualine_x = {
@@ -199,24 +205,78 @@ require('lualine').setup{
     }
   }
 }
--- require('cokeline').setup({
---   show_if_buffers_are_at_least = 2,
---   components = {
---     {
---       text = function(buffer) return ' ' .. buffer.index .. ' ' .. buffer.devicon.icon end,
---     },
---     {
---       text = function(buffer) return ' ' .. buffer.unique_prefix .. buffer.filename .. ' ' end,
---     },
---     {
---       text = '',
---       delete_buffer_on_left_click = true
---     },
---     {
---       text = ' '
---     }
---   }
--- })
+require('cokeline').setup({
+  components = {
+    {
+      text = function(buffer)
+        return ' ' .. buffer.devicon.icon .. ' '
+      end,
+      hl = {
+        fg = function(buffer)
+          return buffer.devicon.color
+        end
+      }
+    },
+    {
+      text = function(buffer)
+        local status = ''
+        if(buffer.is_readonly) then
+          status = 'r'
+        elseif(buffer.is_modified) then
+          status = '🟡'
+        end
+        return status .. ' '
+      end
+    },
+    {
+      text = function(buffer)
+        return buffer.unique_prefix .. buffer.filename
+      end,
+      hl = {
+        fg = function(buffer)
+          if(buffer.diagnostics.errors > 0) then
+            return '#C95157'
+          else
+            return '#A4A8A5'
+          end
+        end,
+        style = function(buffer)
+          local text_style = 'NONE'
+          if(buffer.is_focused) then
+            text_style = 'bold'
+          end
+          if(buffer.diagnostics.errors > 0) then
+            if(text_style ~= 'NONE') then
+              text_style = text_style .. ',underline'
+            else
+              text_style = 'underline'
+            end
+          end
+          return text_style
+        end
+      }
+    },
+    {
+      text = ' ✖️ ',
+      delete_buffer_on_left_click = true
+    }
+
+  },
+  default_hl = {
+    focused = {
+      fg = '#A4A8A5',
+      bg = '#3D3D3D',
+    },
+    unfocused = {
+      fg = '#837F78',
+      bg = '#1C1C1C',
+    }
+  },
+  -- render = {
+  --   right_separator = '╮',
+  --   left_separator = '╭'
+  -- }
+})
 require('specs').setup({
   show_jumps  = true,
   min_jump = 30,
@@ -236,10 +296,66 @@ require('specs').setup({
 })
 
 -- Setup nvim-cmp
+vim.cmd([[
+highlight! CmpItemAbbrDeprecated guibg=NONE gui=strikethrough guifg=#808080
+highlight! CmpItemAbbrMatch guibg=NONE guifg=#569CD6
+highlight! CmpItemAbbrMatchFuzzy guibg=NONE guifg=#569CD6
+highlight! CmpItemKindVariable guibg=NONE guifg=#9CDCFE
+highlight! CmpItemKindInterface guibg=NONE guifg=#9CDCFE
+highlight! CmpItemKindText guibg=NONE guifg=#9CDCFE
+highlight! CmpItemKindFunction guibg=NONE guifg=#C586C0
+highlight! CmpItemKindMethod guibg=NONE guifg=#C586C0
+highlight! CmpItemKindKeyword guibg=NONE guifg=#D4D4D4
+highlight! CmpItemKindProperty guibg=NONE guifg=#D4D4D4
+highlight! CmpItemKindUnit guibg=NONE guifg=#D4D4D4
+]])
+local kind_icons = {
+  Text = "",
+  Method = "",
+  Function = "",
+  Constructor = "",
+  Field = "",
+  Variable = "",
+  Class = "ﴯ",
+  Interface = "",
+  Module = "",
+  Property = "ﰠ",
+  Unit = "",
+  Value = "",
+  Enum = "",
+  Keyword = "",
+  Snippet = "",
+  Color = "",
+  File = "",
+  Reference = "",
+  Folder = "",
+  EnumMember = "",
+  Constant = "",
+  Struct = "",
+  Event = "",
+  Operator = "",
+  TypeParameter = ""
+}
+
 local luasnip = require('luasnip')
+local lspkind = require('lspkind')
 local cmp = require('cmp')
 
 cmp.setup({
+  formatting = {
+    format = function(entry, vim_item)
+      vim_item.kind = string.format('%s %s', kind_icons[vim_item.kind], vim_item.kind)
+      vim_item.menu = ({
+        buffer = "[Buffer]",
+        nvim_lsp = "[LSP]",
+        luasnip = "[LuaSnip]",
+        nvim_lua = "[Lua]",
+        latex_symbols = "[LaTeX]",
+      })[entry.source_name]
+      return vim_item
+    end
+    -- lspkind.cmp_format(),
+  },
   snippet = {
     expand = function(args)
       luasnip.lsp_expand(args.body) -- For `luasnip` users.
@@ -249,7 +365,7 @@ cmp.setup({
     ['<Up>'] = cmp.mapping(cmp.mapping.select_prev_item(), {'i', 'c'}),
     ['<Down>'] = cmp.mapping(cmp.mapping.select_next_item(), {'i', 'c'}),
     ['<Enter>'] = cmp.mapping(cmp.mapping.confirm({select=true}), {'i'}),
-    ['<Space>'] = cmp.mapping(cmp.mapping.confirm({select=true}), {'i'}),
+    -- ['<Space>'] = cmp.mapping(cmp.mapping.confirm({select=true}), {'i'}),
     ['<Tab>'] = cmp.mapping(cmp.mapping.confirm({select=true}), {'i', 'c'}),
     ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
     ['<C-Up>'] = cmp.mapping(cmp.mapping.scroll_docs(-4)),
@@ -307,9 +423,9 @@ require('trouble').setup({
 
 -- })
 -- Maybe a better solution here?
--- require('treesitter-context').setup({
+require('treesitter-context').setup({
 
--- })
+})
 
 require('bqf').setup({
   
