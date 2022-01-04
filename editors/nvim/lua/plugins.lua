@@ -195,7 +195,7 @@ require('lualine').setup{
       'filename', 
     },
     lualine_x = {
-      'location'
+    
     },
     lualine_y = {
       

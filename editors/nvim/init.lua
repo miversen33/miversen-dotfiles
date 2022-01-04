@@ -27,7 +27,6 @@ require('plugins')
 -- their own is so irritating
 vim.opt.mouse         = 'a'
 vim.opt.whichwrap     = '<,>,[,]'
--- vim.opt.shortmess     -= 'F'
 vim.opt.encoding      = 'UTF-8'
 vim.log.level         = "warn"
 vim.opt.number        = true
