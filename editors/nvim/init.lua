@@ -181,3 +181,5 @@ vim.diagnostic.config({
     source = "always",
   },
 })
+
+-- We will want to look into how to load "dap" settings on a per project/directory/file basis. Right now we have _nothing_
