@@ -138,6 +138,7 @@ local language_servers = {
   nimls         = {}, 
   rust_analyzer = {}, -- Needs cmd updated to reflect the custom rust lsp location
   sumneko_lua   = {
+    cmd = { '/opt/language-servers/lua/bin/lua-language-server' },
     root_dir = require('lspconfig/util').root_pattern('.git') or vim.loop.cwd()
   }, -- Needs cmd updated to reflect the custom lua lsp location
   sqlls         = {},
