@@ -57,15 +57,6 @@ vim.opt.expandtab     = true
 vim.opt.smarttab      = true
 vim.o.completeopt     = 'longest,preview,menuone,noselect'
 
--- vim.opt.listchars     = 'tab:-->,multispace:·,nbsp=␣,trail=•,extends=⟩, precedes=⟨'
--- vim.o.completeopt     = 'menuone,noselect'
--- vim.g.lsp_diagnostics_enabled = 0
--- vim.g.airline_powerline_fonts = 1
--- vim.g.indent_guides_enable_on_vim_startup = 1
--- vim.g.Illuminate_highlightUnderCursor = 0
--- vim.g.Illuminate_ftblacklist = { 'netrw', }
--- vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,resize,winpos,terminal"
-
 -- Keymaps
 require('keymaps')
 
