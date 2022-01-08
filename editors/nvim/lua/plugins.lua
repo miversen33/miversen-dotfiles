@@ -308,6 +308,7 @@ highlight! CmpItemKindMethod guibg=NONE guifg=#C586C0
 highlight! CmpItemKindKeyword guibg=NONE guifg=#D4D4D4
 highlight! CmpItemKindProperty guibg=NONE guifg=#D4D4D4
 highlight! CmpItemKindUnit guibg=NONE guifg=#D4D4D4
+highlight! TreesitterContext guibg=#636363
 ]])
 local kind_icons = {
   Text = "",
@@ -424,7 +425,20 @@ require('trouble').setup({
 -- })
 -- Maybe a better solution here?
 require('treesitter-context').setup({
-
+    -- throttle = false,
+    max_lines = 3,
+    patters = {
+        default = {
+            'class',
+            'function',
+            'method',
+            'for',
+            'while',
+            'if',
+            'switch',
+            'case'
+        }
+    }
 })
 
 require('bqf').setup({

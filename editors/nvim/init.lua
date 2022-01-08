@@ -109,37 +109,7 @@ local lsp_on_attach = function(client)
   illuminate.on_attach(client)
 end
 
--- We need to verify that we have everything needed for the language servers...
-local language_servers = {
-  pyright       = {
-    root_dir = require('lspconfig/util').root_pattern('.git', 'setup.py', 'setup.cfg', 'pyproject.toml', 'requirements.txt') or vim.loop.cwd()
-  },
-  perlls        = {},
-  clangd        = {
-    cmd = {'/opt/clang/clangd/bin/clangd', '--background-index'}
-  },
-  bashls        = {
-    filetypes = {'sh', 'zsh'}
-  },
-  html          = {},
-  cssls         = {},
-  dockerls      = {},
-  emmet_ls      = {},
-  jsonls        = {},
-  nimls         = {}, 
-  rust_analyzer = {}, -- Needs cmd updated to reflect the custom rust lsp location
-  sumneko_lua   = {
-    cmd = { '/opt/language-servers/lua/bin/lua-language-server' },
-    root_dir = require('lspconfig/util').root_pattern('.git') or vim.loop.cwd()
-  }, -- Needs cmd updated to reflect the custom lua lsp location
-  sqlls         = {},
-  tailwindcss   = {},
-  svelte        = {},
-  -- tsserver      = {},
-  vimls         = {},
-  yamlls        = {},
-  eslint        = {},
-}
+local language_servers = require('ls_settings').get_lsp_settings()
 
 local lspconfig = require('lspconfig')
 for language_server, language_server_config in pairs(language_servers) do
