@@ -99,6 +99,7 @@ require('packer').startup(function(use)
     run = ':TSUpdate'
   }
   use 'nvim-telescope/telescope.nvim' -- Fuzzy Finder
+  use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' } -- Fuzzy Finder with fzf-native
   use 'sunjon/Shade.nvim' -- Neovim inactive window dimmer
   use 'norcalli/nvim-colorizer.lua' -- Neovim color highlighter
   -- use 'ahmedkhalf/project.nvim' -- Neovim project management
@@ -414,6 +415,7 @@ telescope.setup({
     }
   }
 })
+telescope.load_extension('fzf')
 
 require('trouble').setup({
   use_diagnostic_signs = true
