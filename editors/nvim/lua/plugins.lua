@@ -82,7 +82,7 @@ require('packer').startup(function(use)
   use 'kevinhwang91/nvim-bqf' -- Neovim Better Quickfix
   -- use 'rmagatti/auto-session' -- Neovim session management
   use 'numToStr/Comment.nvim' -- Neovim Commenting
-  -- use 'folke/todo-comments.nvim' -- Neovim TODO Comment Highlighting
+  use 'folke/todo-comments.nvim' -- Neovim TODO Comment Highlighting
   -- use 'f-person/git-blame.nvim' -- Neovim Git Blame (shows via virtual text)
   -- use 'lewis6991/gitsigns.nvim' -- Neovim Git Stuffs (Depending on how much git we want to use, we might want to go this route)
   -- use {'ms-jpq/chadtree', branch = 'chad', run = 'python3 -m chadtree deps'} -- Neovim File Explorer with no external dependencies. Doesn't appear to have ssh support
@@ -100,6 +100,7 @@ require('packer').startup(function(use)
   }
   use 'nvim-telescope/telescope.nvim' -- Fuzzy Finder
   use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' } -- Fuzzy Finder with fzf-native
+  use 'nvim-telescope/telescope-rg.nvim'
   use 'sunjon/Shade.nvim' -- Neovim inactive window dimmer
   use 'norcalli/nvim-colorizer.lua' -- Neovim color highlighter
   -- use 'ahmedkhalf/project.nvim' -- Neovim project management
@@ -416,6 +417,7 @@ telescope.setup({
   }
 })
 telescope.load_extension('fzf')
+telescope.load_extension('live_grep_raw')
 
 require('trouble').setup({
   use_diagnostic_signs = true
@@ -448,3 +450,7 @@ require('bqf').setup({
 })
 
 require('shade').setup({})
+
+require('todo-comments').setup({
+
+})
