@@ -266,12 +266,12 @@ require('cokeline').setup({
   },
   default_hl = {
     focused = {
-      fg = '#A4A8A5',
-      bg = '#3D3D3D',
-    },
-    unfocused = {
       fg = '#837F78',
       bg = '#1C1C1C',
+    },
+    unfocused = {
+      fg = '#A4A8A5',
+      bg = '#3D3D3D',
     }
   },
   -- render = {
