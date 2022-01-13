@@ -109,22 +109,28 @@ local lsp_on_attach = function(client)
   illuminate.on_attach(client)
 end
 
-local language_servers = require('ls_settings').get_lsp_settings()
+-- TODO(Mike): Consider maybe using null-ls?
 
-local lspconfig = require('lspconfig')
-for language_server, language_server_config in pairs(language_servers) do
-  local on_attach = language_server_config['on_attach']
-  if(on_attach) then
-    language_server_config['on_attach'] = function(client)
-      lsp_on_attach(client)
-      on_attach(client)
+
+local ls_settings_available, _ = pcall(require, 'ls_settings')
+
+if ls_settings_available then
+    local lspconfig = require('lspconfig')
+    local language_servers = require('ls_settings').get_lsp_settings()
+    for language_server, language_server_config in pairs(language_servers) do
+        local on_attach = language_server_config['on_attach']
+        if(on_attach) then
+            language_server_config['on_attach'] = function(client)
+                lsp_on_attach(client)
+                on_attach(client)
+            end
+        else
+            language_server_config['on_attach'] = lsp_on_attach
+        end
+        language_server_config['capabilities'] = capabilities
+        language_server_config['handlers'] = handlers
+        lspconfig[language_server].setup(language_server_config)
     end
-  else
-    language_server_config['on_attach'] = lsp_on_attach
-  end
-  language_server_config['capabilities'] = capabilities
-  language_server_config['handlers'] = handlers
-  lspconfig[language_server].setup(language_server_config)
 end
 
 local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
