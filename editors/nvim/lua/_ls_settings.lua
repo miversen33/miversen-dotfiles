@@ -1,3 +1,4 @@
+-- To use, copy into `ls_settings.lua`
 local M = {}
 
 M.get_lsp_settings = function()
@@ -12,4 +13,3 @@ M.get_lsp_settings = function()
 end
 
 return M
-
