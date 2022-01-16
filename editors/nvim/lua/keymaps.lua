@@ -8,7 +8,9 @@ end
 local telescope = require('telescope')
 
 -- Keymappings
--- TODO(Mike): Define a leader key
+map('n', '<Space',   '<Nop>', silent_noremap)
+vim.g.mapleader = ' '
+
 map('n', '<A-k',     ':m .+1<CR>==', silent_noremap)
 map('n', '<A-i>',    ':m .-2<CR>==', silent_noremap)
 map('n', '<A-Down>', ':m .+1<CR>==', silent_noremap)
@@ -27,8 +29,11 @@ map('n', '<C-s>',    ':w<CR> :echo "Saved File"<CR>', noremap)
 map('i', '<C-s>',    '<esc>:w<CR> :echo "Saved File"<CR>', noremap)
 map('i', '<S-Tab>',  '<esc>:<<<CR>i', silent_noremap)
 map('n', '<S-Tab>',  ':<<<CR>', silent_noremap)
-map('n', '<C-f>',    ':Telescope live_grep<CR>', noremap)
-map('i', '<C-f>',    '<esc>Telescope live_grep<CR>', noremap)
+map('n', '<C-f>',    '/', noremap)
+map('i', '<C-f>',    '<esc>/', noremap)
+map('n', '<leader>f',':noh<CR>', silent_noremap)
+map('n', '<S-f>',    ':Telescope live_grep<CR>', noremap)
+map('i', '<S-f>',    '<esc>Telescope live_grep<CR>', noremap)
 map('n', '<C-z>',    ':Telescope find_files<CR>', silent_noremap)
 map('n', '<S-z>',    ':Telescope live_grep<CR>', silent_noremap)
 map('n', '<C-T>',    ':TroubleToggle<CR>', silent_noremap)
@@ -45,3 +50,4 @@ map('n', '<S-n>',    ':lua require("illuminate").next_reference{reverse=true,wra
 map('n', '<A-f>',    ':echo "Formatting Buffer"<CR> :lua vim.lsp.buf.formatting()<CR>', silent_noremap)
 -- map('n', '<Enter>',  ':SymbolsOutline<CR>', silent_noremap)
 map('n', '<Enter>',  ':Vista!!<CR>', silent_noremap)
+map('n', '<leader>n',':Telescope file_browser<CR>', silent_noremap)
