@@ -72,6 +72,7 @@ require('packer').startup(function(use)
   -- use 'kristijanhusak/vim-dadbod-completion' -- Vim Database Autocompletion
   use 'ray-x/cmp-treesitter' -- Neovim snippet for treesitter (Maybe replace the buffer completion?)
   use 'liuchengxu/vista.vim' -- Vim symbol viewer (uses ctags vs treesitter)
+  use 'nvim-telescope/telescope-file-browser.nvim' -- Neovim Telescope File Manager
   -- use 'simrat39/symbols-outline.nvim' -- Neovim symbol viewer (use treesitter vs ctags)
   -- use 'tpope/vim-dadbod' -- Vim Database interaction
   -- use 'kristijanhusak/vim-dadbod-ui' -- Vim UI for database interaction
@@ -369,7 +370,7 @@ cmp.setup({
     ['<Down>'] = cmp.mapping(cmp.mapping.select_next_item(), {'i', 'c'}),
     ['<Enter>'] = cmp.mapping(cmp.mapping.confirm({select=true}), {'i'}),
     -- ['<Space>'] = cmp.mapping(cmp.mapping.confirm({select=true}), {'i'}),
-    ['<Tab>'] = cmp.mapping(cmp.mapping.confirm({select=true}), {'i', 'c'}),
+    ['<Tab>'] = cmp.mapping(cmp.mapping.confirm({select=true}), {'i'}),
     ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
     ['<C-Up>'] = cmp.mapping(cmp.mapping.scroll_docs(-4)),
     ['<C-Down>'] = cmp.mapping(cmp.mapping.scroll_docs(4)),
@@ -414,10 +415,16 @@ telescope.setup({
         ["<C-Down>"] = t_actions.preview_scrolling_down
       }
     }
+  },
+  extensions = {
+    file_browser = {
+        grouped = true,
+    }
   }
 })
 telescope.load_extension('fzf')
 telescope.load_extension('live_grep_raw')
+telescope.load_extension('file_browser')
 
 require('trouble').setup({
   use_diagnostic_signs = true
