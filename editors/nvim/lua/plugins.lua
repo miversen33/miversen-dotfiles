@@ -62,6 +62,7 @@ require('packer').startup(function(use)
     'L3MON4D3/LuaSnip', -- Neovim Lua based snippet manager
     -- config = function() require('config.snippets') end,
   }
+  use 'tpope/vim-fugitive' -- Vim Git Wrapper
   use 'saadparwaiz1/cmp_luasnip' -- Neovim LuaSnip autocompletion engine for nvim-cmp
   -- use 'hrsh7th/cmp-vsnip' -- Neovim autocompletion -> Neovim Snippet (vsnip) feeder
   -- use 'hrsh7th/vim-vsnip' -- Vim snippet manager
@@ -84,7 +85,8 @@ require('packer').startup(function(use)
   -- use 'rmagatti/auto-session' -- Neovim session management
   use 'numToStr/Comment.nvim' -- Neovim Commenting
   use 'folke/todo-comments.nvim' -- Neovim TODO Comment Highlighting
-  -- use 'f-person/git-blame.nvim' -- Neovim Git Blame (shows via virtual text)
+  use 'f-person/git-blame.nvim' -- Neovim Git Blame (shows via virtual text)
+  -- use 'rhysd/git-messenger.vim' -- Vim git blame in popup wi use 'rhysd/git-messenger.vim' -- Vim git blame in popup windowndow
   -- use 'lewis6991/gitsigns.nvim' -- Neovim Git Stuffs (Depending on how much git we want to use, we might want to go this route)
   -- use {'ms-jpq/chadtree', branch = 'chad', run = 'python3 -m chadtree deps'} -- Neovim File Explorer with no external dependencies. Doesn't appear to have ssh support
   -- use {
@@ -161,7 +163,8 @@ require('lualine').setup{
           modified = '',
           readonly = '',
           unamed = ''
-        }
+        },
+        path = 1
       }
       -- 'diff',
     },
