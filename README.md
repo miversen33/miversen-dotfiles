@@ -4,6 +4,8 @@ This repo contains all the dotfiles for any and all projects/themes that are inv
 
 Consider everything you see here to only work on Linux unless its explicitly called out otherwise
 
+REWRITE INCOMING!
+<!
 ## TODO
 - [ ] ~~Create Installation Script (Consider having this be part of the shellrc?)~~ **Current Target**
 - [ ] Fold .p10k.sh into shellrc
@@ -29,3 +31,4 @@ $ cd $HOME/.config/coc/extensions && yarn install
 ```
 
 Finally, open up vim and run `:PlugInstall` to finish the extension setup
+-->
