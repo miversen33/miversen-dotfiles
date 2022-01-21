@@ -13,10 +13,10 @@ end
 require('packer').startup(function(use)
   use 'wbthomason/packer.nvim' -- Neovim Use Packer 
 
-  -- Debugger 
+  -- Debugger
   use 'mfussenegger/nvim-dap' -- Neovim Debug Adapter Protocol
-  -- use 'rcarriga/nvim-dap-ui' -- Neovim DAP UI components. May not be necessary?
-  
+  use 'rcarriga/nvim-dap-ui' -- Neovim DAP UI components. May not be necessary?
+ 
   -- LSP Setup
   use 'neovim/nvim-lspconfig' -- Neovim LSP Setup
   use 'williamboman/nvim-lsp-installer' -- Neovim LSP Installer
@@ -465,3 +465,21 @@ require('shade').setup({})
 require('todo-comments').setup({
 
 })
+
+-- DAP Setup
+local dap = require('dap')
+vim.fn.sign_define('DapBreakpoint', {text='🔴', texthl='', linehl='', numhl=''})
+vim.fn.sign_define('DapBreakpointCondition', {text='🔵', texthl='', linehl='', numhl=''})
+require('dap.ext.vscode').load_launchjs()
+local dapui = require("dapui")
+dapui.setup({})
+dap.listeners.after.event_initialized['dapui_config'] = function()
+    dapui.open()
+end
+dap.listeners.before.event_terminated['dapui_config'] = function()
+    dapui.close()
+end
+dap.listeners.after.event_exited['dapui_config'] = function()
+    dapui.close()
+end
+
