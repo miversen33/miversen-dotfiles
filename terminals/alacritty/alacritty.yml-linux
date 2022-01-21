@@ -1,3 +1,6 @@
+# Version: 0.9
+# Windows Location: %APPDATA%\alacritty\alacritty.yml
+# Linux Location: $HOME/.config/alacritty/alacritty.yml
 # Configuration for Alacritty, the GPU enhanced terminal emulator.
 
 # Import additional configuration files
@@ -14,14 +17,14 @@
 # Any items in the `env` entry below will be added as
 # environment variables. Some entries may override variables
 # set by alacritty itself.
-#env:
+env:
   # TERM variable
   #
   # This value is used to set the `$TERM` environment variable for
   # each instance of Alacritty. If it is not present, alacritty will
   # check the local terminfo database and use `alacritty` if it is
   # available, otherwise `xterm-256color` is used.
-  #TERM: alacritty
+  TERM: 'alacritty'
 
 window:
   # Window dimensions (changes require restart)
@@ -52,7 +55,6 @@ window:
   # Spread additional padding evenly around the terminal content.
   #dynamic_padding: false
 
-  decorations: None
   # Window decorations
   #
   # Values for `decorations`:
@@ -62,7 +64,7 @@ window:
   # Values for `decorations` (macOS only):
   #     - transparent: Title bar, transparent background and title bar buttons
   #     - buttonless: Title bar, transparent background and no title bar buttons
-  #decorations: full
+  decorations: full
 
   # Startup Mode (changes require restart)
   #
@@ -73,13 +75,13 @@ window:
   #
   # Values for `startup_mode` (macOS only):
   #   - SimpleFullscreen
-  #startup_mode: Windowed
+  startup_mode: Maximized
 
   # Window title
-  #title: Alacritty
+  # title: Alacritty
 
   # Allow terminal applications to change Alacritty's window title.
-  #dynamic_title: true
+  dynamic_title: true
 
   # Window class (Linux/BSD only):
   #class:
@@ -104,63 +106,54 @@ window:
 
 # Font configuration
 font:
-  size: 11
+  # Normal (roman) font face
   normal:
-    family: MesloLGS NF
-  bold:
-    family: MesloLGS NF
-  italic:
-    family: MesloLGS NF
-  bold_italic:
-    family: MesloLGS NF
-      # Normal (roman) font face
-  #normal:
     # Font family
     #
     # Default:
     #   - (macOS) Menlo
     #   - (Linux/BSD) monospace
     #   - (Windows) Consolas
-    #family: monospace
+    family: MesloLGS NF
 
     # The `style` can be specified to pick a specific face.
-    #style: Regular
+    style: Regular
 
   # Bold font face
-  #bold:
+  bold:
     # Font family
     #
     # If the bold family is not specified, it will fall back to the
     # value specified for the normal font.
-    #family: monospace
+    family: MesloLGS NF
 
     # The `style` can be specified to pick a specific face.
-    #style: Bold
+    style: Bold
 
   # Italic font face
-  #italic:
+  italic:
     # Font family
     #
     # If the italic family is not specified, it will fall back to the
     # value specified for the normal font.
-    #family: monospace
+    family: MesloLGS NF
 
     # The `style` can be specified to pick a specific face.
-    #style: Italic
+    style: Italic
 
   # Bold italic font face
-  #bold_italic:
+  bold_italic:
     # Font family
     #
     # If the bold italic family is not specified, it will fall back to the
     # value specified for the normal font.
-    #family: monospace
+    family: MesloLGS NF
 
     # The `style` can be specified to pick a specific face.
-    #style: Bold Italic
+    style: Bold Italic
 
   # Point size
-  #size: 11.0
+  size: 12.0
 
   # Offset is the extra space around each character. `offset.y` can be thought
   # of as modifying the line spacing, and `offset.x` as modifying the letter
@@ -186,11 +179,58 @@ font:
 #draw_bold_text_with_bright_colors: false
 
 # Colors (Tomorrow Night)
-#colors:
+colors:
+  # Default colors
+  primary:
+    background: '#0C0C0C'
+    foreground: '#B6ADFF'
+
+    # dim_foreground:    '#dbdbdb'
+    # bright_foreground: '#d9d9d9'
+    # dim_background:    '#202020' # not sure
+    # bright_background: '#3a3a3a' # not sure
+
+  # Cursor colors
+  cursor:
+    text:   '#FFFFFF'
+    cursor: '#BFBFBF'
+
+ # Normal colors
+  normal:
+   black:   '#0C0C0C'
+   red:     '#FF5454'
+   green:   '#13A10E'
+   yellow:  '#C19C00'
+   blue:    '#0082DA'
+   magenta: '#8E1CC7'
+   cyan:    '#4FE5FF'
+   white:   '#C19C00'
+
+  # Bright colors
+  bright:
+   black:   '#767676'
+   red:     '#E67575'
+   green:   '#16C60C'
+   yellow:  '#F9F1A5'
+   blue:    '#3B78FF'
+   magenta: '#B4009E'
+   cyan:    '#61D6D6'
+   white:   '#F2F2F2'
+
+  # Dim colors
+  # dim:
+  #   black:   '#232323'
+  #   red:     '#74423f'
+  #   green:   '#5e6547'
+  #   yellow:  '#8b7653'
+  #   blue:    '#556b79'
+  #   magenta: '#6e4962'
+  #   cyan:    '#5c8482'
+  #   white:   '#828282'
   # Default colors
   #primary:
-  #  background: '#1d1f21'
-  #  foreground: '#c5c8c6'
+  #  background: '#0C0C0C'
+  #  foreground: '#B6ADFF'
 
     # Bright and dim foreground colors
     #
@@ -277,7 +317,7 @@ font:
   #  background: CellForeground
 
   # Normal colors
-  #normal:
+  # normal:
   #  black:   '#1d1f21'
   #  red:     '#cc6666'
   #  green:   '#b5bd68'
@@ -288,7 +328,7 @@ font:
   #  white:   '#c5c8c6'
 
   # Bright colors
-  #bright:
+  # bright:
   #  black:   '#666666'
   #  red:     '#d54e53'
   #  green:   '#b9ca4a'
@@ -367,26 +407,26 @@ font:
 #
 # Window opacity as a floating point number from `0.0` to `1.0`.
 # The value `0.0` is completely transparent and `1.0` is opaque.
-#background_opacity: 1.0
+background_opacity: 0.90
 
-#selection:
+selection:
   # This string contains all characters that are used as separators for
   # "semantic words" in Alacritty.
   #semantic_escape_chars: ",│`|:\"' ()[]{}<>\t"
 
   # When set to `true`, selected text will be copied to the primary clipboard.
-  #save_to_clipboard: false
+  save_to_clipboard: true
 
-#cursor:
+cursor:
   # Cursor style
-  #style:
+  style:
     # Cursor shape
     #
     # Values for `shape`:
     #   - ▇ Block
     #   - _ Underline
     #   - | Beam
-    #shape: Block
+    shape: Beam
 
     # Cursor blinking state
     #
@@ -395,7 +435,7 @@ font:
     #   - Off: Disable blinking by default
     #   - On: Enable blinking by default
     #   - Always: Force the cursor to always blink
-    #blinking: Off
+    blinking: On
 
   # Vi mode cursor style
   #
@@ -429,8 +469,8 @@ font:
 #   - (macOS) /bin/bash --login
 #   - (Linux/BSD) user login shell
 #   - (Windows) powershell
-#shell:
-#  program: /bin/bash
+shell:
+ program: wsl.exe -d Ubuntu
 #  args:
 #    - --login
 
@@ -438,7 +478,7 @@ font:
 #
 # Directory the shell is started in. If this is unset, or `None`, the working
 # directory of the parent process will be used.
-#working_directory: None
+working_directory: \\wsl$\Ubuntu\home\miversen
 
 # Send ESC (\x1b) before characters when alt is pressed.
 #alt_send_esc: true
