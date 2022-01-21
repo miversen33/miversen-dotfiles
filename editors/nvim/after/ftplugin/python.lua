@@ -4,13 +4,46 @@
 -- end
 
 local dap = require('dap')
-if dap.adapters['python'] == nil then
-    -- Setting up dap for python
+local job = require('plenary.job')
+
+local fn = vim.fn
+local notify = vim.notify
+
+local dap_path = fn.stdpath('data')..'/dap'
+local python_path = dap_path..'/python'
+
+local function setup_python_adapter()
     dap.adapters.python = {
         type = 'executable',
-        command = '/usr/bin/python3', -- Consider installing a virtualenv for the dap in ~/.local/share/nvim/dap/python/virtualenv
+        command = python_path..'/virtualenv/bin/python',
         args = { '-m', 'debugpy.adapter' }
     }
+end
+
+if dap.adapters['python'] == nil then
+    -- Setting up dap for python
+    if fn.empty(fn.glob(dap_path)) > 0 then
+        fn.system({'mkdir', '-p', dap_path})
+    end
+    if fn.empty(fn.glob(python_path)) > 0 then
+        fn.system({'mkdir', '-p', python_path})
+    end
+    if fn.empty(fn.glob(python_path..'/virtualenv')) > 0 then
+        notify("Installing Python DAP...", INFO)
+        job:new({
+            command = '/usr/bin/python3',
+            args = {'-m', 'virtualenv', 'virtualenv'},
+            cwd = python_path,
+        }):sync()
+        job:new({
+            command = python_path..'/virtualenv/bin/pip',
+            args = {'install', 'debugpy'},
+            cwd = python_path,
+            on_exit = setup_python_adapter
+        }):start()
+    else
+        setup_python_adapter()
+    end
 end
 
 dap.configurations.python = {
