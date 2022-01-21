@@ -133,7 +133,7 @@ end)
 
 -- Plugin Configurations
 
-local excluded_filetypes = {'lsp-installer', 'lspinfo', 'Outline', 'help', 'packer', 'netrw', 'qf', 'dbui', 'Trouble'}
+local excluded_filetypes = {'lsp-installer', 'lspinfo', 'Outline', 'help', 'packer', 'netrw', 'qf', 'dbui', 'Trouble', 'dap_repl', 'dapui_stacks', 'dapui_breakpoints', 'dapui_scopes', 'dapui_watches'}
 vim.g['indent_blankline_filetype_exclude'] = excluded_filetypes
 vim.g['db_ui_auto_execute_table_helpers'] = 1
 
