@@ -48,3 +48,4 @@ map('n', '<A-fr>',    ':echo "Formatting Buffer"<CR> :lua vim.lsp.buf.formatting
 -- map('n', '<Enter>',  ':SymbolsOutline<CR>', silent_noremap)
 map('n', '<Enter>',  ':Vista!!<CR>', silent_noremap)
 map('n', '<leader>n',':Telescope file_browser<CR>', silent_noremap)
+map('n', '<leader>r',':lua require("spectre").open_file_search()<CR>', silent_noremap)

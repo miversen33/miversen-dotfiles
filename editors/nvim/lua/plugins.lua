@@ -62,6 +62,7 @@ require('packer').startup(function(use)
     'L3MON4D3/LuaSnip', -- Neovim Lua based snippet manager
     -- config = function() require('config.snippets') end,
   }
+  use 'nvim-pack/nvim-spectre' -- Neovim Search and Replace
   use 'tpope/vim-fugitive' -- Vim Git Wrapper
   use 'saadparwaiz1/cmp_luasnip' -- Neovim LuaSnip autocompletion engine for nvim-cmp
   -- use 'hrsh7th/cmp-vsnip' -- Neovim autocompletion -> Neovim Snippet (vsnip) feeder
