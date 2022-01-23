@@ -469,8 +469,8 @@ cursor:
 #   - (macOS) /bin/bash --login
 #   - (Linux/BSD) user login shell
 #   - (Windows) powershell
-shell:
- program: wsl.exe -d Ubuntu
+# shell:
+#  program: 
 #  args:
 #    - --login
 
@@ -478,7 +478,7 @@ shell:
 #
 # Directory the shell is started in. If this is unset, or `None`, the working
 # directory of the parent process will be used.
-working_directory: \\wsl$\Ubuntu\home\miversen
+# working_directory: \\wsl$\Ubuntu\home\miversen
 
 # Send ESC (\x1b) before characters when alt is pressed.
 #alt_send_esc: true
