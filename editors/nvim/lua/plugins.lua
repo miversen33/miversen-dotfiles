@@ -42,7 +42,6 @@ require('packer').startup(function(use)
   use 'projekt0n/github-nvim-theme' -- (github_dark, github_dark_default, github_dimmed, github_light, github_light_default)
   use 'nvim-lualine/lualine.nvim' -- Neovim status line
   use 'kyazdani42/nvim-web-devicons' -- Devicons
-  -- use 'romgrk/barbar.nvim' -- Neovim Tab/Buffer Bar -- Use this until we get cokeline setup. Cokeline 
   -- is the route we want to go
   use 'noib3/nvim-cokeline' -- Neovim Tab/Buffer Bar. More customizable than barbar, potentially use this?
   -- use 'navarasu/onedark.nvim' -- (onedark: onedark_style=darker, cool, deep, warm, warmer) 
