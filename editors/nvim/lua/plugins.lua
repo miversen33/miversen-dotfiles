@@ -422,6 +422,7 @@ telescope.setup({
   extensions = {
     file_browser = {
         grouped = true,
+        hidden  = true
     }
   }
 })
