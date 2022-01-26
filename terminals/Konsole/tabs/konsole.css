@@ -1,0 +1,19 @@
+/**
+ * https://gist.githubusercontent.com/codemedic/f11cc460b8d9544f9afc/raw/c8ca5855146e76559a9d4309f1ed631b7bfaa186/konsole.css
+ */
+
+QWidget, QTabWidget::pane, QTabWidget::tab-bar {
+    background-color: rgb(45, 45, 45);
+}
+QTabBar::tab {
+    color: rgb(120, 120, 120);
+    background-color: rgb(45, 45, 45);
+    font-size: 10px;
+    height: 25px;
+    padding: 0px;
+    border: 0px;
+}
+QTabBar::tab:selected, QTabBar::tab:hover {
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #1e5799, stop: 0.01 #2989d8, stop: 0.11 rgb(45, 45, 45));
+    color: #4F89CC;
+}

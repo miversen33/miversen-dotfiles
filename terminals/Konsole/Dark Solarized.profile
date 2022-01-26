@@ -1,5 +1,5 @@
 [Appearance]
-ColorScheme=Dark Solarized
+ColorScheme=MateriaDark
 Font=MesloLGS NF,11,-1,5,50,0,0,0,0,0
 
 [Cursor Options]
@@ -11,6 +11,7 @@ Name=Dark Solarized
 Parent=FALLBACK/
 
 [Interaction Options]
+MiddleClickPasteMode=1
 UnderlineFilesEnabled=true
 
 [Scrolling]

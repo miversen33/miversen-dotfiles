@@ -1,0 +1,31 @@
+/**
+ * https://gist.github.com/codemedic/f11cc460b8d9544f9afc#file-konsole-with-palette-colours-css
+ */
+
+QTabBar,
+QTabBar::tab
+{
+    font-family: "Noto Sans";
+    font-size: 11px;
+    height: 16px;
+    padding: 2px;
+    border: 0px;
+    border-bottom: 3px solid palette(dark);
+    background-color: palette(dark);
+    color: palette(text);
+}
+
+QTabBar::tab:hover
+{
+    text-decoration: underline;
+}
+
+QTabBar::tab:selected
+{
+    font-weight: bold;
+    background-color: palette(window);
+    border: 0px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 palette(window), stop: 0.85 palette(window), stop: 1 palette(highlight));
+}
