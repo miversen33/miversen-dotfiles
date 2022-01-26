@@ -465,8 +465,6 @@ require('bqf').setup({
   
 })
 
-require('shade').setup({})
-
 require('todo-comments').setup({
 
 })
