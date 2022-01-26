@@ -106,7 +106,7 @@ require('packer').startup(function(use)
   use 'nvim-telescope/telescope.nvim' -- Fuzzy Finder
   use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' } -- Fuzzy Finder with fzf-native
   use 'nvim-telescope/telescope-rg.nvim'
-  use 'sunjon/Shade.nvim' -- Neovim inactive window dimmer
+  -- use 'sunjon/Shade.nvim' -- Neovim inactive window dimmer (this is a nice plugin but it breaks _way_ too often...)
   use 'norcalli/nvim-colorizer.lua' -- Neovim color highlighter
   -- use 'ahmedkhalf/project.nvim' -- Neovim project management
   -- use 'gbprod/substitute.nvim' -- Neovim better substitution
