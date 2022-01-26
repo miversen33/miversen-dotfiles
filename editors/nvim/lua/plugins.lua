@@ -29,7 +29,9 @@ require('packer').startup(function(use)
 
   -- Language Specific
   -- use 'gennaro-tedesco/nvim-jqx' -- Neovim JSON query tool
-
+  -- use 'simrat39/rust-tools.nvim' -- Neovim Rust Tool
+  -- use {'iamcco/markdown-preview.nvim', run = 'cd app && yarn install', cmd = 'MarkdownPreview'} -- Neovim Markdown tool
+  use {'ellisonleao/glow.nvim', run = ':GlowInstall' } -- Neovim Markdown Preview in Neovim
   -- Theme(s)
   use 'olimorris/onedarkpro.nvim' -- (onedark, onelight) Another onedark for Neovim
   use 'tanvirtin/monokai.nvim' -- (monokai, monokai_pro, monokai_soda) Monokai Theme
@@ -75,8 +77,8 @@ require('packer').startup(function(use)
   use 'liuchengxu/vista.vim' -- Vim symbol viewer (uses ctags vs treesitter)
   use 'nvim-telescope/telescope-file-browser.nvim' -- Neovim Telescope File Manager
   -- use 'simrat39/symbols-outline.nvim' -- Neovim symbol viewer (use treesitter vs ctags)
-  -- use 'tpope/vim-dadbod' -- Vim Database interaction
-  -- use 'kristijanhusak/vim-dadbod-ui' -- Vim UI for database interaction
+  use 'tpope/vim-dadbod' -- Vim Database interaction
+  use 'kristijanhusak/vim-dadbod-ui' -- Vim UI for database interaction
   -- use 'folke/which-key.nvim' -- Neovim keybinding help display
   -- use 'rcarriga/vim-ultest' -- Neovim unit testing your code?
   -- use 'gelguy/wilder.nvim' -- Neovim command autocomplete?
@@ -198,7 +200,10 @@ require('lualine').setup{
         'filetype',
         icon_only = true
       },
-      'filename', 
+      {
+          'filename', 
+          path = 1
+      }
     },
     lualine_x = {
     
@@ -483,3 +488,4 @@ dap.listeners.after.event_exited['dapui_config'] = function()
     dapui.close()
 end
 
+require('spectre').setup({})
