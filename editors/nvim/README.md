@@ -1,5 +1,7 @@
 # REWRITE INCOMING
 
+<!-- Figure out how to implement https://vim.fandom.com/wiki/Different_syntax_highlighting_within_regions_of_a_file-->
+
 <!-- List of dependencies for the editor to work properly -->
 <!---->
 <!-- ### CONVERTING TO NEOVIM -->
