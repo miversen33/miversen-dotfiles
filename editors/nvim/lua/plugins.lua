@@ -124,6 +124,7 @@ require('packer').startup(function(use)
   use 'nvim-lua/plenary.nvim' -- Neovim "Utility functions"
   -- use 'aserowy/tmux.nvim' -- Neovim Tmux integration
   -- use 'numToStr/Navigator.nvim' -- Neovim better pane handling
+  -- use '~/git/netman.nvim'
 
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins
@@ -144,7 +145,6 @@ require('indent_blankline').setup({
   use_treesitter = true
   -- space_char_blankline = ' ',
 })
-
 
 require('Comment').setup()
 -- Probably should just have a theme.lua that we load?
@@ -216,77 +216,170 @@ require('lualine').setup{
     }
   }
 }
+
 require('cokeline').setup({
-  components = {
-    {
-      text = function(buffer)
-        return ' ' .. buffer.devicon.icon .. ' '
-      end,
-      hl = {
-        fg = function(buffer)
-          return buffer.devicon.color
-        end
-      }
+    show_if_buffers_are_at_least = 1,
+    buffers = {},
+    mappings = {
+        cycle_prev_next = true
     },
-    {
-      text = function(buffer)
-        local status = ''
-        if(buffer.is_readonly) then
-          status = 'r'
-        elseif(buffer.is_modified) then
-          status = '🟡'
-        end
-        return status .. ' '
-      end
-    },
-    {
-      text = function(buffer)
-        return buffer.unique_prefix .. buffer.filename
-      end,
-      hl = {
+    default_hl = {
         fg = function(buffer)
-          if(buffer.diagnostics.errors > 0) then
-            return '#C95157'
-          else
-            return '#A4A8A5'
-          end
+
+        end,
+        bg = function(buffer)
+            if(buffer.is_focused ~= true) then
+                return '#1C1C1C'
+            end
         end,
         style = function(buffer)
-          local text_style = 'NONE'
-          if(buffer.is_focused) then
-            text_style = 'bold'
-          end
-          if(buffer.diagnostics.errors > 0) then
-            if(text_style ~= 'NONE') then
-              text_style = text_style .. ',underline'
-            else
-              text_style = 'underline'
-            end
-          end
-          return text_style
+        
         end
-      }
     },
-    {
-      text = ' ✖️ ',
-      delete_buffer_on_left_click = true
-    }
-
-  },
-  default_hl = {
-    focused = {
-      fg = '#837F78',
-      bg = '#1C1C1C',
+    components = {
+        {
+            text = function(buffer)
+                if(buffer.index > 1) then
+                    return ''
+                end
+                return '|'
+            end,
+            fg = '#806FA3'
+        },
+        {
+            text = function(buffer)
+                return ' ' .. buffer.devicon.icon .. ''
+            end,
+            fg = function(buffer)
+                return buffer.devicon.color
+            end
+        },
+        {
+            text = function(buffer)
+                local status = ' '
+                if(buffer.is_readonly) then
+                    status = 'r'
+                end
+                return ' ' .. status
+            end,
+        },
+        {
+            text = function(buffer) return buffer.filename end,
+            fg = function(buffer)
+                if(buffer.diagnostics.errors > 0) then
+                    return '#C95157'
+                end
+            end,
+            style = function(buffer)
+                local text_style = 'NONE'
+                if(buffer.is_focused) then
+                    text_style = 'bold'
+                end
+                if(buffer.diagnostics.errors > 0) then
+                    if(text_style ~= 'NONE') then
+                        text_style = text_style .. ',underline'
+                    else
+                        text_style = 'underline'
+                    end
+                end
+                return text_style
+            end
+        },
+        {
+            text = function(buffer)
+                local errors = buffer.diagnostics.errors
+                if errors == 0 then
+                    errors = ' '
+                elseif(errors <= 9) then
+                    errors = '🔴'
+                else
+                    errors = "🙃"
+                end
+                return ' ' .. errors .. ' '
+            end
+        },
+        {
+            text = function(buffer)
+                if(buffer.is_modified) then
+                    return '❗'
+                end
+                return ''
+            end,
+            delete_buffer_on_left_click = true
+        },
+        {
+            text  = ' |',
+            fg = '#806FA3'
+        }
     },
-    unfocused = {
-      fg = '#A4A8A5',
-      bg = '#3D3D3D',
-    }
-  },
-  -- render = {
-  --   right_separator = '╮',
-  --   left_separator = '╭'
-  -- }
+    -- components = {
+  --   {
+  --     text = function(buffer)
+  --       return ' ' .. buffer.devicon.icon .. ' '
+  --     end,
+  --     fg = function(buffer)
+  --         return buffer.devicon.color
+  --     end
+  --  },
+  --   {
+  --     text = function(buffer)
+  --       local status = ''
+  --       if(buffer.is_readonly) then
+  --         status = 'r'
+  --       elseif(buffer.is_modified) then
+  --         status = '🟡'
+  --       end
+  --       return status .. ' '
+  --     end
+  --   },
+  --   {
+  --     text = function(buffer)
+  --       return buffer.unique_prefix .. buffer.filename
+  --     end,
+  --     fg = function(buffer)
+  --        if(buffer.diagnostics.errors > 0) then
+  --          return '#C95157'
+  --        -- else
+  --        --   return '#A4A8A5'
+  --        end
+  --     end,
+  --     bg = function(buffer)
+  --       if(buffer.focused) then
+  --          return '#1C1C1C'
+  --       else
+  --          return '#3D3D3D'
+  --       end
+  --     end,
+  --     style = function(buffer)
+  --         local text_style = 'NONE'
+  --         if(buffer.is_focused) then
+  --           text_style = 'bold'
+  --         end
+  --         if(buffer.diagnostics.errors > 0) then
+  --           if(text_style ~= 'NONE') then
+  --             text_style = text_style .. ',underline'
+  --           else
+  --             text_style = 'underline'
+  --           end
+  --         end
+  --         return text_style
+  --       end
+  --   },
+  --   {
+  --     text = ' ✖️ ',
+  --     delete_buffer_on_left_click = true
+  --   }
+  -- },
+  -- default_hl = {
+  --   fg = '#837F78' | function(buffer) -> '#A4A8A5',
+  --   bg = function(buffer)
+  --       if(buffer.focused) then
+  --           return '#FF1C1C'
+  --       else
+  --           return '#3D3D3D'
+  --       end
+  --   end
+  -- },
 })
 require('specs').setup({
   show_jumps  = true,
@@ -487,3 +580,4 @@ dap.listeners.after.event_exited['dapui_config'] = function()
 end
 
 require('spectre').setup({})
+-- require('netman').setup({})
