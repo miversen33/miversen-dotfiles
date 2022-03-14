@@ -51,8 +51,8 @@ vim.opt.foldlevel     = 99
 vim.opt.list          = true
 vim.g.showbreak       = '↪'
 vim.opt.listchars     = {
-  tab = '-->' , multispace='·', nbsp='␣',
-  trail='•', extends='⟩', precedes='⟨'
+  tab = '  ' , multispace=' ', nbsp=' ',
+  trail=' ', extends='⟩', precedes='⟨'
 }
 vim.opt.cursorline    = true
 vim.opt.splitright    = true
