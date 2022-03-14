@@ -87,7 +87,7 @@ require('packer').startup(function(use)
   -- use 'rmagatti/auto-session' -- Neovim session management
   use 'numToStr/Comment.nvim' -- Neovim Commenting
   use 'folke/todo-comments.nvim' -- Neovim TODO Comment Highlighting
-  use 'f-person/git-blame.nvim' -- Neovim Git Blame (shows via virtual text)
+  -- use 'f-person/git-blame.nvim' -- Neovim Git Blame (shows via virtual text)
   -- use 'rhysd/git-messenger.vim' -- Vim git blame in popup wi use 'rhysd/git-messenger.vim' -- Vim git blame in popup windowndow
   -- use 'lewis6991/gitsigns.nvim' -- Neovim Git Stuffs (Depending on how much git we want to use, we might want to go this route)
   -- use {'ms-jpq/chadtree', branch = 'chad', run = 'python3 -m chadtree deps'} -- Neovim File Explorer with no external dependencies. Doesn't appear to have ssh support
@@ -124,7 +124,6 @@ require('packer').startup(function(use)
   use 'nvim-lua/plenary.nvim' -- Neovim "Utility functions"
   -- use 'aserowy/tmux.nvim' -- Neovim Tmux integration
   -- use 'numToStr/Navigator.nvim' -- Neovim better pane handling
-  -- use '~/git/netman.nvim'
 
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins
@@ -147,8 +146,11 @@ require('indent_blankline').setup({
 })
 
 require('Comment').setup()
+vim.g.vscode_style = 'dark'
+vim.g.vscode_transparent = 1
+vim.g.vscode_italic_comment = 1
+vim.cmd('colorscheme vscode')
 -- Probably should just have a theme.lua that we load?
-require('onedarkpro').load()
 require('lualine').setup{
   options = {
     theme = 'onedark',
@@ -258,7 +260,9 @@ require('cokeline').setup({
             text = function(buffer)
                 local status = ' '
                 if(buffer.is_readonly) then
-                    status = 'r'
+                    status = '➖'
+                elseif(buffer.is_focused) then
+                    status = '⚪'
                 end
                 return ' ' .. status
             end,
@@ -580,4 +584,3 @@ dap.listeners.after.event_exited['dapui_config'] = function()
 end
 
 require('spectre').setup({})
--- require('netman').setup({})
