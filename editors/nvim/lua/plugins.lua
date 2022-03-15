@@ -32,6 +32,7 @@ require('packer').startup(function(use)
   -- use 'simrat39/rust-tools.nvim' -- Neovim Rust Tool
   -- use {'iamcco/markdown-preview.nvim', run = 'cd app && yarn install', cmd = 'MarkdownPreview'} -- Neovim Markdown tool
   use {'ellisonleao/glow.nvim', run = ':GlowInstall' } -- Neovim Markdown Preview in Neovim
+  
   -- Theme(s)
   use 'olimorris/onedarkpro.nvim' -- (onedark, onelight) Another onedark for Neovim
   use 'tanvirtin/monokai.nvim' -- (monokai, monokai_pro, monokai_soda) Monokai Theme
@@ -133,9 +134,12 @@ require('packer').startup(function(use)
 end)
 
 -- Plugin Configurations
-
-local excluded_filetypes = {'lsp-installer', 'lspinfo', 'Outline', 'help', 'packer', 'netrw', 'qf', 'dbui', 'Trouble'}
-vim.g['indent_blankline_filetype_exclude'] = excluded_filetypes
+local excluded_filetypes_array = {'lsp-installer', 'lspinfo', 'Outline', 'help', 'packer', 'netrw', 'qf', 'dbui', 'Trouble', 'fugitive'}
+local excluded_filetypes_table = {}
+for _, value in ipairs(excluded_filetypes_array) do
+    excluded_filetypes_table[value] = 1
+end
+vim.g['indent_blankline_filetype_exclude'] = excluded_filetypes_array
 vim.g['db_ui_auto_execute_table_helpers'] = 1
 
 require('indent_blankline').setup({
@@ -144,6 +148,7 @@ require('indent_blankline').setup({
   use_treesitter = true
   -- space_char_blankline = ' ',
 })
+
 
 require('Comment').setup()
 vim.g.vscode_style = 'dark'
@@ -154,7 +159,7 @@ vim.cmd('colorscheme vscode')
 require('lualine').setup{
   options = {
     theme = 'onedark',
-    disabled_filetypes = excluded_filetypes,
+    disabled_filetypes = excluded_filetypes_array,
   },
   sections = {
     lualine_a = {
@@ -221,7 +226,15 @@ require('lualine').setup{
 
 require('cokeline').setup({
     show_if_buffers_are_at_least = 1,
-    buffers = {},
+    buffers = {
+        filter_valid = function(buffer)
+            -- if buffer.type == 'fugitive' or buffer.filetype == 'fugitive' then 
+            if(excluded_filetypes_table[buffer.type] or excluded_filetypes_table[buffer.filetype]) then
+                return false
+            end
+            return true
+        end
+    },
     mappings = {
         cycle_prev_next = true
     },
