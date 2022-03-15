@@ -60,6 +60,7 @@ vim.opt.splitbelow    = true
 vim.opt.expandtab     = true
 vim.opt.smarttab      = true
 vim.o.completeopt     = 'longest,preview,menuone,noselect'
+vim.g.vimsyn_embed    = 'lPrj'
 
 -- Keymaps
 require('keymaps').setup(DEBUG)
