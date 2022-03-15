@@ -157,6 +157,7 @@ vim.g.vscode_transparent = 1
 vim.g.vscode_italic_comment = 1
 vim.cmd('colorscheme vscode')
 -- Probably should just have a theme.lua that we load?
+-- require('onedarkpro').load()
 require('lualine').setup{
   options = {
     theme = 'onedark',
