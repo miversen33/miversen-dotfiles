@@ -149,6 +149,7 @@ require('indent_blankline').setup({
   -- space_char_blankline = ' ',
 })
 
+-- vim.g['gitblame_display_virtual_text'] = 0
 
 require('Comment').setup()
 vim.g.vscode_style = 'dark'
