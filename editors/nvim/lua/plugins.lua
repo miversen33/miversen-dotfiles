@@ -123,6 +123,7 @@ require('packer').startup(function(use)
 
   -- Utilies
   use 'nvim-lua/plenary.nvim' -- Neovim "Utility functions"
+  use 'mrjones2014/smart-splits.nvim' -- Neovim better split handling?
   -- use 'aserowy/tmux.nvim' -- Neovim Tmux integration
   -- use 'numToStr/Navigator.nvim' -- Neovim better pane handling
 
@@ -531,3 +532,4 @@ dap.listeners.after.event_exited['dapui_config'] = function()
 end
 
 require('spectre').setup({})
+require('smart-splits').ignored_buftypes=excluded_filetypes_array
