@@ -278,7 +278,7 @@ require('cokeline').setup({
                 if(buffer.is_readonly) then
                     status = '➖'
                 elseif(buffer.is_focused) then
-                    status = '⚪'
+                    status = '⚬'
                 end
                 return ' ' .. status
             end,
