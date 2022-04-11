@@ -56,6 +56,7 @@ require('packer').startup(function(use)
   -- use 'folke/zen-mode.nvim' -- Neovim "zen" style coding where it hides everything except the pane you're in. Not sold on it being actually useful though
 
   -- IDE Specific
+  use 'wakatime/vim-wakatime'
   use {
     'hrsh7th/nvim-cmp', -- Neovim autocompletion
     -- config = function() require('config.cmp') end,
@@ -122,6 +123,7 @@ require('packer').startup(function(use)
     -- Whatever it is, we need a better way of doing clipboard stuff. Maybe worth writing our own plugin for that????
 
   -- Utilies
+  use 'miversen33/netman.nvim'
   use 'nvim-lua/plenary.nvim' -- Neovim "Utility functions"
   use 'mrjones2014/smart-splits.nvim' -- Neovim better split handling?
   -- use 'aserowy/tmux.nvim' -- Neovim Tmux integration
@@ -533,3 +535,4 @@ end
 
 require('spectre').setup({})
 require('smart-splits').ignored_buftypes=excluded_filetypes_array
+require('netman').setup({allow_netrw=true})
