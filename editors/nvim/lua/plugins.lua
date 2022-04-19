@@ -535,4 +535,4 @@ end
 
 require('spectre').setup({})
 require('smart-splits').ignored_buftypes=excluded_filetypes_array
-require('netman').setup({allow_netrw=true})
+require('netman')
