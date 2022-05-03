@@ -41,3 +41,7 @@ map('n', '<A-left>'      , ':lua require("smart-splits").resize_left()<CR>', sil
 map('n', '<A-right>'     , ':lua require("smart-splits").resize_right()<CR>', silent_noremap)
 map('n', '<A-up>'        , ':lua require("smart-splits").resize_up()<CR>', silent_noremap)
 map('n', '<A-down>'      , ':lua require("smart-splits").resize_down()<CR>', silent_noremap)
+map('n', '<A-h>'         , '<Plug>(cokeline-focus-prev)', silent_noremap)
+map('n', '<A-l>'         , '<Plug>(cokeline-focus-next)', silent_noremap)
+map('n', '<A-j>'         , '<Plug>(cokeline-switch-prev)', silent_noremap)
+map('n', '<A-k>'         , '<Plug>(cokeline-switch-next)', silent_noremap)
