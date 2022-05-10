@@ -24,11 +24,17 @@ if not DEBUG then
     -- Plugin setup
     require('plugins')
 end
+local undo_dir = vim.fn.stdpath('cache') .. "/undo/"
+vim.fn.mkdir(undo_dir, 'p')
 -- Neovim Configurations
 -- Create a generic "enable italics, enable bold, enable transparent" map so we can auto do that
 -- for any themes we set
 -- Also create a generic "theme_style" that we can set and apply because everyone having 
 -- their own is so irritating
+vim.opt.undofile      = true
+vim.opt.undodir       = undo_dir
+vim.opt.undolevels    = 1000
+vim.opt.undoreload    = 10000
 vim.opt.mouse         = 'a'
 vim.opt.whichwrap     = '<,>,[,]'
 vim.opt.encoding      = 'UTF-8'
