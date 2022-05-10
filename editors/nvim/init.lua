@@ -118,8 +118,10 @@ if not DEBUG then
     }
 
     local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
-    local lsp_on_attach = function(client)
+    local status, aerial = pcall(require, 'aerial')
+    local lsp_on_attach = function(client, bufnr)
       illuminate.on_attach(client)
+      if status then aerial.on_attach(client, bufnr) end
     end
 
     -- TODO(Mike): Consider maybe using null-ls?
@@ -133,9 +135,9 @@ if not DEBUG then
         for language_server, language_server_config in pairs(language_servers) do
             local on_attach = language_server_config['on_attach']
             if(on_attach) then
-                language_server_config['on_attach'] = function(client)
-                    lsp_on_attach(client)
-                    on_attach(client)
+                language_server_config['on_attach'] = function(client, bufnr)
+                    lsp_on_attach(client, bufnr)
+                    on_attach(client, bufnr)
                 end
             else
                 language_server_config['on_attach'] = lsp_on_attach

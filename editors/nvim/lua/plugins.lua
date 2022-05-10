@@ -127,6 +127,7 @@ require('packer').startup(function(use)
   use 'miversen33/netman.nvim'
   use 'nvim-lua/plenary.nvim' -- Neovim "Utility functions"
   use 'mrjones2014/smart-splits.nvim' -- Neovim better split handling?
+  use 'stevearc/aerial.nvim' -- Better code outline??
   -- use 'aserowy/tmux.nvim' -- Neovim Tmux integration
   -- use 'numToStr/Navigator.nvim' -- Neovim better pane handling
 
@@ -537,3 +538,10 @@ end
 require('spectre').setup({})
 require('smart-splits').ignored_buftypes=excluded_filetypes_array
 require('netman')
+require('aerial').setup({
+    default_bindings = false,
+    ignore = { filetypes = excluded_filetypes_array },
+    placement_editor_edge = true,
+    update_events = "TextChanged,InsertLeave,WinEnter,WinLeave",
+    show_guides = true,
+})
