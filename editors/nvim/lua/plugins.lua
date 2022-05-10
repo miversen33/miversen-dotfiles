@@ -73,6 +73,8 @@ require('packer').startup(function(use)
   use 'ray-x/cmp-treesitter' -- Neovim snippet for treesitter (Maybe replace the buffer completion?)
   use 'liuchengxu/vista.vim' -- Vim symbol viewer (uses ctags vs treesitter)
   use 'nvim-telescope/telescope-file-browser.nvim' -- Neovim Telescope File Manager
+  -- use 'nvim-telescope/telescope-project.nvim' -- Neovim Telescope Project Manager
+  -- use 'cljoly/telescope-repo.nvim' -- Neovim Telescope Repository Project Manager 
   -- use 'simrat39/symbols-outline.nvim' -- Neovim symbol viewer (use treesitter vs ctags)
   use 'tpope/vim-dadbod' -- Vim Database interaction
   use 'kristijanhusak/vim-dadbod-ui' -- Vim UI for database interaction
@@ -470,14 +472,15 @@ telescope.setup({
         ["<C-Up>"] = t_actions.preview_scrolling_up,
         ["<C-Down>"] = t_actions.preview_scrolling_down
       }
-    }
+    },
+    layout_strategy = "vertical"
   },
   extensions = {
     file_browser = {
         grouped = true,
         hidden  = true
     }
-  }
+  },
 })
 telescope.load_extension('fzf')
 telescope.load_extension('live_grep_raw')
@@ -543,4 +546,5 @@ require('aerial').setup({
     placement_editor_edge = true,
     update_events = "TextChanged,InsertLeave,WinEnter,WinLeave",
     show_guides = true,
+    close_behavior = "global"
 })
