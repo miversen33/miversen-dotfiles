@@ -47,6 +47,7 @@ vim.opt.shiftwidth    = 4
 vim.opt.softtabstop   = 4
 vim.opt.numberwidth   = 2
 vim.opt.wrap          = true
+vim.opt.clipboard:append('unnamedplus')
 vim.opt.background    = 'dark'
 vim.opt.hlsearch      = true
 vim.opt.ignorecase    = true
