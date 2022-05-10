@@ -99,6 +99,7 @@ require('packer').startup(function(use)
   --     'kyazdani42/nvim-web-devicons', -- optional, for file icon
   --   },
   -- }
+  use 'mg979/vim-visual-multi'
   use 'lukas-reineke/indent-blankline.nvim' -- Neovim indentation handling
   use 'tami5/sqlite.lua' -- Neovim SQlite database
   use {
@@ -535,4 +536,4 @@ end
 
 require('spectre').setup({})
 require('smart-splits').ignored_buftypes=excluded_filetypes_array
-require('netman').setup({allow_netrw=true})
+require('netman')
