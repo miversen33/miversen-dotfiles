@@ -164,7 +164,9 @@ require('lualine').setup{
   options = {
     theme = 'onedark',
     disabled_filetypes = excluded_filetypes_array,
+    globalstatus = true
   },
+  extensions = {'quickfix', 'fzf'},
   sections = {
     lualine_a = {
       'mode','branch', 
