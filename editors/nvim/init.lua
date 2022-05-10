@@ -33,6 +33,7 @@ vim.fn.mkdir(undo_dir, 'p')
 -- their own is so irritating
 vim.opt.undofile      = true
 vim.opt.undodir       = undo_dir
+vim.opt.fillchars:append(',eob: ')
 vim.opt.undolevels    = 1000
 vim.opt.undoreload    = 10000
 vim.opt.mouse         = 'a'
