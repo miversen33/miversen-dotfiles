@@ -7,9 +7,6 @@ end
   
 local telescope = require('telescope')
 
-map('n', '<S-f>'         , ':Telescope live_grep<CR>', noremap)
-map('n', '<C-z>'         , ':Telescope find_files<CR>', silent_noremap)
-map('n', '<S-z>'         , ':Telescope live_grep<CR>', silent_noremap)
 map('n', 'ls'            , ':lua require("telescope.builtin").buffers()<CR>', silent_noremap)
 map('n', '?'             , ':lua require("telescope.builtin").builtin()<CR>', silent_noremap)
 map('n', 'h?'            , ':lua require("telescope.builtin").help_tags()<CR>', silent_noremap)
