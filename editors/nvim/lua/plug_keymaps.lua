@@ -16,6 +16,7 @@ map('n', 'h?'            , ':lua require("telescope.builtin").help_tags()<CR>', 
 map('n', 'c?'            , ':lua require("telescope.builtin").commands()<CR>', silent_noremap)
 map('n', 'm?'            , ':lua require("telescope.builtin").man_pages()<CR>', silent_noremap)
 map('n', 'k?'            , ':lua require("telescope.builtin").keymaps()<CR>', silent_noremap)
+map('n', 'tf'            , ':lua require("telescope.builtin").live_grep({cwd=require("telescope.utils").buffer_dir(), use_regex=true})<CR>', silent_noremap)
 map('n', '<leader>t'     , ':lua require("telescope.builtin").treesitter()<CR>', silent_noremap)
 map('n', '<C-T>'         , ':TroubleToggle<CR>', silent_noremap)
 map('n', '<C-e>'         , ':lua vim.lsp.buf.rename()<CR>', silent_noremap)
