@@ -72,7 +72,6 @@ require('packer').startup(function(use)
   use 'hrsh7th/cmp-cmdline'  -- vim/neovim snippet stuffs
   -- use 'kristijanhusak/vim-dadbod-completion' -- Vim Database Autocompletion
   use 'ray-x/cmp-treesitter' -- Neovim snippet for treesitter (Maybe replace the buffer completion?)
-  use 'liuchengxu/vista.vim' -- Vim symbol viewer (uses ctags vs treesitter)
   use 'nvim-telescope/telescope-file-browser.nvim' -- Neovim Telescope File Manager
   -- use 'nvim-telescope/telescope-project.nvim' -- Neovim Telescope Project Manager
   -- use 'cljoly/telescope-repo.nvim' -- Neovim Telescope Repository Project Manager 
