@@ -107,6 +107,7 @@ require('packer').startup(function(use)
   use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' } -- Fuzzy Finder with fzf-native
   use 'nvim-telescope/telescope-rg.nvim'
   -- use 'sunjon/Shade.nvim' -- Neovim inactive window dimmer (this is a nice plugin but it breaks _way_ too often...)
+  use 'nvim-orgmode/orgmode'
   use 'norcalli/nvim-colorizer.lua' -- Neovim color highlighter
   -- use 'ahmedkhalf/project.nvim' -- Neovim project management
   -- use 'gbprod/substitute.nvim' -- Neovim better substitution
@@ -440,6 +441,7 @@ cmp.setup({
   sources = cmp.config.sources({
     { name = 'nvim_lsp' },
     { name = 'luasnip' }, -- For luasnip users.
+    { name = 'orgmode' },
   }, {
     { name = 'buffer' },
   })
@@ -548,3 +550,18 @@ require('aerial').setup({
     show_guides = true,
     close_behavior = "global"
 })
+
+require('orgmode').setup_ts_grammar()
+
+-- Tree-sitter configuration
+require'nvim-treesitter.configs'.setup {
+  -- If TS highlights are not enabled at all, or disabled via `disable` prop, highlighting will fallback to default Vim syntax highlighting
+  highlight = {
+    enable = true,
+    disable = {'org'}, -- Remove this to use TS highlighter for some of the highlights (Experimental)
+    additional_vim_regex_highlighting = {'org'}, -- Required since TS highlighter doesn't support all syntax features (conceal)
+  },
+  ensure_installed = {'org'}, -- Or run :TSUpdate org
+}
+
+require('orgmode').setup({})
