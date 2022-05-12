@@ -1,6 +1,29 @@
 local silent_noremap = {noremap = true, silent = true}
 local noremap = {noremap=true}
 
+local function copy(lines, _)
+  vim.fn.OSCYankString(table.concat(lines, "\n"))
+end
+
+local function paste()
+  return {
+    vim.fn.split(vim.fn.getreg(''), '\n'),
+    vim.fn.getregtype('')
+  }
+end
+
+vim.g.clipboard = {
+  name = "osc52",
+  copy = {
+    ["+"] = copy,
+    ["*"] = copy
+  },
+  paste = {
+    ["+"] = paste,
+    ["*"] = paste
+  }
+}
+
 local function map(kind, lhs, rhs, opts)
     vim.api.nvim_set_keymap(kind, lhs, rhs, opts)
 end
