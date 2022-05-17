@@ -193,14 +193,13 @@ require('lualine').setup{
       }
     },
     lualine_x = {
-      {
-        'filetype',
-        icon_only = true
-      },
-      'encoding', 'fileformat'
+        "aerial", {
+            'filetype',
+            icon_only = true
+        }
     },
     lualine_y = {
-      'progress'
+      'encoding', 'progress',
     },
     lualine_z = {
       'location'
