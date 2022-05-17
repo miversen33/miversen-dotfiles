@@ -543,7 +543,6 @@ require('spectre').setup({})
 require('smart-splits').ignored_buftypes=excluded_filetypes_array
 require('netman')
 require('aerial').setup({
-    default_bindings = false,
     ignore = { filetypes = excluded_filetypes_array },
     placement_editor_edge = true,
     update_events = "TextChanged,InsertLeave,WinEnter,WinLeave",
