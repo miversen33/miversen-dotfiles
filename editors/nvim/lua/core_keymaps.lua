@@ -9,6 +9,8 @@ end
 map('n', '<Space',   '<Nop>', silent_noremap)
 vim.g.mapleader = ' '
 
+map('n', 'AA',       'ggVG', silent_noremap)
+map('v', 'AA',       'ggV', silent_noremap)
 map('n', '<A-k>',    ':m .+1<CR>==', silent_noremap)
 map('n', '<A-i>',    ':m .-2<CR>==', silent_noremap)
 map('n', '<C-x>',    'dd', silent_noremap)
