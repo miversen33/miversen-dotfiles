@@ -7,7 +7,6 @@
 -- wget https://github.com/rust-analyzer/rust-analyzer/releases/download/2021-12-27/rust-analyzer-x86_64-unknown-linux-gnu.gz (set a location for this to be installed to)
 -- wget https://github.com/sumneko/lua-language-server/releases/download/2.5.6/lua-language-server-2.5.6-linux-x64.tar.gz (set a location for this to be installed to)
 -- TODO(Mike) (Setup java language server?)
--- BUG(Mike) There is something causing line tearing in here :/
 
 local DEBUG = false
 
