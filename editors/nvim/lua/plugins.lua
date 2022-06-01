@@ -67,9 +67,13 @@ require('packer').startup(function(use)
   -- use 'hrsh7th/cmp-vsnip' -- Neovim autocompletion -> Neovim Snippet (vsnip) feeder
   -- use 'hrsh7th/vim-vsnip' -- Vim snippet manager
   use 'hrsh7th/cmp-nvim-lsp'  -- vim/neovim snippet stuffs
+  use 'f3fora/cmp-spell' -- neovim spellcheck snippet stuffs
   use 'hrsh7th/cmp-buffer'  -- vim/neovim snippet stuffs
   use 'hrsh7th/cmp-path'  -- vim/neovim snippet stuffs
   use 'hrsh7th/cmp-cmdline'  -- vim/neovim snippet stuffs
+  use 'hrsh7th/cmp-calc' -- vim/neovim snippet stuffs
+  use 'uga-rosa/cmp-dictionary' -- vim/neovim dictionary snippets? Maybe spellcheck without spellcheck?
+  use 'hrsh7th/cmp-nvim-lua' -- vim/neovim lua api completion
   -- use 'kristijanhusak/vim-dadbod-completion' -- Vim Database Autocompletion
   use 'ray-x/cmp-treesitter' -- Neovim snippet for treesitter (Maybe replace the buffer completion?)
   use 'nvim-telescope/telescope-file-browser.nvim' -- Neovim Telescope File Manager
@@ -441,6 +445,10 @@ cmp.setup({
     { name = 'nvim_lsp' },
     { name = 'luasnip' }, -- For luasnip users.
     { name = 'orgmode' },
+    { name = 'calc' },
+    { name = 'dictionary', keyword_length=2 },
+    { name = 'path' },
+    { name = "nvim_lua" }
   }, {
     { name = 'buffer' },
   })
@@ -459,6 +467,8 @@ cmp.setup.cmdline(':', {
     { name = 'cmdline' }
   })
 })
+
+require("cmp_dictionary").setup({dic = {["*"] = {"/usr/share/dict/words"}}, first_case_insensitive=true})
 
 local telescope = require('telescope')
 local t_actions = require('telescope.actions')
