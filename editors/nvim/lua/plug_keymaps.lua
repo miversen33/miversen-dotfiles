@@ -50,7 +50,6 @@ map('n', '<C-_>'         , '<ESC>:lua require("Comment.api").toggle_current_line
 map('x', '<C-_>'         , '<ESC>:lua require("Comment.api").toggle_linewise_op(vim.fn.visualmode())<CR>', silent_noremap)
 map('n', 'n'             , ':lua require("illuminate").next_reference({wrap=true})<CR>', silent_noremap)
 map('n', '<S-n>'         , ':lua require("illuminate").next_reference({reverse=true,wrap=true})<CR>', silent_noremap)
-map('n', '<C-f>'         , ':echo "Formatting Buffer"<CR> :lua vim.lsp.buf.formatting()<CR>', silent_noremap)
 map('n', '<A-f>'         , ':Telescope find_files<CR>', silent_noremap)
 map('n', '<Enter>'       , ':AerialToggle! right<CR>', silent_noremap)
 map('n', '<leader>r'     , ':lua require("spectre").open_file_search()<CR>', silent_noremap)
