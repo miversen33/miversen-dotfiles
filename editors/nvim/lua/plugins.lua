@@ -122,8 +122,6 @@ require('packer').startup(function(use)
   use 'romgrk/nvim-treesitter-context' -- Neovim code context
   -- use 'chipsenkbeil/distant.nvim' -- Neovim remote file editing (Note: Dependency https://github.com/chipsenkbeil/distant)
   -- use 'AckslD/nvim-neoclip.lua' -- Neovim Clipboard/register manager
-    -- Also going to need to figure out how to get clipboard to play fair with tmux if we are running inside that. Or over ssh.
-    -- Whatever it is, we need a better way of doing clipboard stuff. Maybe worth writing our own plugin for that????
 
   -- Utilies
   use 'miversen33/netman.nvim'
