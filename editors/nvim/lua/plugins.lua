@@ -118,7 +118,7 @@ require('packer').startup(function(use)
   -- use 'filipdutescu/renamer.nvim' -- Neovim vscode style variable renaming
   -- use 'ethanholz/nvim-lastplace' -- Neovim open file in the last place you were (if the file has been opened before?)
   -- use 'abecodes/tabout.nvim' -- Neovim tab escape parens?
-  -- use 'rcarriga/nvim-notify' -- Neovim notifications?
+  use 'rcarriga/nvim-notify' -- Neovim notifications?
   use 'romgrk/nvim-treesitter-context' -- Neovim code context
   -- use 'chipsenkbeil/distant.nvim' -- Neovim remote file editing (Note: Dependency https://github.com/chipsenkbeil/distant)
   -- use 'AckslD/nvim-neoclip.lua' -- Neovim Clipboard/register manager
