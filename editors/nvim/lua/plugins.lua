@@ -543,6 +543,17 @@ require('smart-splits').ignored_buftypes=excluded_filetypes_array
 require('netman')
 require('aerial').setup({
     ignore = { filetypes = excluded_filetypes_array },
+    filter_kind = {
+        "Class",
+        "Constructor",
+        "Enum",
+        "Function",
+        "Interface",
+        "Module",
+        "Method",
+        "Struct",
+        "Variable"
+    },
     placement_editor_edge = true,
     update_events = "TextChanged,InsertLeave,WinEnter,WinLeave",
     show_guides = true,
