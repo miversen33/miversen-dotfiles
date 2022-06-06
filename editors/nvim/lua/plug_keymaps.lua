@@ -63,7 +63,7 @@ map('n', '<leader>down'  , ':lua require("dap").step_into()<CR>', silent_noremap
 map('n', '<leader>right' , ':lua require("dap").step_over()<CR>', silent_noremap)
 map('n', '<leader>ro'    , ':lua require("dap").repl.open()<CR>', silent_noremap)
 map('n', '<C-h>'         , ':lua require("smart-splits").move_cursor_left()<CR>', silent_noremap)
-map('n', '<C-j>'         , ':lua require("smart-splits").move_cursor_up()<CR>', silent_noremap) 
+map('n', '<C-j>'         , ':lua require("smart-splits").move_cursor_up()<CR>', silent_noremap)
 map('n', '<C-l>'         , ':lua require("smart-splits").move_cursor_right()<CR>', silent_noremap)
 map('n', '<C-k>'         , ':lua require("smart-splits").move_cursor_down()<CR>', silent_noremap)
 map('n', '<A-left>'      , ':lua require("smart-splits").resize_left()<CR>', silent_noremap)
