@@ -38,7 +38,7 @@ map('n', 'tS'            , ':lua require("telescope.builtin").live_grep({use_reg
 map('n', 'tt'            , ':lua require("telescope.builtin").treesitter()<CR>', silent_noremap)
 map('n', 'tm'            , ':lua require("telescope.builtin").man_pages()<CR>', silent_noremap)
 map('n', 'tf'            , ':lua require("telescope").extensions.file_browser.file_browser()<CR>', silent_noremap)
-map('n', '<C-T>'         , ':TroubleToggle<CR>', silent_noremap)
+map('n', '<leader>t'     , ':TroubleToggle<CR>', silent_noremap)
 map('n', 'sr'            , ':lua vim.lsp.buf.rename()<CR>', silent_noremap)
 map('n', 'se'            , ':lua vim.lsp.buf.definition()<CR>', silent_noremap)
 map('n', 'sf'            , ':echo "Formatting Buffer"<CR> :lua vim.lsp.buf.formatting()<CR>', silent_noremap)
