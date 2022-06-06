@@ -584,3 +584,9 @@ require'nvim-treesitter.configs'.setup {
 }
 
 require('orgmode').setup({})
+-- Floaterm settings
+--name="" --width=0.95 --height=0.95
+-- vim.g.floaterm_title = ""
+-- vim.g.floaterm_width = 0.95
+-- vim.g.floaterm_height = 0.90
+vim.schedule(function() vim.api.nvim_command('FloatermNew --name=Terminal --title=Terminal --width=0.95 --height=0.95 --wintype=float --silent --position=center') end)
