@@ -41,6 +41,7 @@ map('n', 'tf'            , ':lua require("telescope").extensions.file_browser.fi
 map('n', '<leader>t'     , ':TroubleToggle<CR>', silent_noremap)
 map('n', '<C-t>'         , ':FloatermShow Terminal<CR>', silent_noremap)
 map('t', '<C-t>'         , '<C-\\><C-n>:FloatermHide<CR>', silent_noremap)
+map('n', '<C-y>'         , ':Codi!!<CR>', silent_noremap)
 map('n', 'sr'            , ':lua vim.lsp.buf.rename()<CR>', silent_noremap)
 map('n', 'se'            , ':lua vim.lsp.buf.definition()<CR>', silent_noremap)
 map('n', 'sf'            , ':echo "Formatting Buffer"<CR> :lua vim.lsp.buf.formatting()<CR>', silent_noremap)
