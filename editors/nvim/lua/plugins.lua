@@ -140,7 +140,7 @@ require('packer').startup(function(use)
 end)
 
 -- Plugin Configurations
-local excluded_filetypes_array = {'lsp-installer', 'lspinfo', 'Outline', 'help', 'packer', 'netrw', 'qf', 'dbui', 'Trouble', 'fugitive'}
+local excluded_filetypes_array = {'lsp-installer', 'lspinfo', 'Outline', 'help', 'packer', 'netrw', 'qf', 'dbui', 'Trouble', 'fugitive', 'floaterm', 'spectre_panel', 'spectre_panel_write'}
 local excluded_filetypes_table = {}
 for _, value in ipairs(excluded_filetypes_array) do
     excluded_filetypes_table[value] = 1
