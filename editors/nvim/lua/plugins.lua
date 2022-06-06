@@ -52,6 +52,7 @@ require('packer').startup(function(use)
   -- IDE Specific
   use 'ojroques/vim-oscyank'
   use 'wakatime/vim-wakatime'
+  use 'metakirby5/codi.vim'
   use {
     'hrsh7th/nvim-cmp', -- Neovim autocompletion
     -- config = function() require('config.cmp') end,
@@ -127,6 +128,8 @@ require('packer').startup(function(use)
   use 'nvim-lua/plenary.nvim' -- Neovim "Utility functions"
   use 'mrjones2014/smart-splits.nvim' -- Neovim better split handling?
   use 'stevearc/aerial.nvim' -- Better code outline??
+  -- Configure this so its "pretty"
+  use 'voldikss/vim-floaterm' -- Vim/Neovim floating terminal
   -- use 'aserowy/tmux.nvim' -- Neovim Tmux integration
   -- use 'numToStr/Navigator.nvim' -- Neovim better pane handling
 
