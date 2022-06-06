@@ -27,8 +27,6 @@ vim.g.clipboard = {
 local function map(kind, lhs, rhs, opts)
     vim.api.nvim_set_keymap(kind, lhs, rhs, opts)
 end
-  
-local telescope = require('telescope')
 
 map('n', 'tls'            , ':lua require("telescope.builtin").buffers()<CR>', silent_noremap)
 map('n', '?'             , ':lua require("telescope.builtin").builtin()<CR>', silent_noremap)
