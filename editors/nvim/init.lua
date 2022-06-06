@@ -111,8 +111,9 @@ if not DEBUG then
 
     vim.cmd [[autocmd ColorScheme * highlight NormalFloat guibg=#1f2335]]
     vim.cmd [[autocmd ColorScheme * highlight FloatBorder guifg=white guibg=#1f2335]]
-    vim.cmd [[autocmd CursorHold  <buffer> lua vim.lsp.buf.hover()]]
-    vim.cmd [[autocmd CursorHoldI <buffer> lua vim.lsp.buf.hover()]]
+    -- Would be kewl but we need to get this to _only_ fire if autocomplete is not present...
+    -- vim.cmd [[autocmd CursorHold  <buffer> lua vim.lsp.buf.hover()]]
+    -- vim.cmd [[autocmd CursorHoldI <buffer> lua vim.lsp.buf.hover()]]
 
     local handlers = {
       ['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, {border = 'rounded'}),
