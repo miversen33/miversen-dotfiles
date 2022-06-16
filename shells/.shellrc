@@ -63,6 +63,7 @@ profile_rc() {
   # [ -d "/opt/Unity/current" ] && export PATH="$PATH:/opt/Unity/current" # Adds Unity to path if it exists
   [ -d "$HOME/.cargo/bin" ] && export PATH="$PATH:$HOME/.cargo/bin" # Adds cargo (rust) to path
   [ -d "/opt/neovim/" ] && export PATH="$PATH:/opt/neovim" # Adds neovim to path
+  [ -d "$HOME/.luarocks/bin" ] && export PATH="$PATH:/$HOME/.luarocks/bin" # Adds luarocks to path
   if [ -d "$HOME/perl5" ]; then #The perl shits
     export PATH="$PATH:$HOME/perl5/bin"; # Adds perl5 (perlbrew) to path if it exists
     export PERL5LIB="$HOME/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}";

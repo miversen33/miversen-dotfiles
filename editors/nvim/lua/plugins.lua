@@ -6,12 +6,13 @@ vim.cmd([[
 ]])
 
 require('packer').startup(function(use)
-  use 'wbthomason/packer.nvim' -- Neovim Use Packer 
+  use 'wbthomason/packer.nvim' -- Neovim Use Packer
 
   -- Debugger
   use 'mfussenegger/nvim-dap' -- Neovim Debug Adapter Protocol
   use 'rcarriga/nvim-dap-ui' -- Neovim DAP UI components. May not be necessary?
- 
+  use 'jbyuki/one-small-step-for-vimkind' -- Neovim plugin debugger
+
   -- LSP Setup
   use 'neovim/nvim-lspconfig' -- Neovim LSP Setup
   use 'williamboman/nvim-lsp-installer' -- Neovim LSP Installer
@@ -109,7 +110,7 @@ require('packer').startup(function(use)
   }
   use 'nvim-telescope/telescope.nvim' -- Fuzzy Finder
   use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' } -- Fuzzy Finder with fzf-native
-  use 'nvim-telescope/telescope-rg.nvim'
+  use 'nvim-telescope/telescope-live-grep-args.nvim'
   -- use 'sunjon/Shade.nvim' -- Neovim inactive window dimmer (this is a nice plugin but it breaks _way_ too often...)
   use 'nvim-orgmode/orgmode'
   use 'norcalli/nvim-colorizer.lua' -- Neovim color highlighter
@@ -142,6 +143,8 @@ require('packer').startup(function(use)
   end
 end)
 
+require("import")
+
 -- Plugin Configurations
 local excluded_filetypes_array = {'lsp-installer', 'lspinfo', 'Outline', 'help', 'packer', 'netrw', 'qf', 'dbui', 'Trouble', 'fugitive', 'floaterm', 'spectre_panel', 'spectre_panel_write'}
 local excluded_filetypes_table = {}
@@ -151,23 +154,24 @@ end
 vim.g['indent_blankline_filetype_exclude'] = excluded_filetypes_array
 vim.g['db_ui_auto_execute_table_helpers'] = 1
 
-require('indent_blankline').setup({
+import('indent_blankline', function(indent_blankline) indent_blankline.setup({
   show_current_context = true,
   show_current_context_start = true,
   use_treesitter = true
   -- space_char_blankline = ' ',
 })
+end)
 
 -- vim.g['gitblame_display_virtual_text'] = 0
 
-require('Comment').setup()
+import('Comment', function(comment) comment.setup() end)
 vim.g.vscode_style = 'dark'
 vim.g.vscode_transparent = 1
 vim.g.vscode_italic_comment = 1
 vim.cmd('colorscheme vscode')
 -- Probably should just have a theme.lua that we load?
 -- require('onedarkpro').load()
-require('lualine').setup{
+import('lualine', function(lualine) lualine.setup{
   options = {
     theme = 'onedark',
     disabled_filetypes = excluded_filetypes_array,
@@ -234,9 +238,9 @@ require('lualine').setup{
 
     }
   }
-}
+} end)
 
-require('cokeline').setup({
+import('cokeline', function(cokeline) cokeline.setup({
     show_if_buffers_are_at_least = 1,
     buffers = {
         filter_valid = function(buffer)
@@ -341,8 +345,8 @@ require('cokeline').setup({
             fg = '#806FA3'
         }
     },
-})
-require('specs').setup({
+}) end)
+import('specs', function(specs) specs.setup({
   show_jumps  = true,
   min_jump = 30,
   popup = {
@@ -358,7 +362,7 @@ require('specs').setup({
   ignore_buftypes = {
       nofile = true,
   },
-})
+}) end)
 
 -- Setup nvim-cmp
 vim.cmd([[
@@ -403,11 +407,16 @@ local kind_icons = {
   TypeParameter = ""
 }
 
-local luasnip = require('luasnip')
-local lspkind = require('lspkind')
-local cmp = require('cmp')
 
-cmp.setup({
+import('cmp', function(cmp)
+    local luasnip = nil
+    local lspkind = nil
+    import('luasnip', function(_) luasnip = _ end)
+    import("lspkind", function(_) lspkind = _ end)
+    assert(luasnip)
+    assert(lspkind)
+    cmp.setup({
+
   formatting = {
     format = function(entry, vim_item)
       vim_item.kind = string.format('%s %s', kind_icons[vim_item.kind], vim_item.kind)
@@ -467,13 +476,16 @@ cmp.setup.cmdline(':', {
     { name = 'cmdline' }
   })
 })
+end)
 
-require("cmp_dictionary").setup({dic = {["*"] = {"/usr/share/dict/words"}}, first_case_insensitive=true})
+import("cmp_dictionary", function(cmp_dictionary) cmp_dictionary.setup({dic = {["*"] = {"/usr/share/dict/words"}}, first_case_insensitive=true}) end)
 
-local telescope = require('telescope')
-local t_actions = require('telescope.actions')
-telescope.setup({
-  defaults = {
+import('telescope', function(telescope)
+    local t_actions = nil
+    import('telescope.actions', function(_) t_actions = _ end)
+    assert(t_actions)
+    telescope.setup({
+     defaults = {
     mappings = {
       n = {
         ["<C-Up>"] = t_actions.preview_scrolling_up,
@@ -493,20 +505,17 @@ telescope.setup({
     }
   },
 })
-telescope.load_extension('fzf')
-telescope.load_extension('live_grep_raw')
-telescope.load_extension('file_browser')
+    telescope.load_extension('fzf')
+    telescope.load_extension('live_grep_args')
+    telescope.load_extension('file_browser')
+end)
 
-require('trouble').setup({
+import('trouble', function(trouble) trouble.setup({
   use_diagnostic_signs = true
-})
+}) end)
 
--- Consider if we _actually_ need this... See if we can get the pieces of this we want into our own lua file instead of using a plugin
--- require('lspsaga').init_lsp_saga({
-
--- })
 -- Maybe a better solution here?
-require('treesitter-context').setup({
+import('treesitter-context', function(treesitter_context) treesitter_context.setup({
     -- throttle = false,
     max_lines = 3,
     patters = {
@@ -521,37 +530,38 @@ require('treesitter-context').setup({
             'case'
         }
     }
-})
+}) end)
 
-require('bqf').setup({
-  
-})
+import('bqf', function(bqf) bqf.setup({
 
-require('todo-comments').setup({
+}) end)
 
-})
+import('todo-comments', function(todo_comments) todo_comments.setup({
+
+}) end)
 
 -- DAP Setup
-local dap = require('dap')
-vim.fn.sign_define('DapBreakpoint', {text='🔴', texthl='', linehl='', numhl=''})
-vim.fn.sign_define('DapBreakpointCondition', {text='🔵', texthl='', linehl='', numhl=''})
-require('dap.ext.vscode').load_launchjs()
-local dapui = require("dapui")
-dapui.setup({})
-dap.listeners.after.event_initialized['dapui_config'] = function()
-    dapui.open()
-end
-dap.listeners.before.event_terminated['dapui_config'] = function()
-    dapui.close()
-end
-dap.listeners.after.event_exited['dapui_config'] = function()
-    dapui.close()
-end
+import('dap', function(dap)
+    vim.fn.sign_define('DapBreakpoint', {text='🔴', texthl='', linehl='', numhl=''})
+    vim.fn.sign_define('DapBreakpointCondition', {text='🔵', texthl='', linehl='', numhl=''})
+    require('dap.ext.vscode').load_launchjs()
+    local dapui = require("dapui")
+    dapui.setup({})
+    dap.listeners.after.event_initialized['dapui_config'] = function()
+        dapui.open()
+    end
+    dap.listeners.before.event_terminated['dapui_config'] = function()
+        dapui.close()
+    end
+    dap.listeners.after.event_exited['dapui_config'] = function()
+        dapui.close()
+    end
+end)
 
-require('spectre').setup({})
-require('smart-splits').ignored_buftypes=excluded_filetypes_array
-require('netman')
-require('aerial').setup({
+import('spectre', function(spectre) spectre.setup({}) end)
+import('smart-splits', function(smart_splits) smart_splits.ignored_buftypes=excluded_filetypes_array end)
+import('netman')
+import('aerial', function(aerial) aerial.setup({
     ignore = { filetypes = excluded_filetypes_array },
     filter_kind = {
         "Class",
@@ -568,12 +578,12 @@ require('aerial').setup({
     update_events = "TextChanged,InsertLeave,WinEnter,WinLeave",
     show_guides = true,
     close_behavior = "global"
-})
+}) end)
 
-require('orgmode').setup_ts_grammar()
+import('orgmode', function(orgmode) orgmode.setup_ts_grammar() end)
 
 -- Tree-sitter configuration
-require'nvim-treesitter.configs'.setup {
+import('nvim-treesitter.configs', function(nvim_treesitter_configs) nvim_treesitter_configs.setup({
   -- If TS highlights are not enabled at all, or disabled via `disable` prop, highlighting will fallback to default Vim syntax highlighting
   highlight = {
     enable = true,
@@ -581,9 +591,9 @@ require'nvim-treesitter.configs'.setup {
     additional_vim_regex_highlighting = {'org'}, -- Required since TS highlighter doesn't support all syntax features (conceal)
   },
   ensure_installed = {'org'}, -- Or run :TSUpdate org
-}
+}) end)
 
-require('orgmode').setup({})
+import('orgmode', function(orgmode) orgmode.setup({}) end)
 -- Floaterm settings
 --name="" --width=0.95 --height=0.95
 -- vim.g.floaterm_title = ""
