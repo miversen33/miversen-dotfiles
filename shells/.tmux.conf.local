@@ -28,6 +28,7 @@ bind . next-window
 
 set -g automatic-rename on
 set -g status-interval 2
+set -g mouse on
 
 # -- windows & pane creation ---------------------------------------------------
 
