@@ -126,6 +126,7 @@ require('packer').startup(function(use)
 
   -- Utilies
   use 'miversen33/netman.nvim'
+  use 'lewis6991/satellite.nvim' -- Scrollbar?
   use 'miversen33/import.nvim' -- Local import function
   use 'nvim-lua/plenary.nvim' -- Neovim "Utility functions"
   use 'mrjones2014/smart-splits.nvim' -- Neovim better split handling?
@@ -655,3 +656,10 @@ import('nvim-treesitter.configs', function(nvim_treesitter_configs) nvim_treesit
 import('orgmode', function(orgmode) orgmode.setup({}) end)
 import('hlargs', function(hlargs) hlargs.setup() end)
 import('toggleterm', function(toggleterm) toggleterm.setup({}) end)
+import('satellite', function(satellite)
+  satellite.setup({
+
+  })
+end)
+
+import('custom_plugins', nil, {hide_output=true})
