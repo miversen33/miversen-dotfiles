@@ -168,12 +168,7 @@ end)
 -- vim.g['gitblame_display_virtual_text'] = 0
 
 import('Comment', function(comment) comment.setup() end)
-vim.g.vscode_style = 'dark'
-vim.g.vscode_transparent = 1
-vim.g.vscode_italic_comment = 1
-vim.cmd('colorscheme vscode')
--- Probably should just have a theme.lua that we load?
--- require('onedarkpro').load()
+import('custom_theme')
 import('lualine', function(lualine) lualine.setup{
   options = {
     theme = 'onedark',
