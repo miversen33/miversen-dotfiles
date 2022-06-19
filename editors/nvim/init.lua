@@ -123,13 +123,11 @@ if not DEBUG then
       ["textDocument/signatureHelp"] =  vim.lsp.with(vim.lsp.handlers.signature_help, {border = 'rounded' }),
     }
 
-    local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
-    local status, aerial = pcall(require, 'aerial')
     local _capabilities = vim.lsp.protocol.make_client_capabilities()
     local capabilities = require('cmp_nvim_lsp').update_capabilities(_capabilities)
     local lsp_on_attach = function(client, bufnr)
       illuminate.on_attach(client)
-      if status then aerial.on_attach(client, bufnr) end
+      import('aerial', function(aerial) aerial.on_attach(client, bufnr) end)
     end
 
     -- TODO(Mike): Consider maybe using null-ls?
