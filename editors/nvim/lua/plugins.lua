@@ -24,6 +24,7 @@ require('packer').startup(function(use)
   -- use 'jose-elias-alvarez/null-ls.nvim' -- Neovim "non lsp" lsp
 
   -- Language Specific
+  use 'sheerun/vim-polyglot' -- testing out some language specific packages?
   -- use 'gennaro-tedesco/nvim-jqx' -- Neovim JSON query tool
   use 'simrat39/rust-tools.nvim' -- Neovim Rust Tool
   -- use {'iamcco/markdown-preview.nvim', run = 'cd app && yarn install', cmd = 'MarkdownPreview'} -- Neovim Markdown tool
@@ -53,7 +54,6 @@ require('packer').startup(function(use)
   -- IDE Specific
   use 'ojroques/vim-oscyank'
   use 'wakatime/vim-wakatime'
-  use 'metakirby5/codi.vim'
   use {
     'hrsh7th/nvim-cmp', -- Neovim autocompletion
     -- config = function() require('config.cmp') end,
