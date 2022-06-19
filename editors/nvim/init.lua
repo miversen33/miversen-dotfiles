@@ -56,11 +56,15 @@ vim.opt.hidden        = true
 vim.opt.foldmethod    = 'indent'
 vim.opt.foldlevel     = 99
 vim.opt.list          = true
-vim.g.showbreak       = '↪'
 vim.opt.listchars     = {
-  tab = '  ' , multispace=' ', nbsp=' ',
-  trail=' ', extends='⟩', precedes='⟨'
+  tab = '-->',
+  multispace=' ',
+  -- nbsp=' ',
+  trail='',
+  extends='⟩',
+  precedes='⟨'
 }
+vim.g.showbreak       = '↪'
 vim.opt.cursorline    = true
 vim.opt.splitright    = true
 vim.opt.splitbelow    = true
@@ -68,7 +72,6 @@ vim.opt.expandtab     = true
 vim.opt.smarttab      = true
 vim.o.completeopt     = 'longest,preview,menuone,noselect'
 vim.g.vimsyn_embed    = 'lPrj'
-
 -- Keymaps
 require('keymaps').setup(DEBUG)
 
@@ -122,6 +125,8 @@ if not DEBUG then
 
     local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
     local status, aerial = pcall(require, 'aerial')
+    local _capabilities = vim.lsp.protocol.make_client_capabilities()
+    local capabilities = require('cmp_nvim_lsp').update_capabilities(_capabilities)
     local lsp_on_attach = function(client, bufnr)
       illuminate.on_attach(client)
       if status then aerial.on_attach(client, bufnr) end
