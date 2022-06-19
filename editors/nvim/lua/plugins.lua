@@ -126,11 +126,14 @@ require('packer').startup(function(use)
 
   -- Utilies
   use 'miversen33/netman.nvim'
+  use 'miversen33/import.nvim' -- Local import function
   use 'nvim-lua/plenary.nvim' -- Neovim "Utility functions"
   use 'mrjones2014/smart-splits.nvim' -- Neovim better split handling?
   use 'stevearc/aerial.nvim' -- Better code outline??
   -- Configure this so its "pretty"
-  use 'voldikss/vim-floaterm' -- Vim/Neovim floating terminal
+  -- use 'voldikss/vim-floaterm' -- Vim/Neovim floating terminal
+  use 'akinsho/toggleterm.nvim' -- Neovim Floating Terminal Framework
+  use 'm-demare/hlargs.nvim'
   -- use 'aserowy/tmux.nvim' -- Neovim Tmux integration
   -- use 'numToStr/Navigator.nvim' -- Neovim better pane handling
 
@@ -143,23 +146,23 @@ require('packer').startup(function(use)
   end
 end)
 
-require("import")
+require("import").config({output_split_type='vertical', import_enable_better_printing=true})
 
 -- Plugin Configurations
-local excluded_filetypes_array = {'lsp-installer', 'lspinfo', 'Outline', 'help', 'packer', 'netrw', 'qf', 'dbui', 'Trouble', 'fugitive', 'floaterm', 'spectre_panel', 'spectre_panel_write'}
+local excluded_filetypes_array = {'lsp-installer', 'lspinfo', 'Outline', 'help', 'packer', 'netrw', 'qf', 'dbui', 'Trouble', 'fugitive', 'floaterm', 'spectre_panel', 'spectre_panel_write', 'checkhealth', 'man'}
 local excluded_filetypes_table = {}
 for _, value in ipairs(excluded_filetypes_array) do
     excluded_filetypes_table[value] = 1
 end
-vim.g['indent_blankline_filetype_exclude'] = excluded_filetypes_array
 vim.g['db_ui_auto_execute_table_helpers'] = 1
 
-import('indent_blankline', function(indent_blankline) indent_blankline.setup({
-  show_current_context = true,
-  show_current_context_start = true,
-  use_treesitter = true
-  -- space_char_blankline = ' ',
-})
+import('indent_blankline', function(indent_blankline)
+  indent_blankline.setup({
+      filetype_exclude = excluded_filetypes_array,
+      show_current_context = true,
+      show_current_context_start = true,
+      use_treesitter = true,
+  })
 end)
 
 -- vim.g['gitblame_display_virtual_text'] = 0
@@ -202,8 +205,17 @@ import('lualine', function(lualine) lualine.setup{
     },
     lualine_x = {
         "aerial", {
-            'filetype',
-            icon_only = true
+          'filetype',
+          icon_only = true
+        }, {
+          function()
+            local failed_imports = require("import").get_failure_count()
+            if failed_imports > 0 then
+              return failed_imports .. " ⛔"
+            else
+              return ''
+            end
+          end
         }
     },
     lualine_y = {
@@ -594,9 +606,5 @@ import('nvim-treesitter.configs', function(nvim_treesitter_configs) nvim_treesit
 }) end)
 
 import('orgmode', function(orgmode) orgmode.setup({}) end)
--- Floaterm settings
---name="" --width=0.95 --height=0.95
--- vim.g.floaterm_title = ""
--- vim.g.floaterm_width = 0.95
--- vim.g.floaterm_height = 0.90
-vim.schedule(function() vim.api.nvim_command('FloatermNew --name=Terminal --title=Terminal --width=0.95 --height=0.95 --wintype=float --silent --position=center') end)
+import('hlargs', function(hlargs) hlargs.setup() end)
+import('toggleterm', function(toggleterm) toggleterm.setup({}) end)
