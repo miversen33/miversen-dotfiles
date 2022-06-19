@@ -252,112 +252,159 @@ import('lualine', function(lualine) lualine.setup{
   }
 } end)
 
-import('cokeline', function(cokeline) cokeline.setup({
-    show_if_buffers_are_at_least = 1,
-    buffers = {
-        filter_valid = function(buffer)
-            -- if buffer.type == 'fugitive' or buffer.filetype == 'fugitive' then 
-            if(excluded_filetypes_table[buffer.type] or excluded_filetypes_table[buffer.filetype]) then
-                return false
-            end
-            return true
-        end
-    },
-    mappings = {
-        cycle_prev_next = true
-    },
-    default_hl = {
-        fg = function(buffer)
-
-        end,
+import('cokeline', function(cokeline)
+    local get_hex = require("cokeline.utils").get_hex
+    local active_bg_color = '#931E9E'
+    local inactive_bg_color = get_hex('Normal', 'bg')
+    local bg_color = get_hex('ColorColumn', 'bg')
+    cokeline.setup({
+      show_if_buffers_are_at_least = 1,
+      buffers = {
+          filter_valid = function(buffer)
+              if(excluded_filetypes_table[buffer.type] or excluded_filetypes_table[buffer.filetype]) then
+                  return false
+              end
+              return true
+          end
+      },
+      mappings = {
+          cycle_prev_next = true
+      },
+      default_hl = {
         bg = function(buffer)
-            if(buffer.is_focused ~= true) then
-                return '#1C1C1C'
-            end
+          if buffer.is_focused then
+            return active_bg_color
+          end
         end,
-        style = function(buffer)
-        
-        end
-    },
-    components = {
-        {
+      },
+      components = {
+          {
             text = function(buffer)
-                if(buffer.index > 1) then
-                    return ''
-                end
-                return '|'
-            end,
-            fg = '#806FA3'
-        },
-        {
-            text = function(buffer)
-                return ' ' .. buffer.devicon.icon .. ''
+              local _text = ''
+              if buffer.index > 1 then _text = ' ' end
+              if buffer.is_focused or buffer.is_first then
+                _text = _text .. ''
+              end
+              return _text
             end,
             fg = function(buffer)
-                return buffer.devicon.color
-            end
-        },
-        {
-            text = function(buffer)
-                local status = ' '
-                if(buffer.is_readonly) then
-                    status = '➖'
-                elseif(buffer.is_focused) then
-                    status = '⚬'
-                end
-                return ' ' .. status
+              if buffer.is_focused then
+                return active_bg_color
+              elseif buffer.is_first then
+                return inactive_bg_color
+              end
             end,
-        },
-        {
-            text = function(buffer) return buffer.filename end,
-            fg = function(buffer)
-                if(buffer.diagnostics.errors > 0) then
-                    return '#C95157'
-                end
-            end,
-            style = function(buffer)
-                local text_style = 'NONE'
-                if(buffer.is_focused) then
-                    text_style = 'bold'
-                end
-                if(buffer.diagnostics.errors > 0) then
-                    if(text_style ~= 'NONE') then
-                        text_style = text_style .. ',underline'
-                    else
-                        text_style = 'underline'
-                    end
-                end
-                return text_style
-            end
-        },
-        {
-            text = function(buffer)
-                local errors = buffer.diagnostics.errors
-                if errors == 0 then
-                    errors = ' '
-                elseif(errors <= 9) then
-                    errors = '🔴'
+            bg = function(buffer)
+              if buffer.is_focused then
+                if buffer.is_first then
+                  return bg_color
                 else
-                    errors = "🙃"
+                  return inactive_bg_color
                 end
-                return ' ' .. errors .. ' '
+              elseif buffer.is_first then
+                  return bg_color
+              end
             end
-        },
-        {
-            text = function(buffer)
-                if(buffer.is_modified) then
-                    return '❗'
+          },
+          {
+              text = function(buffer)
+                  local status = ''
+                  if buffer.is_readonly then
+                      status = '➖'
+                  elseif buffer.is_modified then
+                      status = ''
+                  end
+                  return status
+              end,
+          },
+          {
+              text = function(buffer)
+                  return " " .. buffer.devicon.icon
+              end,
+              fg = function(buffer)
+                if buffer.is_focused then
+                  return buffer.devicon.color
                 end
-                return ''
+              end
+          },
+          {
+              text = function(buffer)
+                return buffer.unique_prefix .. buffer.filename
+              end,
+              fg = function(buffer)
+                  if(buffer.diagnostics.errors > 0) then
+                      return '#C95157'
+                  end
+              end,
+              style = function(buffer)
+                  local text_style = 'NONE'
+                  if buffer.is_focused then
+                      text_style = 'bold'
+                  end
+                  if buffer.diagnostics.errors > 0 then
+                      if text_style ~= 'NONE' then
+                          text_style = text_style .. ',underline'
+                      else
+                          text_style = 'underline'
+                      end
+                  end
+                  return text_style
+              end
+          },
+          {
+              text = function(buffer)
+                  local errors = buffer.diagnostics.errors
+                  if(errors <= 9) then
+                      errors = ''
+                  else
+                      errors = "🙃"
+                  end
+                  return errors .. ' '
+              end,
+              fg = function(buffer)
+                if buffer.diagnostics.errors == 0 then
+                  return '#3DEB63'
+                elseif buffer.diagnostics.errors <= 9 then
+                  return '#DB121B'
+                end
+              end
+          },
+          {
+              text = '',
+              delete_buffer_on_left_click = true
+          },
+          {
+            text = function(buffer)
+              if buffer.is_focused or buffer.is_last then
+                return ''
+              else
+                return ' '
+              end
             end,
-            delete_buffer_on_left_click = true
-        },
-        {
-            text  = ' |',
-            fg = '#806FA3'
-        }
-    },
-}) end)
+            fg = function(buffer)
+              if buffer.is_focused then
+                return active_bg_color
+              elseif buffer.is_last then
+                return inactive_bg_color
+              else
+                return bg_color
+              end
+            end,
+            bg = function(buffer)
+              if buffer.is_focused then
+                if buffer.is_last then
+                  return bg_color
+                else
+                  return inactive_bg_color
+                end
+              elseif buffer.is_last then
+                  return bg_color
+              end
+            end
+          }
+      },
+  })
+end)
 import('specs', function(specs) specs.setup({
   show_jumps  = true,
   min_jump = 30,
