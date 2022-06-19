@@ -79,7 +79,7 @@ require('packer').startup(function(use)
   use 'ray-x/cmp-treesitter' -- Neovim snippet for treesitter (Maybe replace the buffer completion?)
   use 'nvim-telescope/telescope-file-browser.nvim' -- Neovim Telescope File Manager
   -- use 'nvim-telescope/telescope-project.nvim' -- Neovim Telescope Project Manager
-  -- use 'cljoly/telescope-repo.nvim' -- Neovim Telescope Repository Project Manager 
+  -- use 'cljoly/telescope-repo.nvim' -- Neovim Telescope Repository Project Manager
   -- use 'simrat39/symbols-outline.nvim' -- Neovim symbol viewer (use treesitter vs ctags)
   use 'tpope/vim-dadbod' -- Vim Database interaction
   use 'kristijanhusak/vim-dadbod-ui' -- Vim UI for database interaction
@@ -96,7 +96,7 @@ require('packer').startup(function(use)
   -- use 'lewis6991/gitsigns.nvim' -- Neovim Git Stuffs (Depending on how much git we want to use, we might want to go this route)
   -- use {'ms-jpq/chadtree', branch = 'chad', run = 'python3 -m chadtree deps'} -- Neovim File Explorer with no external dependencies. Doesn't appear to have ssh support
   -- use {
-  --   'kyazdani42/nvim-tree.lua', -- Neovim File Explorer with no external dependencies. Does appear to have _some_ form of ssh support 
+  --   'kyazdani42/nvim-tree.lua', -- Neovim File Explorer with no external dependencies. Does appear to have _some_ form of ssh support
   --   requires = {
   --     'kyazdani42/nvim-web-devicons', -- optional, for file icon
   --   },
