@@ -497,26 +497,31 @@ import('telescope', function(telescope)
     import('telescope.actions', function(_) t_actions = _ end)
     assert(t_actions)
     telescope.setup({
-     defaults = {
-    mappings = {
-      n = {
-        ["<C-Up>"] = t_actions.preview_scrolling_up,
-        ["<C-Down>"] = t_actions.preview_scrolling_down
-      },
-      i = {
-        ["<C-Up>"] = t_actions.preview_scrolling_up,
-        ["<C-Down>"] = t_actions.preview_scrolling_down
-      }
-    },
-    layout_strategy = "vertical"
-  },
-  extensions = {
-    file_browser = {
-        grouped = true,
-        hidden  = true
-    }
-  },
-})
+        pickers = {
+            colorscheme = {
+                enable_preview = true,
+            }
+        },
+        defaults = {
+            mappings = {
+                n = {
+                    ["<C-Up>"] = t_actions.preview_scrolling_up,
+                    ["<C-Down>"] = t_actions.preview_scrolling_down
+                },
+                i = {
+                  ["<C-Up>"] = t_actions.preview_scrolling_up,
+                  ["<C-Down>"] = t_actions.preview_scrolling_down
+                }
+            },
+            layout_strategy = "vertical"
+        },
+        extensions = {
+            file_browser = {
+                grouped = true,
+                hidden  = true
+            }
+        },
+    })
     telescope.load_extension('fzf')
     telescope.load_extension('live_grep_args')
     telescope.load_extension('file_browser')
