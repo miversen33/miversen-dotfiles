@@ -661,5 +661,6 @@ import('satellite', function(satellite)
 
   })
 end)
+import('colorizer', function(colorizer) colorizer.setup() end)
 
 import('custom_plugins', nil, {hide_output=true})
