@@ -126,6 +126,12 @@ require('packer').startup(function(use)
 
   -- Utilies
   use 'miversen33/netman.nvim'
+  use {
+    'ziontee113/icon-picker.nvim', -- Nerdfont picker
+    requires = {
+      'stevearc/dressing.nvim'
+    }
+  }
   use 'lewis6991/satellite.nvim' -- Scrollbar?
   use 'miversen33/import.nvim' -- Local import function
   use 'nvim-lua/plenary.nvim' -- Neovim "Utility functions"
@@ -662,5 +668,6 @@ import('satellite', function(satellite)
   })
 end)
 import('colorizer', function(colorizer) colorizer.setup() end)
+import('icon-picker', function(icon_picker) icon_picker.setup() end)
 
 import('custom_plugins', nil, {hide_output=true})
