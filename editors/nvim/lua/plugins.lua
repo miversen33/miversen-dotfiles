@@ -668,6 +668,6 @@ import('satellite', function(satellite)
   })
 end)
 import('colorizer', function(colorizer) colorizer.setup() end)
-import('icon-picker', function(icon_picker) icon_picker.setup() end)
+import('icon-picker')
 
 import('custom_plugins', nil, {hide_output=true})
