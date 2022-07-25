@@ -162,10 +162,11 @@ if not DEBUG then
 
     vim.diagnostic.config({
       update_in_insert = true,
-      virtual_text = {
-        source = "always",
-        prefix = '●'
-      },
+      virtual_text = false,
+      -- {
+      --   source = "always",
+      --   prefix = '●'
+      -- },
       float = {
         source = "always",
       },

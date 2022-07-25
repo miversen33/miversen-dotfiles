@@ -20,6 +20,7 @@ require('packer').startup(function(use)
   use 'folke/lsp-colors.nvim' -- Neovim create missing lsp color highlight groups
   use 'folke/trouble.nvim' -- Neovim better diagnostics?
   use 'RishabhRD/nvim-lsputils'
+  use("https://git.sr.ht/~whynothugo/lsp_lines.nvim")
   -- use 'glepnir/lspsaga.nvim' -- Neovim LSP tools
   -- use 'jose-elias-alvarez/null-ls.nvim' -- Neovim "non lsp" lsp
 
