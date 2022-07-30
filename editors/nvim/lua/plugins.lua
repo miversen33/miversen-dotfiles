@@ -218,6 +218,11 @@ import('lualine', function(lualine) lualine.setup{
             else
               return ''
             end
+          end,
+          on_click = function()
+            if require("import").get_failure_count() > 0 then
+              vim.cmd(':ImportStatus')
+            end
           end
         }
     },
