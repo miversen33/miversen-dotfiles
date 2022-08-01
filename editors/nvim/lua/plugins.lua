@@ -164,6 +164,10 @@ for _, value in ipairs(excluded_filetypes_array) do
 end
 vim.g['db_ui_auto_execute_table_helpers'] = 1
 
+import('lsp_lines', function(lsp_lines)
+  lsp_lines.setup()
+end)
+
 import('indent_blankline', function(indent_blankline)
   indent_blankline.setup({
       filetype_exclude = excluded_filetypes_array,
@@ -210,21 +214,8 @@ import('lualine', function(lualine) lualine.setup{
         "aerial", {
           'filetype',
           icon_only = true
-        }, {
-          function()
-            local failed_imports = require("import").get_failure_count()
-            if failed_imports > 0 then
-              return failed_imports .. " ⛔"
-            else
-              return ''
-            end
-          end,
-          on_click = function()
-            if require("import").get_failure_count() > 0 then
-              vim.cmd(':ImportStatus')
-            end
-          end
-        }
+        },
+          "import"
     },
     lualine_y = {
       'encoding', 'progress',
@@ -644,7 +635,7 @@ import('aerial', function(aerial) aerial.setup({
         "Module",
         "Method",
         "Struct",
-        "Variable"
+        -- "Variable"
     },
     placement_editor_edge = true,
     update_events = "TextChanged,InsertLeave,WinEnter,WinLeave",
