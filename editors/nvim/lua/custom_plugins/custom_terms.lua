@@ -27,6 +27,14 @@ local lang_cli_map = {
     term = {
         direction = "float",
         close_on_exit = false,
+    },
+    vterm = {
+        direction = "vertical",
+        close_on_exit = false
+    },
+    hterm = {
+        direction = "horizontal",
+        close_on_exit = false
     }
 }
 
@@ -79,6 +87,19 @@ function M.init()
             }
         })
         vim.api.nvim_create_user_command('CFloatTerm', function() M.get_lang_term('term'):toggle() end, {})
+        vim.api.nvim_create_user_command('CSplitTerm', function(args)
+            local split = args.fargs[1]
+            local term = ''
+            if split == 'vertical' then
+                term = 'vterm'
+            elseif split == 'horizontal' then
+                term = 'hterm'
+            else
+                print(string.format("Unknown split type \"%s\"", split))
+                return
+            end
+            M.get_lang_term(term):toggle()
+        end, {nargs=1})
         vim.api.nvim_create_user_command('CReplTerm', function()
             if active_term then
                 active_term:toggle()
