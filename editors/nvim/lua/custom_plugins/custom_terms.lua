@@ -3,26 +3,24 @@ local M = {}
 local HEIGHT_SCALE = 0.3
 local WIDTH_SCALE = 0.3
 
-local lang_cli_map = {
+local lang_repl_map = {
     python = {
         cmd = "python3",
         direction = "vertical",
         close_on_exit = false,
         auto_scroll = true,
-        winbar = {
-            enabled = true,
-            name_formatter = function(term) return string.format("python repl %d", term.id) end
-        }
     },
     lua = {
         cmd = "croissant",
         direction = "vertical",
         close_on_exit = false,
         auto_scroll = true,
-        winbar = {
-            enabled = true,
-            name_formatter = function(term) return string.format("lua repl %d", term.id) end
-        }
+    },
+    perl = {
+        cmd = "perl -de 1",
+        direction = "vertical",
+        close_on_exit = false,
+        auto_scroll = true,
     },
     term = {
         direction = "float",
@@ -38,18 +36,18 @@ local lang_cli_map = {
     }
 }
 
-local ignored_cli_map = {}
+local ignored_repl_map = {}
 local new_terms = {}
 local active_term = nil
 
-function M.get_lang_term(filetype)
+function M.get_lang_repl(filetype)
     if new_terms[filetype] then return new_terms[filetype] end
-    if ignored_cli_map[filetype] or not lang_cli_map[filetype] then
-        print("Unable to find cli for " .. tostring(filetype))
-        ignored_cli_map[filetype] = 1
+    if ignored_repl_map[filetype] or not lang_repl_map[filetype] then
+        print("Unable to find repl for " .. tostring(filetype))
+        ignored_repl_map[filetype] = 1
     return end
-    local cli_map = lang_cli_map[filetype]
-    local term = new_terms[filetype] or require("toggleterm.terminal").Terminal:new(cli_map)
+    local repl_map = lang_repl_map[filetype]
+    local term = new_terms[filetype] or require("toggleterm.terminal").Terminal:new(repl_map)
     new_terms[filetype] = term
     return term
 end
@@ -86,7 +84,7 @@ function M.init()
                 end
             }
         })
-        vim.api.nvim_create_user_command('CFloatTerm', function() M.get_lang_term('term'):toggle() end, {})
+        vim.api.nvim_create_user_command('CFloatTerm', function() M.get_lang_repl('term'):toggle() end, {})
         vim.api.nvim_create_user_command('CSplitTerm', function(args)
             local split = args.fargs[1]
             local term = ''
@@ -98,7 +96,7 @@ function M.init()
                 print(string.format("Unknown split type \"%s\"", split))
                 return
             end
-            M.get_lang_term(term):toggle()
+            M.get_lang_repl(term):toggle()
         end, {nargs=1})
         vim.api.nvim_create_user_command('CReplTerm', function()
             if active_term then
@@ -107,7 +105,7 @@ function M.init()
                 return
             end
             local filetype = vim.api.nvim_buf_get_option(0, 'filetype')
-            local term = M.get_lang_term(filetype)
+            local term = M.get_lang_repl(filetype)
             if term then
                 term:toggle()
                 active_term = term
