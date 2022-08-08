@@ -30,6 +30,12 @@ local lang_repl_map = {
         direction = "vertical",
         close_on_exit = false
     },
+    javascript = {
+        cmd = "node",
+        direction = "vertical",
+        close_on_exit = false,
+        auto_scroll = true
+    },
     hterm = {
         direction = "horizontal",
         close_on_exit = false
