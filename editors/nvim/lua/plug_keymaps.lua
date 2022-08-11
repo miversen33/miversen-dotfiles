@@ -2,7 +2,8 @@ local silent_noremap = {noremap = true, silent = true}
 local noremap = {noremap=true}
 
 local function copy(lines, _)
-  require('osc52').copy(table.concat(lines, '\n'))
+  vim.fn.OSCYankString(table.concat(lines, "\n"))
+  -- require('osc52').copy(table.concat(lines, '\n'))
 end
 
 local function paste()

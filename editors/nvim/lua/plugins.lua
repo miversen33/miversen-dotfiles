@@ -53,7 +53,8 @@ require('packer').startup(function(use)
   -- use 'folke/zen-mode.nvim' -- Neovim "zen" style coding where it hides everything except the pane you're in. Not sold on it being actually useful though
 
   -- IDE Specific
-  use 'ojroques/nvim-osc52' -- Neovim clipboard integration
+  use 'ojroques/vim-oscyank'
+  -- use 'ojroques/nvim-osc52' -- Neovim clipboard integration
   use 'wakatime/vim-wakatime'
   use {
     'hrsh7th/nvim-cmp', -- Neovim autocompletion
