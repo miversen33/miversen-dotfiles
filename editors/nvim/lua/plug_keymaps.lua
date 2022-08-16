@@ -26,6 +26,7 @@ vim.g.clipboard = {
 }
 
 local function map(kind, lhs, rhs, opts)
+    opts = opts or silent_noremap
     vim.api.nvim_set_keymap(kind, lhs, rhs, opts)
 end
 
