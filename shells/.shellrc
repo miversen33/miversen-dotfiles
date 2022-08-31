@@ -65,7 +65,19 @@ profile_rc() {
   if [ -d "/opt/*/current/bin" ]; then
     for dir in /opt/*/current/bin; do
       [ -d "$dir" ] && PATH="${PATH:+$PATH:}$dir"
-      done
+    done
+  fi
+
+  if [ -d "/snap/*" ]; then
+    for dir in /snap/*; do
+      [ -d "$dir" ] && PATH="${PATH:+$PATH:}$dir"
+    done
+  fi
+
+  if [ -d "/snap/*/current" ]; then
+    for dir in /snap/*/current; do
+      [ -d "$dir" ] && PATH="${PATH:+$PATH:}$dir"
+    done
   fi
 
   if [ -d "$HOME/*/bin" ]; then
