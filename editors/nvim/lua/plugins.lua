@@ -127,13 +127,17 @@ require('packer').startup(function(use)
   -- use 'AckslD/nvim-neoclip.lua' -- Neovim Clipboard/register manager
 
   -- Utilies
-  use 'miversen33/netman.nvim'
+  use {
+    'miversen33/netman.nvim',
+    branch = 'issue-28-libuv-shenanigans'
+  }
   use {
     'ziontee113/icon-picker.nvim', -- Nerdfont picker
     requires = {
       'stevearc/dressing.nvim'
     }
   }
+  use 'monaqa/dial.nvim' -- Neovim better increment?
   use 'lewis6991/satellite.nvim' -- Scrollbar?
   use 'miversen33/import.nvim' -- Local import function
   use 'nvim-lua/plenary.nvim' -- Neovim "Utility functions"
@@ -167,6 +171,18 @@ vim.g['db_ui_auto_execute_table_helpers'] = 1
 
 import('lsp_lines', function(lsp_lines)
   lsp_lines.setup()
+end)
+
+import('dial.augend', function(augend)
+  import('dial.config', function(config)
+    config.augends:register_group({
+      default = {
+        augend.integer.alias.decimal,   -- nonnegative decimal number (0, 1, 2, 3, ...)
+        augend.integer.alias.hex,       -- nonnegative hex number  (0x01, 0x1a1f, etc.)
+        augend.date.alias["%Y/%m/%d"],  -- date (2022/02/19, etc.)
+      }
+    })
+  end)
 end)
 
 import('indent_blankline', function(indent_blankline)
@@ -565,7 +581,8 @@ import('telescope', function(telescope)
         extensions = {
             file_browser = {
                 grouped = true,
-                hidden  = true
+                hidden  = true,
+                respect_gitignore = false,
             }
         },
     })
@@ -641,7 +658,7 @@ import('aerial', function(aerial) aerial.setup({
     placement_editor_edge = true,
     update_events = "TextChanged,InsertLeave,WinEnter,WinLeave",
     show_guides = true,
-    close_behavior = "global"
+    attach_mode = "global",
 }) end)
 
 import('orgmode', function(orgmode) orgmode.setup_ts_grammar() end)
