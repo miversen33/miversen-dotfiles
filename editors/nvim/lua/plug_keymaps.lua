@@ -1,6 +1,7 @@
 local silent_noremap = {noremap = true, silent = true}
 local noremap = {noremap=true}
 
+-- This isn't copying to system clipboard?????
 local function copy(lines, _)
   vim.fn.OSCYankString(table.concat(lines, "\n"))
   -- require('osc52').copy(table.concat(lines, '\n'))

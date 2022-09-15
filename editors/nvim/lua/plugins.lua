@@ -113,9 +113,8 @@ require('packer').startup(function(use)
   use 'nvim-telescope/telescope.nvim' -- Fuzzy Finder
   use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' } -- Fuzzy Finder with fzf-native
   use 'nvim-telescope/telescope-live-grep-args.nvim'
-  -- use 'sunjon/Shade.nvim' -- Neovim inactive window dimmer (this is a nice plugin but it breaks _way_ too often...)
   use 'nvim-orgmode/orgmode'
-  use 'norcalli/nvim-colorizer.lua' -- Neovim color highlighter
+  use 'uga-rosa/ccc.nvim' -- New colorizer?
   -- use 'ahmedkhalf/project.nvim' -- Neovim project management
   -- use 'gbprod/substitute.nvim' -- Neovim better substitution
   -- use 'filipdutescu/renamer.nvim' -- Neovim vscode style variable renaming
@@ -137,7 +136,8 @@ require('packer').startup(function(use)
       'stevearc/dressing.nvim'
     }
   }
-  use 'monaqa/dial.nvim' -- Neovim better increment?
+  use 'David-Kunz/markid'
+  -- use 'monaqa/dial.nvim' -- Neovim better increment?
   use 'lewis6991/satellite.nvim' -- Scrollbar?
   use 'miversen33/import.nvim' -- Local import function
   use 'nvim-lua/plenary.nvim' -- Neovim "Utility functions"
@@ -150,6 +150,7 @@ require('packer').startup(function(use)
   -- use 'aserowy/tmux.nvim' -- Neovim Tmux integration
   -- use 'numToStr/Navigator.nvim' -- Neovim better pane handling
 
+  -- We can almost certainly remove fzf...?
   use 'junegunn/fzf'
   use 'junegunn/fzf.vim'
   -- Automatically set up your configuration after cloning packer.nvim
@@ -171,18 +172,6 @@ vim.g['db_ui_auto_execute_table_helpers'] = 1
 
 import('lsp_lines', function(lsp_lines)
   lsp_lines.setup()
-end)
-
-import('dial.augend', function(augend)
-  import('dial.config', function(config)
-    config.augends:register_group({
-      default = {
-        augend.integer.alias.decimal,   -- nonnegative decimal number (0, 1, 2, 3, ...)
-        augend.integer.alias.hex,       -- nonnegative hex number  (0x01, 0x1a1f, etc.)
-        augend.date.alias["%Y/%m/%d"],  -- date (2022/02/19, etc.)
-      }
-    })
-  end)
 end)
 
 import('indent_blankline', function(indent_blankline)
@@ -671,6 +660,7 @@ import('nvim-treesitter.configs', function(nvim_treesitter_configs) nvim_treesit
     disable = {'org'}, -- Remove this to use TS highlighter for some of the highlights (Experimental)
     additional_vim_regex_highlighting = {'org'}, -- Required since TS highlighter doesn't support all syntax features (conceal)
   },
+  markid = { enable = true},
   ensure_installed = {'org'}, -- Or run :TSUpdate org
 }) end)
 
@@ -682,7 +672,11 @@ import('satellite', function(satellite)
 
   })
 end)
-import('colorizer', function(colorizer) colorizer.setup() end)
 import('icon-picker')
+import('ccc', function(ccc)
+  end
+)
+
+--- Custom shits below
 
 import('custom_plugins', nil, {hide_output=true})
