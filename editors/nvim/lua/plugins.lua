@@ -1,3 +1,4 @@
+-- Probably should assign some of these as lazy loading to help improve startup time?
 vim.cmd([[
   augroup packer_user_config
     autocmd!
