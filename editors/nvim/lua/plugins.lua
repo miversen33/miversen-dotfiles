@@ -118,10 +118,10 @@ require('packer').startup(function(use)
   -- -- use 'AckslD/nvim-neoclip.lua' -- Neovim Clipboard/register manager
   --
   -- -- Utilies
-  -- -- use {
-  -- --   'miversen33/netman.nvim',
-  -- --   branch = 'issue-28-libuv-shenanigans'
-  -- -- }
+  use {
+    'miversen33/netman.nvim',
+    branch = 'issue-28-libuv-shenanigans'
+  }
   -- use '~/git/netman.nvim/'
   use 'haringsrob/nvim_context_vt'
   use {
