@@ -12,7 +12,7 @@ map('n', 'th?'           , ':lua require("telescope.builtin").help_tags()<CR>', 
 map('n', 'tc?'           , ':lua require("telescope.builtin").commands()<CR>', silent_noremap)
 map('n', 'tk?'           , ':lua require("telescope.builtin").keymaps()<CR>', silent_noremap)
 map('n', 'ts'            , ':lua require("telescope.builtin").current_buffer_fuzzy_find({skip_empty_lines=true})<CR>', silent_noremap)
-map('n', 'tS'            , ':lua require("telescope.builtin").live_grep({use_regex=true})<CR>', silent_noremap)
+map('n', 'tS'            , ':lua require("telescope").extensions.live_grep_args.live_grep_args()<CR>', silent_noremap)
 map('n', 'tt'            , ':lua require("telescope.builtin").treesitter()<CR>', silent_noremap)
 map('n', 'tm'            , ':lua require("telescope.builtin").man_pages()<CR>', silent_noremap)
 map('n', 'tf'            , ':lua require("telescope").extensions.file_browser.file_browser()<CR>', silent_noremap)
