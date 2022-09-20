@@ -1,7 +1,35 @@
-vim.g.vscode_style = 'dark'
+vim.g.catppuccin_flavour = "mocha" -- latte, frappe, macchiato, mocha
+
+import('catppuccin', function(catppuccin)
+    catppuccin.setup({
+        transparent_background=false,
+        term_colors=true,
+        compile = {
+            enabled = false,
+            path = vim.fn.stdpath("cache") .. "/catppuccin",
+        },
+        dim_inactive = {
+            enabled = true,
+            shade = "dark",
+            percentage = 0.50,
+        },
+        integrations = {
+            "aerial",
+            "notify",
+            "treesitter",
+            indent_blankline = {
+                enabled = true,
+                colored_indent_levels = false
+            }
+        }
+    })
+    vim.cmd("colorscheme catppuccin")
+end)
+
+-- vim.g.vscode_style = 'dark'
 -- vim.g.vscode_transparent = 1
-vim.g.vscode_italic_comment = 1
-vim.cmd('colorscheme vscode')
+-- vim.g.vscode_italic_comment = 1
+-- vim.cmd('colorscheme vscode')
 -- import('onedarkpro', function(onedarkpro)
 --     local onedark = 'onedark'
 --     local onelight = 'onelight'

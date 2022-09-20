@@ -1,5 +1,5 @@
 [Appearance]
-ColorScheme=MateriaDark
+ColorScheme=Dark Solarized
 Font=MesloLGS NF,11,-1,5,50,0,0,0,0,0
 
 [Cursor Options]

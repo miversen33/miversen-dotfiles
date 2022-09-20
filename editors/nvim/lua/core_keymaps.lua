@@ -11,8 +11,8 @@ vim.g.mapleader = ' '
 
 map('n', 'AA',       'ggVG', silent_noremap)
 map('v', 'AA',       'ggV', silent_noremap)
-map('n', '<A-k>',    ':m .+1<CR>==', silent_noremap)
-map('n', '<A-i>',    ':m .-2<CR>==', silent_noremap)
+map('n', '<A-Down>', 'ddjP', silent_noremap)
+map('n', '<A-Up>',   'ddkP', silent_noremap)
 map('n', '<C-x>',    'dd', silent_noremap)
 map('n', '<C-X>',    'ddO', silent_noremap)
 map('n', '<C-s>',    ':w<CR> :echo "Saved File"<CR>h', noremap)
