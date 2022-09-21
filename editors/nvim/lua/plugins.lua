@@ -133,6 +133,9 @@ require('packer').startup(function(use)
       'stevearc/dressing.nvim'
     }
   }
+  use {
+    'rmagatti/auto-session',
+  }
   -- use 'David-Kunz/markid'
   -- -- use 'monaqa/dial.nvim' -- Neovim better increment?
   -- use 'lewis6991/satellite.nvim' -- Scrollbar?
@@ -798,6 +801,15 @@ end)
 import('lua-dev', function(lua_dev)
     lua_dev.setup()
 end)
+
+
+import('auto-session', function(auto_session)
+    auto_session.setup({
+        log_level = "error",
+        auto_session_suppress_dirs = { "~/", "/tmp/", "~/Downloads", "/"}
+    })
+end)
+
 --- Custom shits below
 
 import('custom_plugins', nil, {hide_output=true})
