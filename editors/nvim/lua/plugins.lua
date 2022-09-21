@@ -10,15 +10,15 @@ require('packer').startup(function(use)
   use 'wbthomason/packer.nvim' -- Neovim Use Packer
 
   -- -- Debugger
-  -- use 'mfussenegger/nvim-dap' -- Neovim Debug Adapter Protocol
-  -- use 'rcarriga/nvim-dap-ui' -- Neovim DAP UI components. May not be necessary?
+  use 'mfussenegger/nvim-dap' -- Neovim Debug Adapter Protocol
+  use 'rcarriga/nvim-dap-ui' -- Neovim DAP UI components. May not be necessary?
   -- use 'jbyuki/one-small-step-for-vimkind' -- Neovim plugin debugger
   --
   -- -- LSP Setup
   use 'neovim/nvim-lspconfig' -- Neovim LSP Setup
   -- use 'williamboman/nvim-lsp-installer' -- Neovim LSP Installer
   -- use 'RRethy/vim-illuminate' -- Neovim highlight word under cursor
-  -- use 'folke/lsp-colors.nvim' -- Neovim create missing lsp color highlight groups
+  use 'folke/lsp-colors.nvim' -- Neovim create missing lsp color highlight groups
   use 'folke/trouble.nvim' -- Neovim better diagnostics?
   -- use 'RishabhRD/nvim-lsputils'
   use("https://git.sr.ht/~whynothugo/lsp_lines.nvim")
@@ -31,6 +31,7 @@ require('packer').startup(function(use)
   -- use 'simrat39/rust-tools.nvim' -- Neovim Rust Tool
   -- -- use {'iamcco/markdown-preview.nvim', run = 'cd app && yarn install', cmd = 'MarkdownPreview'} -- Neovim Markdown tool
   -- use {'ellisonleao/glow.nvim', run = ':GlowInstall' } -- Neovim Markdown Preview in Neovim
+  use "folke/lua-dev.nvim" -- Neovim Developer Auto complete
 
   -- -- Theme(s)
   use { "catppuccin/nvim", as = "catppuccin" }
@@ -58,8 +59,6 @@ require('packer').startup(function(use)
   -- use 'nvim-pack/nvim-spectre' -- Neovim Search and Replace
   -- use 'tpope/vim-fugitive' -- Vim Git Wrapper
   use 'saadparwaiz1/cmp_luasnip' -- Neovim LuaSnip autocompletion engine for nvim-cmp
-  -- -- use 'hrsh7th/cmp-vsnip' -- Neovim autocompletion -> Neovim Snippet (vsnip) feeder
-  -- -- use 'hrsh7th/vim-vsnip' -- Vim snippet manager
   use 'hrsh7th/cmp-nvim-lsp'  -- vim/neovim snippet stuffs
   -- use 'f3fora/cmp-spell' -- neovim spellcheck snippet stuffs
   use 'hrsh7th/cmp-buffer'  -- vim/neovim snippet stuffs
@@ -119,8 +118,12 @@ require('packer').startup(function(use)
   --
   -- -- Utilies
   use {
-    'miversen33/netman.nvim',
-    branch = 'issue-28-libuv-shenanigans'
+    'bennypowers/nvim-regexplainer',
+    requires = {
+        'nvim-treesitter/nvim-treesitter',
+        'MunifTanjim/nui.nvim'
+    },
+    run = ':TSInstall regex'
   }
   -- use '~/git/netman.nvim/'
   use 'haringsrob/nvim_context_vt'
@@ -434,23 +437,6 @@ import('cokeline', function(cokeline)
   }
   cokeline.setup(setup)
 end)
-import('specs', function(specs) specs.setup({
-  show_jumps  = true,
-  min_jump = 30,
-  popup = {
-      delay_ms = 0, -- delay before popup displays
-      inc_ms = 5, -- time increments used for fade/resize effects 
-      blend = 10, -- starting blend, between 0-100 (fully transparent), see :h winblend
-      width = 70,
-      winhl = "PMenu",
-      fader = require('specs').pulse_fader,
-      resizer = require('specs').shrink_resizer
-  },
-  ignore_filetypes = {},
-  ignore_buftypes = {
-      nofile = true,
-  },
-}) end)
 
 -- Setup nvim-cmp
 -- TODO: Setup these colors to match colors in catppuccin for theme matching
@@ -611,26 +597,22 @@ import('trouble', function(trouble) trouble.setup({
 }) end)
 
 -- Maybe a better solution here?
-import('treesitter-context', function(treesitter_context) treesitter_context.setup({
-    -- throttle = false,
-    max_lines = 3,
-    patters = {
-        default = {
-            'class',
-            'function',
-            'method',
-            'for',
-            'while',
-            'if',
-            'switch',
-            'case'
-        }
-    }
-}) end)
-
-import('bqf', function(bqf) bqf.setup({
-
-}) end)
+-- import('treesitter-context', function(treesitter_context) treesitter_context.setup({
+--     -- throttle = false,
+--     max_lines = 3,
+--     patters = {
+--         default = {
+--             'class',
+--             'function',
+--             'method',
+--             'for',
+--             'while',
+--             'if',
+--             'switch',
+--             'case'
+--         }
+--     }
+-- }) end)
 
 import('todo-comments', function(todo_comments) todo_comments.setup({
 
@@ -680,9 +662,7 @@ import('nvim-treesitter.configs', function(nvim_treesitter_configs) nvim_treesit
   markid = { enable = true},
 }) end)
 
-import('hlargs', function(hlargs) hlargs.setup() end)
 import('toggleterm', function(toggleterm) toggleterm.setup({}) end)
-import('satellite', function(satellite) satellite.setup({}) end)
 import('icon-picker')
 import('ccc')
 
@@ -811,6 +791,13 @@ import('nvim-cursorline', function(nvim_cursorline)
     nvim_cursorline.setup()
 end)
 
+import('regexplainer', function(regexplainer)
+    regexplainer.setup()
+end)
+
+import('lua-dev', function(lua_dev)
+    lua_dev.setup()
+end)
 --- Custom shits below
 
 import('custom_plugins', nil, {hide_output=true})
