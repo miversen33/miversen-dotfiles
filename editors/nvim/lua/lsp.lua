@@ -13,18 +13,18 @@ local lsp_handlers = {
 }
 
 local lsp_on_attach = function(client, bufnr)
-    import('illuminate', function(illuminate)
-        illuminate.on_attach(client)
-    end)
+    -- import('illuminate', function(illuminate)
+    --     illuminate.on_attach(client)
+    -- end)
     import('aerial', function(aerial)
         aerial.on_attach(client, bufnr)
     end)
 end
 
 local lsp_capabilities = vim.lsp.protocol.make_client_capabilities()
-import('cmp_nvim_lsp', function(cmp_nvim_lsp)
-    capabilities = cmp_nvim_lsp.update_capabilities(capabilities)
-end)
+-- import('cmp_nvim_lsp', function(cmp_nvim_lsp)
+--     capabilities = cmp_nvim_lsp.update_capabilities(capabilities)
+-- end)
 
 -- Consider making your own lsp configuration?
 import('lspconfig', function(lspconfig)
@@ -46,3 +46,20 @@ import('lspconfig', function(lspconfig)
         lspconfig[language_server].setup(ls_config)
     end
 end)
+
+vim.fn.sign_define('LspDiagnosticSignError', {
+    text='',
+    texthl='LspDiagnosticSignError',
+})
+vim.fn.sign_define('LspDiagnosticSignWarning', {
+    text='⚠',
+    texthl='LspDiagnosticSignWarning',
+})
+vim.fn.sign_define('LspDiagnosticSignInformation', {
+    text='',
+    texthl='LspDiagnosticSignInformation',
+})
+vim.fn.sign_define('LspDiagnosticSignHint', {
+    text='',
+    texthl='LspDiagnosticSignHint',
+})
