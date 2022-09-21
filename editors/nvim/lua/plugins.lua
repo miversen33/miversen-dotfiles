@@ -157,7 +157,10 @@ require('packer').startup(function(use)
   -- -- Configure this so its "pretty"
   -- -- use 'voldikss/vim-floaterm' -- Vim/Neovim floating terminal
   use 'akinsho/toggleterm.nvim' -- Neovim Floating Terminal Framework
-  -- use 'm-demare/hlargs.nvim'
+  use {
+      'm-demare/hlargs.nvim',
+      requires = { 'nvim-treesitter/nvim-treesitter' }
+  }
   -- -- use 'aserowy/tmux.nvim' -- Neovim Tmux integration
   -- -- use 'numToStr/Navigator.nvim' -- Neovim better pane handling
   --
@@ -443,6 +446,52 @@ end)
 
 -- Setup nvim-cmp
 -- TODO: Setup these colors to match colors in catppuccin for theme matching
+
+local CmpItemAbbrDeprecated = "#808080"
+local CmpItemAbbrMatch = "#569CD6"
+local CmpItemAbbrMatchFuzzy = "#569CD6"
+local CmpItemKindVariable = "#9CDCFE"
+local CmpItemKindInterface = "#9CDCFE"
+local CmpItemKindText = "#9CDCFE"
+local CmpItemKindFunction = "#C586C0"
+local CmpItemKindMethod = "#C586C0"
+local CmpItemKindKeyword = "#D4D4D4"
+local CmpItemKindProperty = "#D4D4D4"
+local CmpItemKindUnit = "#D4D4D4"
+local TreesitterContext = "#2D336E"
+
+import('catppuccin.palettes', function(cc)
+    local pallet = cc.get_palette()
+
+    CmpItemAbbrDeprecated = pallet.overlay0
+    CmpItemAbbrMatch = pallet.sapphhire
+    CmpItemAbbrMatchFuzzy = pallet.sapphire
+    CmpItemKindVariable = pallet.teal
+    CmpItemKindInterface = pallet.teal
+    CmpItemKindText = pallet.teal
+    CmpItemKindFunction = pallet.red
+    CmpItemKindMethod = pallet.red
+    CmpItemKindKeyword = pallet.rosewater
+    CmpItemKindProperty = pallet.rosewater
+    CmpItemKindUnit = pallet.rosewater
+    TreesitterContext = pallet.surface0
+
+
+end)
+
+vim.cmd(string.format("highlight! CmpItemAbbrDeprecated guibg=NONE gui=strikethrough guifg=%s", CmpItemAbbrDeprecated))
+vim.cmd(string.format("highlight! CmpItemAbbrMatch guibg=NONE guifg=%s", CmpItemAbbrMatch))
+vim.cmd(string.format("highlight! CmpItemAbbrMatchFuzzy guibg=NONE guifg=%s", CmpItemAbbrMatchFuzzy))
+vim.cmd(string.format("highlight! CmpItemKindVariable guibg=NONE guifg=%s", CmpItemKindVariable))
+vim.cmd(string.format("highlight! CmpItemKindInterface guibg=NONE guifg=%s", CmpItemKindInterface))
+vim.cmd(string.format("highlight! CmpItemKindText guibg=NONE guifg=%s", CmpItemKindText))
+vim.cmd(string.format("highlight! CmpItemKindFunction guibg=NONE guifg=%s", CmpItemKindFunction))
+vim.cmd(string.format("highlight! CmpItemKindMethod guibg=NONE guifg=%s", CmpItemKindMethod))
+vim.cmd(string.format("highlight! CmpItemKindKeyword guibg=NONE guifg=%s", CmpItemKindKeyword))
+vim.cmd(string.format("highlight! CmpItemKindProperty guibg=NONE guifg=%s", CmpItemKindProperty))
+vim.cmd(string.format("highlight! CmpItemKindUnit guibg=NONE guifg=%s", CmpItemKindUnit))
+vim.cmd(string.format("highlight! TreesitterContext guibg=%s gui=bold", TreesitterContext))
+
 vim.cmd([[
     highlight! CmpItemAbbrDeprecated guibg=NONE gui=strikethrough guifg=#808080
     highlight! CmpItemAbbrMatch guibg=NONE guifg=#569CD6
@@ -802,13 +851,14 @@ import('lua-dev', function(lua_dev)
     lua_dev.setup()
 end)
 
-
 import('auto-session', function(auto_session)
     auto_session.setup({
         log_level = "error",
         auto_session_suppress_dirs = { "~/", "/tmp/", "~/Downloads", "/"}
     })
 end)
+
+import('hlargs', function(hlargs) hlargs.setup() end)
 
 --- Custom shits below
 
