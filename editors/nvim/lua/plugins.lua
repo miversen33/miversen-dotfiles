@@ -138,10 +138,7 @@ require('packer').startup(function(use)
   -- use 'David-Kunz/markid'
   -- -- use 'monaqa/dial.nvim' -- Neovim better increment?
   -- use 'lewis6991/satellite.nvim' -- Scrollbar?
-  use {
-      'miversen33/import.nvim', -- Local import function
-      branch = "11-multi-imports"
-  }
+  use 'miversen33/import.nvim' -- Local import function
   -- use {
   --   'nvim-neo-tree/neo-tree.nvim', -- File Browser
   --   branch = "v2.x",
