@@ -105,7 +105,6 @@ require('packer').startup(function(use)
   use 'nvim-telescope/telescope-live-grep-args.nvim'
   -- use 'nvim-orgmode/orgmode'
   use 'uga-rosa/ccc.nvim' -- Neovim color picker?
-  use 'norcalli/nvim-colorizer.lua' -- Neovim color highlighter
   -- -- use 'ahmedkhalf/project.nvim' -- Neovim project management
   -- -- use 'gbprod/substitute.nvim' -- Neovim better substitution
   -- -- use 'filipdutescu/renamer.nvim' -- Neovim vscode style variable renaming
@@ -139,7 +138,10 @@ require('packer').startup(function(use)
   -- use 'David-Kunz/markid'
   -- -- use 'monaqa/dial.nvim' -- Neovim better increment?
   -- use 'lewis6991/satellite.nvim' -- Scrollbar?
-  use 'miversen33/import.nvim' -- Local import function
+  use {
+      'miversen33/import.nvim', -- Local import function
+      branch = "11-multi-imports"
+  }
   -- use {
   --   'nvim-neo-tree/neo-tree.nvim', -- File Browser
   --   branch = "v2.x",
@@ -716,7 +718,14 @@ import('nvim-treesitter.configs', function(nvim_treesitter_configs) nvim_treesit
 
 import('toggleterm', function(toggleterm) toggleterm.setup({}) end)
 import('icon-picker')
-import('ccc')
+import('ccc', function(ccc)
+    ccc.setup({
+        highlighter = {
+            auto_enable = true
+        },
+        bar_char = "█"
+    })
+end)
 
 import('neo-tree', function(neo_tree)
   neo_tree.setup({
@@ -766,7 +775,6 @@ import("osc52", function(osc52)
     -- vim.keymap.set('n', '<leader>cc', '"+yy')
 end)
 
-import('colorizer', function(colorizer) colorizer.setup() end)
 import('windex', function(windex)
     windex.setup({
         default_keymaps = false
