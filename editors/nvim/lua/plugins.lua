@@ -117,6 +117,12 @@ require('packer').startup(function(use)
   --
   -- -- Utilies
   use {
+      'VonHeikemen/searchbox.nvim', -- Puts a searchbox in the top right corner. I mean... Why not?
+      requires = {
+          {'MunifTanjim/nui.nvim'}
+      }
+  }
+  use {
     'bennypowers/nvim-regexplainer',
     requires = {
         'nvim-treesitter/nvim-treesitter',
