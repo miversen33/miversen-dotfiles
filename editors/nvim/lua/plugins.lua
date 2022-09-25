@@ -132,9 +132,6 @@ require('packer').startup(function(use)
       'stevearc/dressing.nvim'
     }
   }
-  use {
-    'rmagatti/auto-session',
-  }
   -- use 'David-Kunz/markid'
   -- -- use 'monaqa/dial.nvim' -- Neovim better increment?
   -- use 'lewis6991/satellite.nvim' -- Scrollbar?
