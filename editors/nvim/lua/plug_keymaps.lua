@@ -15,7 +15,7 @@ map('n', 'ts'            , ':lua require("telescope.builtin").current_buffer_fuz
 map('n', 'tS'            , ':lua require("telescope").extensions.live_grep_args.live_grep_args()<CR>', silent_noremap)
 map('n', 'tt'            , ':lua require("telescope.builtin").treesitter()<CR>', silent_noremap)
 map('n', 'tm'            , ':lua require("telescope.builtin").man_pages()<CR>', silent_noremap)
-map('n', 'tf'            , ':lua require("telescope").extensions.file_browser.file_browser()<CR>', silent_noremap)
+map('n', 'tf'            , ':Neotree filesystem reveal right<CR>', silent_noremap)
 map('n', '<leader>t'     , ':TroubleToggle<CR>', silent_noremap)
 map('n', '<C-t>'         , ':CFloatTerm<CR>', silent_noremap)
 map('t', '<C-t>'         , '<C-\\><C-n>:CFloatTerm<CR>', silent_noremap)

@@ -142,15 +142,15 @@ require('packer').startup(function(use)
   -- -- use 'monaqa/dial.nvim' -- Neovim better increment?
   -- use 'lewis6991/satellite.nvim' -- Scrollbar?
   use 'miversen33/import.nvim' -- Local import function
-  -- use {
-  --   'nvim-neo-tree/neo-tree.nvim', -- File Browser
-  --   branch = "v2.x",
-  --   requires = { 
-  --     "nvim-lua/plenary.nvim",
-  --     "kyazdani42/nvim-web-devicons", -- not strictly required, but recommended
-  --     "MunifTanjim/nui.nvim",
-  --   }
-  -- }
+  use {
+    'nvim-neo-tree/neo-tree.nvim', -- File Browser
+    branch = "v2.x",
+    requires = {
+      "nvim-lua/plenary.nvim",
+      "kyazdani42/nvim-web-devicons", -- not strictly required, but recommended
+      "MunifTanjim/nui.nvim",
+    }
+  }
   -- -- use '~/git/plenary.nvim/'
   use 'nvim-lua/plenary.nvim' -- Neovim "Utility functions"
   use 'declancm/windex.nvim' -- Neovim better window pane handling?
