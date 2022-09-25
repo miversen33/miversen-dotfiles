@@ -80,7 +80,6 @@ require('packer').startup(function(use)
   -- -- use 'gelguy/wilder.nvim' -- Neovim command autocomplete?
   -- -- use 'steelsojka/pears.nvim' -- Neovim auto pair
   -- use 'kevinhwang91/nvim-bqf' -- Neovim Better Quickfix
-  -- -- use 'rmagatti/auto-session' -- Neovim session management
   use 'numToStr/Comment.nvim' -- Neovim Commenting
   use 'folke/todo-comments.nvim' -- Neovim TODO Comment Highlighting
   -- -- use 'f-person/git-blame.nvim' -- Neovim Git Blame (shows via virtual text)
@@ -859,12 +858,6 @@ import('lua-dev', function(lua_dev)
     lua_dev.setup()
 end)
 
-import('auto-session', function(auto_session)
-    auto_session.setup({
-        log_level = "error",
-        auto_session_suppress_dirs = { "~/", "/tmp/", "~/Downloads", "/"}
-    })
-end)
 
 import('hlargs', function(hlargs) hlargs.setup() end)
 
