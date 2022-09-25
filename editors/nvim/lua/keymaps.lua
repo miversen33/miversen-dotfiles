@@ -1,7 +1,7 @@
 local setup = function(debug_mode)
-    require('core_keymaps')
+    import('core_keymaps')
     if not debug_mode then
-        require('plug_keymaps')
+        import('plug_keymaps')
     end
 end
 
