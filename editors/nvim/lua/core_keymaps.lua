@@ -10,7 +10,7 @@ map('n', '<Space',   '<Nop>', silent_noremap)
 vim.g.mapleader = ' '
 
 -- Really not fond of this
-map('', '<Esc><Esc>',     ':noh<CR>', silent_noremap)
+map('', '<Esc>',     ':noh<CR><Esc>', silent_noremap)
 map('n', 'AA',       'ggVG', silent_noremap)
 map('v', 'AA',       'ggV', silent_noremap)
 map('n', '<A-Down>', 'ddjP', silent_noremap)
