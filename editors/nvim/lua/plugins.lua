@@ -115,6 +115,7 @@ require('packer').startup(function(use)
   -- -- use 'AckslD/nvim-neoclip.lua' -- Neovim Clipboard/register manager
   --
   -- -- Utilies
+  use 'anuvyklack/hydra.nvim'
   use {
       'VonHeikemen/searchbox.nvim', -- Puts a searchbox in the top right corner. I mean... Why not?
       requires = {
@@ -130,6 +131,7 @@ require('packer').startup(function(use)
     run = ':TSInstall regex'
   }
   -- use '~/git/netman.nvim/'
+  use 'hkupty/iron.nvim'
   use 'haringsrob/nvim_context_vt'
   use {
     'ziontee113/icon-picker.nvim', -- Nerdfont picker
@@ -152,8 +154,7 @@ require('packer').startup(function(use)
   }
   -- -- use '~/git/plenary.nvim/'
   use 'nvim-lua/plenary.nvim' -- Neovim "Utility functions"
-  use 'declancm/windex.nvim' -- Neovim better window pane handling?
-  -- use 'mrjones2014/smart-splits.nvim' -- Neovim better split handling?
+  use 'mrjones2014/smart-splits.nvim' -- Neovim better split handling?
   use 'stevearc/aerial.nvim' -- Better code outline??
   -- -- Configure this so its "pretty"
   -- -- use 'voldikss/vim-floaterm' -- Vim/Neovim floating terminal
@@ -162,6 +163,7 @@ require('packer').startup(function(use)
       'm-demare/hlargs.nvim',
       requires = { 'nvim-treesitter/nvim-treesitter' }
   }
+  use 'declancm/maximize.nvim'
   -- -- use 'aserowy/tmux.nvim' -- Neovim Tmux integration
   -- -- use 'numToStr/Navigator.nvim' -- Neovim better pane handling
   --
@@ -710,10 +712,17 @@ import('aerial', function(aerial) aerial.setup({
 }) end)
 
 -- Tree-sitter configuration
-import('nvim-treesitter.configs', function(nvim_treesitter_configs) nvim_treesitter_configs.setup({
-  -- If TS highlights are not enabled at all, or disabled via `disable` prop, highlighting will fallback to default Vim syntax highlighting
-  markid = { enable = true},
-}) end)
+import({'nvim-treesitter.configs', 'nvim-treesitter.highlight'}, function(modules)
+  modules['nvim-treesitter.configs'].setup({
+    -- If TS highlights are not enabled at all, or disabled via `disable` prop, highlighting will fallback to default Vim syntax highlighting
+    highlight = { enable = true },
+    markid = { enable = true}
+  })
+  -- modules['nvim-treesitter.highlight'].set_custom_captures({
+  --   ["hlargs.namedparam"] = "Hlargs",
+  -- })
+end)
+
 
 import('toggleterm', function(toggleterm) toggleterm.setup({}) end)
 import('icon-picker')
@@ -731,7 +740,7 @@ import('neo-tree', function(neo_tree)
       sources = {
         "filesystem",
         "buffers",
-        "netman",
+        -- "netman",
       }
     })
 end)
@@ -774,11 +783,11 @@ import("osc52", function(osc52)
     -- vim.keymap.set('n', '<leader>cc', '"+yy')
 end)
 
-import('windex', function(windex)
-    windex.setup({
-        default_keymaps = false
-    })
-end)
+-- import('windex', function(windex)
+--     windex.setup({
+--         default_keymaps = false
+--     })
+-- end)
 
 import('hlslens', function(hlslens)
    local kopts = {noremap = true, silent = true}
@@ -860,6 +869,50 @@ end)
 
 
 import('hlargs', function(hlargs) hlargs.setup() end)
+
+import('iron.core', function(iron)
+    iron.setup({
+        config = {
+            scratch_rep = true,
+            repl_definition = {
+                lua = {
+                    command = {"croissant"}
+                },
+                python = {
+                    command = {"/usr/bin/env", "python3"}
+                }
+            },
+            repl_open_cmd = require("iron.view").split.vertical("30%")
+        },
+        keymaps = {
+        send_motion = "<space>sc",
+        visual_send = "<space>sc",
+        send_file = "<space>sf",
+        send_line = "<space>sl",
+        send_mark = "<space>sm",
+        mark_motion = "<space>mc",
+        mark_visual = "<space>mc",
+        remove_mark = "<space>md",
+        cr = "<space>s<cr>",
+        interrupt = "<space>s<space>",
+        exit = "<space>sq",
+        clear = "<space>cl",
+        },
+        -- If the highlight is on, you can change how it looks
+        -- For the available options, check nvim_set_hl
+        highlight = {
+            italic = true
+        }
+    })
+end)
+
+import('smart-splits', function(smart_splits)
+    smart_splits.setup({
+
+    })
+end)
+
+import('maximize', function(maximize) maximize.setup() end)
 
 --- Custom shits below
 
