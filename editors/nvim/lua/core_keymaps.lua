@@ -6,7 +6,7 @@ local function map(kind, lhs, rhs, opts)
 end
 
 -- Keymappings
-map('n', '<Space',   '<Nop>', silent_noremap)
+map('n', '<Space>',   '<Nop>', silent_noremap)
 vim.g.mapleader = ' '
 
 -- Really not fond of this
