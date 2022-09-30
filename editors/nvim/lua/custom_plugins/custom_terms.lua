@@ -4,24 +4,24 @@ local HEIGHT_SCALE = 0.3
 local WIDTH_SCALE = 0.3
 
 local lang_repl_map = {
-    python = {
-        cmd = "python3",
-        direction = "vertical",
-        close_on_exit = false,
-        auto_scroll = true,
-    },
-    lua = {
-        cmd = "croissant",
-        direction = "vertical",
-        close_on_exit = false,
-        auto_scroll = true,
-    },
-    perl = {
-        cmd = "perl -de 1",
-        direction = "vertical",
-        close_on_exit = false,
-        auto_scroll = true,
-    },
+--     python = {
+--         cmd = "python3",
+--         direction = "vertical",
+--         close_on_exit = false,
+--         auto_scroll = true,
+--     },
+--     lua = {
+--         cmd = "croissant",
+--         direction = "vertical",
+--         close_on_exit = false,
+--         auto_scroll = true,
+--     },
+--     perl = {
+--         cmd = "perl -de 1",
+--         direction = "vertical",
+--         close_on_exit = false,
+--         auto_scroll = true,
+--     },
     term = {
         direction = "float",
         close_on_exit = false,
@@ -30,12 +30,12 @@ local lang_repl_map = {
         direction = "vertical",
         close_on_exit = false
     },
-    javascript = {
-        cmd = "node",
-        direction = "vertical",
-        close_on_exit = false,
-        auto_scroll = true
-    },
+    -- javascript = {
+    --     cmd = "node",
+    --     direction = "vertical",
+    --     close_on_exit = false,
+    --     auto_scroll = true
+    -- },
     hterm = {
         direction = "horizontal",
         close_on_exit = false
