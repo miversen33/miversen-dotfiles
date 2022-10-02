@@ -913,6 +913,21 @@ import('smart-splits', function(smart_splits)
 end)
 
 import('maximize', function(maximize) maximize.setup() end)
+import('searchbox', function(searchbox)
+    searchbox.setup({
+        popup = {
+            position = {
+                row = "1%",
+                col = "99%"
+            },
+        },
+        defaults = {
+            modifier = "disabled",
+            clear_matches = true,
+            show_matches = true
+        }
+    })
+end)
 
 --- Custom shits below
 
