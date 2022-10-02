@@ -1,3 +1,4 @@
+-- https://vi.stackexchange.com/questions/2232/how-can-i-use-vim-as-a-hex-editor
 -- Dependency Managment???
 -- sudo apt-get install ripgrep universal-ctags clang clangd
 -- python3 -m pip install pyright # Even though pyright is doodoo with function params snippets, we are still probably going to use it since its better than jedi
@@ -56,6 +57,8 @@ vim.opt.hidden        = true
 vim.opt.foldmethod    = 'indent'
 vim.opt.foldlevel     = 99
 vim.opt.list          = true
+vim.opt.spell         = true
+vim.opt.cmdheight     = 0
 vim.opt.listchars     = {
   tab = '-->',
   multispace=' ',
