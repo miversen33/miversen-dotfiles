@@ -2,10 +2,10 @@ import({'hydra', 'hydra.keymap-util'}, function(modules)
     local hydra = modules['hydra']
     local cmd = modules['hydra.keymap-util'].cmd
     hydra({
-        name = "Quick/Common Utils",
+        name = "Quick/Common Commands",
         mode = {"n"},
         hint = [[
-                                 Quick/Common Utils
+                                 Quick/Common Commands
 ^
  _f_: Show Filesystem            _t_: Show Terminal (float)      _T_: Open Quickfix
  _s_: Buffer Fuzzy Search        _d_: CWD Fuzzy Search
@@ -32,6 +32,7 @@ _h?_: Show Help Tags            _c?_: Show Vim Commands         _m?_: Show Man P
             {"s",      cmd "Telescope current_buffer_fuzzy_find skip_empty_lines=true", {desc = "Fuzzy find in current buffer", silent = true}},
             {"y",      cmd "IronRepl", {desc = "Repl", silent = true}},
             {"d",      cmd "lua require('telescope').extensions.live_grep_args.live_grep_args()", {desc = "Ripgrep CWD", silent = true}},
+            -- {'/',     '<Esc>:lua require("searchbox").match_all({visual_mode=true})<CR>', {silent = true})
             -- {"k?",     ":lua require('telescope.builtin').keymaps()<CR>", {desc = "Open Neovim Keymaps", silent = true}},
             {"m?",     cmd "Telescope man_pages", {desc = "Opens Man Pages", silent = true}},
             {"T",      cmd "TroubleToggle", {desc = "Opens Diag Quickfix", silent = true}},
@@ -43,7 +44,7 @@ _h?_: Show Help Tags            _c?_: Show Vim Commands         _m?_: Show Man P
         }
     })
     hydra({
-        name = "Common Commands",
+        name = "Navigation Commands",
         mode = {"n"},
         config = {
             color = "red",
@@ -52,16 +53,14 @@ _h?_: Show Help Tags            _c?_: Show Vim Commands         _m?_: Show Man P
                 type = "window",
                 position = "top",
                 border = "rounded",
-                show_name = true
+                show_name = true,
             }
         },
             hint = [[
-Basic Commands
+                                                     Navigation Commands
 ^
 _<Left>_: Resize Window Left     _<Right>_: Resize Window Right     _<Up>_: Resize Window Up     _<Down>_: Resize Window Down
-     _h_: Move Focus Left              _j_: Move Focus Down            _k_: Move Focus Up             _l_: Move Focus Right
-     _y_: Move Focus to tab left       _o_: Move focus to tab right    _u_: Move current tab left     _i_: Move current tab right
-     _z_: Maximize current pane        _'_: Open Symbols Outline
+     _u_: Move current tab left     _i_: Move current tab right        _z_: Maximize current pane     _'_: Open Symbols Outline
 ^
 ^ ^                                                 _q_/_<Esc>_: Exit Hydra
             ]],
@@ -71,14 +70,8 @@ _<Left>_: Resize Window Left     _<Right>_: Resize Window Right     _<Up>_: Resi
             {"<Right>", cmd "lua require('smart-splits').resize_right()", {desc = "Resize Pane/Window Right", silent = true}},
             {"<Up>",    cmd "lua require('smart-splits').resize_up()",    {desc = "Resize Pane/Window Up", silent = true}},
             {"<Down>",  cmd "lua require('smart-splits').resize_down()",  {desc = "Resize Pane/Window Down", silent = true}},
-            {"h",       cmd "lua require('smart-splits').move_cursor_left()", {desc = "Move Focus Left", exit = true, silent = true}},
-            {"j",       cmd "lua require('smart-splits').move_cursor_down()", {desc = "Move Focus Down", exit = true, silent = true}},
-            {"k",       cmd "lua require('smart-splits').move_cursor_up()",   {desc = "Move Focus Up", exit = true, silent = true}},
-            {"l",       cmd "lua require('smart-splits').move_cursor_right()",{desc = "Move Focus Right", exit = true, silent = true}},
-            {"y",       "<Plug>(cokeline-focus-prev)", {desc = "Move focus to tab left", silent = true}},
             {"u",       "<Plug>(cokeline-switch-prev)", {desc = "Move current tab left", silent = true}},
             {"i",       "<Plug>(cokeline-switch-next)", {desc = "Move current tab right", silent = true}},
-            {"o",       "<Plug>(cokeline-focus-next)", {desc = "Move focus to tab right", silent = true}},
             {"z",       cmd "lua require('maximize').toggle()", {desc = "Maximize current pane", exit = true, silent = true}},
             {"'",       cmd "AerialToggle!", {desc = "Opens Symbols Outline", exit = true, silent = true}},
             {"q",       nil, {desc = "quit", exit = true, nowait = true}},
@@ -152,7 +145,7 @@ Help
 - _o_: Show Implementation
 - _r_: Show References
 ^
-_q_/_<Esc>_: Exit Hydra
+_l_/_q_/_<Esc>_: Exit Hydra
 ]],
         body = "l",
         heads = {
@@ -165,6 +158,7 @@ _q_/_<Esc>_: Exit Hydra
             {"a", vim.lsp.buf.code_action, {desc = "Show Code Actions", silent = true}},
             {"D", vim.lsp.buf.type_definition, {desc = "Show Type Definition", silent = true}},
             {"e", vim.lsp.buf.decleration, {desc = "Show Declerations", silent = true}},
+            {"l",       nil, {desc = "quit", exit = true, nowait = true}},
             {"q",       nil, {desc = "quit", exit = true, nowait = true}},
             {"<Esc>",   nil, {desc = "quit", exit = true, nowait = true}}
         }
@@ -177,9 +171,9 @@ _q_/_<Esc>_: Exit Hydra
             invoke_on_body = true,
             hint = {
                 type = "window",
-                position = "top-right",
+                position = "middle-right",
                 border = "rounded",
-                show_name = true
+                show_name = true,
             },
         },
         hint = [[
@@ -188,7 +182,7 @@ _q_/_<Esc>_: Exit Hydra
 _d_: Toggle Breakpoint
 _D_: Set Conditional Breakpoint
 _c_: Continue on Break
-_s_: Stop Debugger
+_S_: Stop Debugger
 ^
 _j_: Step out of code block
 _k_: Step over code block
@@ -196,7 +190,7 @@ _l_: Step into code block
 ^
 _r_: Open Live REPL
 ^
-_q_/_<Esc>_: Exit Hydra
+_s_/_q_/_<Esc>_: Exit Hydra
 ]],
         body = "s",
         heads = {
@@ -207,7 +201,8 @@ _q_/_<Esc>_: Exit Hydra
             {"k", cmd "lua require('dap').step_over()", {desc = "Step over code block", silent = true}},
             {"l", cmd "lua require('dap').step_into()", {desc = "Step into code block", silent = true}},
             {"r", cmd "lua require('dap').repl.open()", {desc = "Open Live REPL", silent = true}},
-            {"s", cmd "lua require('dap').terminate({},{terminateDebuggee = true}, function() require('dap').close() end)", {desc = "Stop Debugger", exit = true}},
+            {"S", cmd "lua require('dap').terminate({},{terminateDebuggee = true}, function() require('dap').close() end)", {desc = "Stop Debugger", exit = true}},
+            {"s",       nil, {desc = "quit", exit = true, nowait = true}},
             {"q",       nil, {desc = "quit", exit = true, nowait = true}},
             {"<Esc>",   nil, {desc = "quit", exit = true, nowait = true}}
         }
@@ -225,5 +220,11 @@ vim.keymap.set('i', '<C-_>', '<ESC>:lua require("Comment.api").toggle.linewise()
 vim.keymap.set('x', '<C-_>', '<ESC>:lua require("Comment.api").toggle.linewise(vim.fn.visualmode())<CR>', {silent = true})
 vim.keymap.set('n', '<C-s>', ':w<CR> :echo "Saved File"<CR>h', {silent = true})
 vim.keymap.set('i', '<C-s>', '<esc>:w<CR> :echo "Saved File"<CR>', {silent = true})
-vim.keymap.set('n', '/',     ':lua require("searchbox").match_all()<CR>', {silent = true})
-vim.keymap.set('x', '/',     '<Esc>:lua require("searchbox").incsearch({visual_mode=true})<CR>', {silent = true})
+vim.keymap.set('n', '<C-h>', ":lua require('smart-splits').move_cursor_left()<CR>",{silent = true})
+vim.keymap.set('n', '<C-j>', ":lua require('smart-splits').move_cursor_down()<CR>", {silent = true})
+vim.keymap.set('n', '<C-k>', ":lua require('smart-splits').move_cursor_up()<CR>", {silent = true})
+vim.keymap.set('n', "<C-l>", ":lua require('smart-splits').move_cursor_right()<CR>", {silent = true})
+vim.keymap.set("n", "<A-h>", "<Plug>(cokeline-focus-prev)", {silent = true})
+vim.keymap.set("n", "<A-l>", "<Plug>(cokeline-focus-next)", {silent = true})
+vim.keymap.set("n", '/',     ':lua require("searchbox").incsearch({modifier = "disabled"})<CR>', {silent = true})
+vim.keymap.set("n", 'r',     ':lua require("searchbox").replace({confirm = "menu"})<CR>', {silent = true})
