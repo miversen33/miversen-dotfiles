@@ -8,7 +8,7 @@ import({'hydra', 'hydra.keymap-util'}, function(modules)
                                  Quick/Common Commands
 ^
  _f_: Show Filesystem            _t_: Show Terminal (float)      _T_: Open Quickfix
- _s_: Buffer Fuzzy Search        _d_: CWD Fuzzy Search
+ _s_: Buffer Fuzzy Search        _d_: CWD Fuzzy Search           _'_: Open Symbols Outline
  _o_: Open Horizontal Terminal   _p_: Open Vertical Terminal     _y_: Open REPL
 _h?_: Show Help Tags            _c?_: Show Vim Commands         _m?_: Show Man Pages
 ^
@@ -32,7 +32,7 @@ _h?_: Show Help Tags            _c?_: Show Vim Commands         _m?_: Show Man P
             {"s",      cmd "Telescope current_buffer_fuzzy_find skip_empty_lines=true", {desc = "Fuzzy find in current buffer", silent = true}},
             {"y",      cmd "IronRepl", {desc = "Repl", silent = true}},
             {"d",      cmd "lua require('telescope').extensions.live_grep_args.live_grep_args()", {desc = "Ripgrep CWD", silent = true}},
-            -- {'/',     '<Esc>:lua require("searchbox").match_all({visual_mode=true})<CR>', {silent = true})
+            {"'",       cmd "AerialToggle!", {desc = "Opens Symbols Outline", exit = true, silent = true}},
             -- {"k?",     ":lua require('telescope.builtin').keymaps()<CR>", {desc = "Open Neovim Keymaps", silent = true}},
             {"m?",     cmd "Telescope man_pages", {desc = "Opens Man Pages", silent = true}},
             {"T",      cmd "TroubleToggle", {desc = "Opens Diag Quickfix", silent = true}},
@@ -60,7 +60,7 @@ _h?_: Show Help Tags            _c?_: Show Vim Commands         _m?_: Show Man P
                                                      Navigation Commands
 ^
 _<Left>_: Resize Window Left     _<Right>_: Resize Window Right     _<Up>_: Resize Window Up     _<Down>_: Resize Window Down
-     _u_: Move current tab left     _i_: Move current tab right        _z_: Maximize current pane     _'_: Open Symbols Outline
+     _u_: Move current tab left     _i_: Move current tab right        _z_: Maximize current pane
 ^
 ^ ^                                                 _q_/_<Esc>_: Exit Hydra
             ]],
@@ -73,7 +73,6 @@ _<Left>_: Resize Window Left     _<Right>_: Resize Window Right     _<Up>_: Resi
             {"u",       "<Plug>(cokeline-switch-prev)", {desc = "Move current tab left", silent = true}},
             {"i",       "<Plug>(cokeline-switch-next)", {desc = "Move current tab right", silent = true}},
             {"z",       cmd "lua require('maximize').toggle()", {desc = "Maximize current pane", exit = true, silent = true}},
-            {"'",       cmd "AerialToggle!", {desc = "Opens Symbols Outline", exit = true, silent = true}},
             {"q",       nil, {desc = "quit", exit = true, nowait = true}},
             {"<Esc>",   nil, {desc = "quit", exit = true, nowait = true}}
         }
