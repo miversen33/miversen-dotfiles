@@ -491,7 +491,6 @@ import('catppuccin.palettes', function(cc)
     CmpItemKindUnit = pallet.rosewater
     TreesitterContext = pallet.surface0
 
-
 end)
 
 vim.cmd(string.format("highlight! CmpItemAbbrDeprecated guibg=NONE gui=strikethrough guifg=%s", CmpItemAbbrDeprecated))
@@ -507,20 +506,6 @@ vim.cmd(string.format("highlight! CmpItemKindProperty guibg=NONE guifg=%s", CmpI
 vim.cmd(string.format("highlight! CmpItemKindUnit guibg=NONE guifg=%s", CmpItemKindUnit))
 vim.cmd(string.format("highlight! TreesitterContext guibg=%s gui=bold", TreesitterContext))
 
-vim.cmd([[
-    highlight! CmpItemAbbrDeprecated guibg=NONE gui=strikethrough guifg=#808080
-    highlight! CmpItemAbbrMatch guibg=NONE guifg=#569CD6
-    highlight! CmpItemAbbrMatchFuzzy guibg=NONE guifg=#569CD6
-    highlight! CmpItemKindVariable guibg=NONE guifg=#9CDCFE
-    highlight! CmpItemKindInterface guibg=NONE guifg=#9CDCFE
-    highlight! CmpItemKindText guibg=NONE guifg=#9CDCFE
-    highlight! CmpItemKindFunction guibg=NONE guifg=#C586C0
-    highlight! CmpItemKindMethod guibg=NONE guifg=#C586C0
-    highlight! CmpItemKindKeyword guibg=NONE guifg=#D4D4D4
-    highlight! CmpItemKindProperty guibg=NONE guifg=#D4D4D4
-    highlight! CmpItemKindUnit guibg=NONE guifg=#D4D4D4
-    highlight! TreesitterContext guibg=#2D336E gui=bold
-]])
 local kind_icons = {
   Text = "",
   Method = "",
@@ -660,26 +645,9 @@ import('telescope', function(telescope)
 end)
 
 import('trouble', function(trouble) trouble.setup({
-  use_diagnostic_signs = true
+  icons = true
 }) end)
 
--- Maybe a better solution here?
--- import('treesitter-context', function(treesitter_context) treesitter_context.setup({
---     -- throttle = false,
---     max_lines = 3,
---     patters = {
---         default = {
---             'class',
---             'function',
---             'method',
---             'for',
---             'while',
---             'if',
---             'switch',
---             'case'
---         }
---     }
--- }) end)
 
 import('todo-comments', function(todo_comments) todo_comments.setup({
 
