@@ -908,6 +908,9 @@ import('searchbox', function(searchbox)
         }
     })
 end)
+import('lsp-colors', function(lsp_colors)
+    lsp_colors.setup()
+end)
 
 --- Custom shits below
 
