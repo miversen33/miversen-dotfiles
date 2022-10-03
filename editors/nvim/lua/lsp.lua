@@ -22,6 +22,7 @@ local lsp_on_attach = function(client, bufnr)
 end
 
 local lsp_capabilities = vim.lsp.protocol.make_client_capabilities()
+lsp_capabilities.textDocument.completion.completionItem.snippetSupport = true
 -- import('cmp_nvim_lsp', function(cmp_nvim_lsp)
 --     capabilities = cmp_nvim_lsp.update_capabilities(capabilities)
 -- end)
@@ -47,19 +48,23 @@ import('lspconfig', function(lspconfig)
     end
 end)
 
-vim.fn.sign_define('LspDiagnosticSignError', {
+vim.fn.sign_define('DiagnosticSignError', {
     text='',
-    texthl='LspDiagnosticSignError',
+    numhl='DiagnosticSignError',
+    texthl="DiagnosticSignError",
 })
-vim.fn.sign_define('LspDiagnosticSignWarning', {
+vim.fn.sign_define('DiagnosticSignWarn', {
     text='⚠',
-    texthl='LspDiagnosticSignWarning',
+    numhl='DiagnosticSignWarn',
+    texthl="DiagnosticSignWarn"
 })
-vim.fn.sign_define('LspDiagnosticSignInformation', {
+vim.fn.sign_define('DiagnosticSignInformation', {
     text='',
-    texthl='LspDiagnosticSignInformation',
+    numhl='DiagnosticSignInformation',
+    texthl="DiagnosticSignInformation"
 })
-vim.fn.sign_define('LspDiagnosticSignHint', {
+vim.fn.sign_define('DiagnosticSignHint', {
     text='',
-    texthl='LspDiagnosticSignHint',
+    numhl='DiagnosticSignHint',
+    texthl="DiagnosticSignHint"
 })
