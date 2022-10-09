@@ -115,6 +115,7 @@ require('packer').startup(function(use)
     -- -- use 'AckslD/nvim-neoclip.lua' -- Neovim Clipboard/register manager
 
     -- -- Utilies
+    use {'kevinhwang91/nvim-ufo', requires = 'kevinhwang91/promise-async'} -- Better folding? Idk we will see
     use 'anuvyklack/hydra.nvim'
     use {
         'VonHeikemen/searchbox.nvim', -- Puts a searchbox in the top right corner. I mean... Why not?
@@ -917,6 +918,49 @@ import('searchbox', function(searchbox)
 end)
 import('lsp-colors', function(lsp_colors)
     lsp_colors.setup()
+end)
+
+import('ufo', function(ufo)
+    vim.o.foldcolumn = '1'
+    vim.o.foldlevel = 99
+    vim.o.foldlevelstart = 99
+    vim.o.foldenable = true
+
+    local handler = function(virtText, lnum, endLnum, width, truncate)
+        local newVirtText = {}
+        local suffix = ('  %d '):format(endLnum - lnum)
+        local sufWidth = vim.fn.strdisplaywidth(suffix)
+        local targetWidth = width - sufWidth
+        local curWidth = 0
+        for _, chunk in ipairs(virtText) do
+            local chunkText = chunk[1]
+            local chunkWidth = vim.fn.strdisplaywidth(chunkText)
+            if targetWidth > curWidth + chunkWidth then
+                table.insert(newVirtText, chunk)
+            else
+                chunkText = truncate(chunkText, targetWidth - curWidth)
+                local hlGroup = chunk[2]
+                table.insert(newVirtText, {chunkText, hlGroup})
+                chunkWidth = vim.fn.strdisplaywidth(chunkText)
+                -- str width returned from truncate() may less than 2nd argument, need padding
+                if curWidth + chunkWidth < targetWidth then
+                    suffix = suffix .. (' '):rep(targetWidth - curWidth - chunkWidth)
+                end
+                break
+            end
+            curWidth = curWidth + chunkWidth
+        end
+        table.insert(newVirtText, {suffix, 'MoreMsg'})
+        return newVirtText
+    end
+
+    ufo.setup({
+        provider_selector = function()
+            return { 'treesitter', 'indent'}
+        end,
+        fold_virt_text_handler = handler
+    })
+    ufo.setFoldVirtTextHandler(vim.api.nvim_get_current_buf(), handler)
 end)
 
 --- Custom shits below
