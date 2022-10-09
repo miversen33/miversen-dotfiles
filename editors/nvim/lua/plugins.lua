@@ -722,6 +722,12 @@ import('neo-tree', function(neo_tree)
         "filesystem",
         "buffers",
         -- "netman",
+        filesystem = {
+            filtered_items = {
+                hide_gitignored = false,
+                hide_hidden = false,
+                hide_dotfiles = false,
+            }
         }
     })
 end)
