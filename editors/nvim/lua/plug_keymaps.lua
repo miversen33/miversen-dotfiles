@@ -219,7 +219,7 @@ vim.keymap.set('n', '<C-_>', ':lua require("Comment.api").toggle.linewise()<CR>'
 vim.keymap.set('i', '<C-_>', '<ESC>:lua require("Comment.api").toggle.linewise()<CR>i', {silent = true})
 vim.keymap.set('x', '<C-_>', '<ESC>:lua require("Comment.api").toggle.linewise(vim.fn.visualmode())<CR>', {silent = true})
 vim.keymap.set('n', '<C-s>', ':w<CR>:lua vim.notify(string.format("Saved %s", vim.fn.expand("%:t")), "info")<CR>', {silent=true})
-vim.keymap.set('i', '<C-s>', '<esc>:w<CR>:lua vim.notify(string.format("Saved %s", vim.fn.expand("%:t"))), "info")<CR>', {silent=true})
+vim.keymap.set('i', '<C-s>', '<esc>:w<CR>:lua vim.notify(string.format("Saved %s", vim.fn.expand("%:t")), "info")<CR>', {silent=true})
 vim.keymap.set('n', '<C-h>', ":lua require('smart-splits').move_cursor_left()<CR>",{silent = true})
 vim.keymap.set('n', '<C-j>', ":lua require('smart-splits').move_cursor_down()<CR>", {silent = true})
 vim.keymap.set('n', '<C-k>', ":lua require('smart-splits').move_cursor_up()<CR>", {silent = true})
