@@ -11,22 +11,10 @@
 
 local DEBUG = false
 
-if not DEBUG then
-    -- Packer Bootstrapping
-    local fn = vim.fn
-    local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
-    if fn.empty(fn.glob(install_path)) > 0 then
-      fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
-    end
+-- Neovim Configurations
 
-    -- Custom Functions
-
-    -- Plugin setup
-    require('plugins')
-end
 local undo_dir = vim.fn.stdpath('cache') .. "/undo/"
 vim.fn.mkdir(undo_dir, 'p')
--- Neovim Configurations
 -- Create a generic "enable italics, enable bold, enable transparent" map so we can auto do that
 -- for any themes we set
 -- Also create a generic "theme_style" that we can set and apply because everyone having
@@ -75,6 +63,20 @@ vim.opt.expandtab     = true
 vim.opt.smarttab      = true
 vim.o.completeopt     = 'longest,preview,menuone,noselect'
 vim.g.vimsyn_embed    = 'lPrj'
+
+if not DEBUG then
+    -- Packer Bootstrapping
+    local fn = vim.fn
+    local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
+    if fn.empty(fn.glob(install_path)) > 0 then
+      fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
+    end
+
+    -- Custom Functions
+
+    -- Plugin setup
+    require('plugins')
+end
 
 -- Keymaps
 import('keymaps', function(keymaps)
