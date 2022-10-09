@@ -725,9 +725,11 @@ import('neo-tree', function(neo_tree)
                 hide_gitignored = false,
                 hide_hidden = false,
                 hide_dotfiles = false,
-            }
+            },
+            follow_current_file = true
         }
-    })
+    }
+  })
 end)
 
 import("osc52", function(osc52)
