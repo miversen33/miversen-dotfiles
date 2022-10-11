@@ -29,6 +29,8 @@ bind . next-window
 set -g automatic-rename on
 set -g status-interval 2
 set -g mouse on
+set -g set-clipboard on
+set-option -sa terminal-overrides ',alacritty:RGB'
 
 # -- windows & pane creation ---------------------------------------------------
 

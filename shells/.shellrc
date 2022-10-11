@@ -32,7 +32,7 @@ check_rc_update(){
 }
 
 profile_rc() {
-  export TERM="xterm-256color"
+  # export TERM="xterm-256color"
   export LANG=en_US.UTF-8
   export whatsmyip() {
     local_ip=$(dig @resolver4.opendns.com myip.opendns.com +short)
@@ -89,6 +89,7 @@ profile_rc() {
   done
   # fi
  
+  [ -d "$HOME/.local/bin" ] && [[ "$PATH" != *"$HOME/.local/bin"* ]] && PATH="$PATH:$HOME/.local/bin"
   if [ -d "$HOME/perl5" ]; then #The perl shits
     export PATH="$PATH:$HOME/perl5/bin"; # Adds perl5 (perlbrew) to path if it exists
     export PERL5LIB="$HOME/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}";
