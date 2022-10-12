@@ -8,19 +8,21 @@
 -- wget https://github.com/rust-analyzer/rust-analyzer/releases/download/2021-12-27/rust-analyzer-x86_64-unknown-linux-gnu.gz (set a location for this to be installed to)
 -- wget https://github.com/sumneko/lua-language-server/releases/download/2.5.6/lua-language-server-2.5.6-linux-x64.tar.gz (set a location for this to be installed to)
 -- TODO(Mike) (Setup java language server?)
+-- setup winbar?
 
 local DEBUG = false
 
 -- Neovim Configurations
 
-local undo_dir = vim.fn.stdpath('cache') .. "/undo/"
-vim.fn.mkdir(undo_dir, 'p')
+-- local undo_dir = vim.fn.stdpath('cache') .. "/undo/"
+-- vim.fn.mkdir(undo_dir, 'p')
 -- Create a generic "enable italics, enable bold, enable transparent" map so we can auto do that
 -- for any themes we set
 -- Also create a generic "theme_style" that we can set and apply because everyone having
 -- their own is so irritating
+-- vim.opt.sessionoptions="blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal"
 vim.opt.undofile      = true
-vim.opt.undodir       = undo_dir
+-- vim.opt.undodir       = undo_dir
 vim.opt.fillchars:append(',eob: ')
 vim.opt.undolevels    = 1000
 vim.opt.undoreload    = 10000
