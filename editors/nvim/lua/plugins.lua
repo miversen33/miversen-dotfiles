@@ -31,7 +31,7 @@ require('packer').startup(function(use)
     -- use 'simrat39/rust-tools.nvim' -- Neovim Rust Tool
     -- -- use {'iamcco/markdown-preview.nvim', run = 'cd app && yarn install', cmd = 'MarkdownPreview'} -- Neovim Markdown tool
     -- use {'ellisonleao/glow.nvim', run = ':GlowInstall' } -- Neovim Markdown Preview in Neovim
-    use "folke/lua-dev.nvim" -- Neovim Developer Auto complete
+    use "folke/neodev.nvim" -- Neovim Developer Auto complete
 
     -- -- Theme(s)
     use { "catppuccin/nvim", as = "catppuccin" }
@@ -850,8 +850,8 @@ import('regexplainer', function(regexplainer)
     regexplainer.setup()
 end)
 
-import('lua-dev', function(lua_dev)
-    lua_dev.setup()
+import('neodev', function(neodev)
+    neodev.setup()
 end)
 
 
