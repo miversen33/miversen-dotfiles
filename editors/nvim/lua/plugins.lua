@@ -895,7 +895,7 @@ end)
 
 import('smart-splits', function(smart_splits)
     smart_splits.setup({
-
+        tmux_integration = false,
     })
 end)
 
