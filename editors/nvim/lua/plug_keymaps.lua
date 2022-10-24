@@ -144,9 +144,9 @@ Help
 - _o_: Show Implementation
 - _r_: Show References
 ^
-_l_/_q_/_<Esc>_: Exit Hydra
+_;_/_q_/_<Esc>_: Exit Hydra
 ]],
-        body = "l",
+        body = ";",
         heads = {
             {"s", vim.lsp.buf.definition, {desc = "Show Description", silent = true}},
             {"h", vim.lsp.buf.hover, {desc = "Show Hover Doc", silent = true}},
@@ -157,7 +157,7 @@ _l_/_q_/_<Esc>_: Exit Hydra
             {"a", vim.lsp.buf.code_action, {desc = "Show Code Actions", silent = true}},
             {"D", vim.lsp.buf.type_definition, {desc = "Show Type Definition", silent = true}},
             {"e", vim.lsp.buf.decleration, {desc = "Show Declerations", silent = true}},
-            {"l",       nil, {desc = "quit", exit = true, nowait = true}},
+            {";",       nil, {desc = "quit", exit = true, nowait = true}},
             {"q",       nil, {desc = "quit", exit = true, nowait = true}},
             {"<Esc>",   nil, {desc = "quit", exit = true, nowait = true}}
         }
