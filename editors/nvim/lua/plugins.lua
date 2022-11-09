@@ -12,7 +12,7 @@ require('packer').startup(function(use)
     -- -- Debugger
     use 'mfussenegger/nvim-dap' -- Neovim Debug Adapter Protocol
     use 'rcarriga/nvim-dap-ui' -- Neovim DAP UI components. May not be necessary?
-    -- use 'jbyuki/one-small-step-for-vimkind' -- Neovim plugin debugger
+    use 'jbyuki/one-small-step-for-vimkind' -- Neovim plugin debugger
     --
     -- -- LSP Setup
     use 'neovim/nvim-lspconfig' -- Neovim LSP Setup
@@ -81,10 +81,10 @@ require('packer').startup(function(use)
     -- -- use 'steelsojka/pears.nvim' -- Neovim auto pair
     -- use 'kevinhwang91/nvim-bqf' -- Neovim Better Quickfix
     use 'numToStr/Comment.nvim' -- Neovim Commenting
-    use 'folke/todo-comments.nvim' -- Neovim TODO Comment Highlighting
+    -- use 'folke/todo-comments.nvim' -- Neovim TODO Comment Highlighting
     -- -- use 'f-person/git-blame.nvim' -- Neovim Git Blame (shows via virtual text)
     -- -- use 'rhysd/git-messenger.vim' -- Vim git blame in popup wi use 'rhysd/git-messenger.vim' -- Vim git blame in popup windowndow
-    -- -- use 'lewis6991/gitsigns.nvim' -- Neovim Git Stuffs (Depending on how much git we want to use, we might want to go this route)
+    use 'lewis6991/gitsigns.nvim' -- Neovim Git Stuffs (Depending on how much git we want to use, we might want to go this route)
     -- -- use {'ms-jpq/chadtree', branch = 'chad', run = 'python3 -m chadtree deps'} -- Neovim File Explorer with no external dependencies. Doesn't appear to have ssh support
     -- -- use {
     -- --   'kyazdani42/nvim-tree.lua', -- Neovim File Explorer with no external dependencies. Does appear to have _some_ form of ssh support
@@ -112,7 +112,7 @@ require('packer').startup(function(use)
     -- use 'romgrk/nvim-treesitter-context' -- Neovim code context
 
     -- -- Utilies
-    use {'kevinhwang91/nvim-ufo', requires = 'kevinhwang91/promise-async'} -- Better folding? Idk we will see
+    use { 'kevinhwang91/nvim-ufo', requires = 'kevinhwang91/promise-async' } -- Better folding? Idk we will see
     use 'anuvyklack/hydra.nvim'
     use {
         'VonHeikemen/searchbox.nvim', -- Puts a searchbox in the top right corner. I mean... Why not?
@@ -151,7 +151,6 @@ require('packer').startup(function(use)
         }
     }
     use 'vimwiki/vimwiki'
-    -- -- use '~/git/plenary.nvim/'
     use 'nvim-lua/plenary.nvim' -- Neovim "Utility functions"
     use 'mrjones2014/smart-splits.nvim' -- Neovim better split handling?
     use 'stevearc/aerial.nvim' -- Better code outline??
@@ -182,16 +181,18 @@ import('notify', function(notify)
     vim.notify = notify
     print = function(...)
         local print_safe_args = {}
-        local _ = {...}
-        for i=1, #_ do
+        local _ = { ... }
+        for i = 1, #_ do
             table.insert(print_safe_args, tostring(_[i]))
         end
-        notify(table.concat(print_safe_args, ' '), "info") end
+        notify(table.concat(print_safe_args, ' '), "info")
+    end
     notify.setup({
     })
 end)
 -- Plugin Configurations
-local excluded_filetypes_array = {'lsp-installer', 'lspinfo', 'Outline', 'help', 'packer', 'netrw', 'qf', 'dbui', 'Trouble', 'fugitive', 'floaterm', 'spectre_panel', 'spectre_panel_write', 'checkhealth', 'man'}
+local excluded_filetypes_array = { 'lsp-installer', 'lspinfo', 'Outline', 'help', 'packer', 'netrw', 'qf', 'dbui',
+    'Trouble', 'fugitive', 'floaterm', 'spectre_panel', 'spectre_panel_write', 'checkhealth', 'man', 'dap-repl' }
 local excluded_filetypes_table = {}
 for _, value in ipairs(excluded_filetypes_array) do
     excluded_filetypes_table[value] = 1
@@ -199,16 +200,16 @@ end
 vim.g['db_ui_auto_execute_table_helpers'] = 1
 
 import('lsp_lines', function(lsp_lines)
-  lsp_lines.setup()
+    lsp_lines.setup()
 end)
 
 import('indent_blankline', function(indent_blankline)
-  indent_blankline.setup({
-      filetype_exclude = excluded_filetypes_array,
-      show_current_context = true,
-      show_current_context_start = true,
-      use_treesitter = true,
-  })
+    indent_blankline.setup({
+        filetype_exclude = excluded_filetypes_array,
+        show_current_context = true,
+        show_current_context_start = true,
+        use_treesitter = true,
+    })
 end)
 
 -- vim.g['gitblame_display_virtual_text'] = 0
@@ -217,68 +218,68 @@ import('Comment', function(comment) comment.setup() end)
 import('custom_theme')
 import('lualine', function(lualine)
     lualine.setup({
-      options = {
-        theme = 'catppuccin',
-        disabled_filetypes = excluded_filetypes_array,
-        globalstatus = true
-      },
-      extensions = {'quickfix'},
-      sections = {
-        lualine_a = {
-          'mode','branch',
+        options = {
+            theme = 'catppuccin',
+            disabled_filetypes = excluded_filetypes_array,
+            globalstatus = true
         },
-        lualine_b = {
-          {
-            symbols = {
-              modified = '',
-              readonly = '',
-              unamed = ''
+        extensions = { 'quickfix' },
+        sections = {
+            lualine_a = {
+                'mode', 'branch',
             },
-            path = 1
-          }
+            lualine_b = {
+                {
+                    symbols = {
+                        modified = '',
+                        readonly = '',
+                        unamed = ''
+                    },
+                    path = 1
+                }
+            },
+            lualine_c = {
+                {
+                    'diagnostics',
+                    update_in_insert = false
+                }
+            },
+            lualine_x = {
+                "aerial",
+                "import"
+            },
+            lualine_y = {
+                'encoding', 'progress',
+            },
+            lualine_z = {
+                'location'
+            }
         },
-        lualine_c = {
-          {
-            'diagnostics',
-            update_in_insert = false
-          }
-        },
-        lualine_x = {
-            "aerial",
-            "import"
-        },
-        lualine_y = {
-          'encoding', 'progress',
-        },
-        lualine_z = {
-          'location'
+        inactive_sections = {
+            lualine_a = {
+            },
+            lualine_b = {
+            },
+            lualine_c = {
+                {
+                    'filetype',
+                    icon_only = true
+                },
+                {
+                    'filename',
+                    path = 1
+                }
+            },
+            lualine_x = {
+
+            },
+            lualine_y = {
+
+            },
+            lualine_z = {
+
+            }
         }
-      },
-      inactive_sections = {
-        lualine_a = {
-        },
-        lualine_b = {
-        },
-        lualine_c = {
-          {
-            'filetype',
-            icon_only = true
-          },
-          {
-            'filename',
-            path = 1
-          }
-        },
-        lualine_x = {
-
-        },
-        lualine_y = {
-
-        },
-        lualine_z = {
-
-        }
-      }
     })
 end)
 
@@ -300,162 +301,162 @@ import('cokeline', function(cokeline)
         warn_color = pallet.yellow
     end)
     local setup = {
-      show_if_buffers_are_at_least = 1,
-      buffers = {
-          filter_valid = function(buffer)
-              if(excluded_filetypes_table[buffer.type] or excluded_filetypes_table[buffer.filetype]) then
-                  return false
-              end
-              return true
-          end
-      },
-      mappings = {
-          cycle_prev_next = true
-      },
-      default_hl = {
-        bg = function(buffer)
-          if buffer.is_focused then
-            return active_bg_color
-          end
-        end,
-      },
-      components = {
-          {
-            text = function(buffer)
-              local _text = ''
-              if buffer.index > 1 then _text = ' ' end
-              if buffer.is_focused or buffer.is_first then
-                _text = _text .. ''
-              end
-              return _text
-            end,
-            fg = function(buffer)
-              if buffer.is_focused then
-                return active_bg_color
-              elseif buffer.is_first then
-                return inactive_bg_color
-              end
-            end,
-            bg = function(buffer)
-              if buffer.is_focused then
-                if buffer.is_first then
-                  return bg_color
-                else
-                  return inactive_bg_color
+        show_if_buffers_are_at_least = 1,
+        buffers = {
+            filter_valid = function(buffer)
+                if (excluded_filetypes_table[buffer.type] or excluded_filetypes_table[buffer.filetype]) then
+                    return false
                 end
-              elseif buffer.is_first then
-                  return bg_color
-              end
+                return true
             end
-          },
-          {
-              text = function(buffer)
-                  local status = ''
-                  if buffer.is_readonly then
-                      status = ' ➖'
-                  elseif buffer.is_modified then
-                      status = ' '
-                  end
-                  return status
-              end,
-              fg = function(buffer)
-                  if buffer.is_focused and
-                      (
-                        buffer.is_readonly
-                        or buffer.is_modified
-                       ) then
-                      return warn_color
-                  end
-              end
-          },
-          {
-              text = function(buffer)
-                  return " " .. buffer.devicon.icon
-              end,
-              fg = function(buffer)
+        },
+        mappings = {
+            cycle_prev_next = true
+        },
+        default_hl = {
+            bg = function(buffer)
                 if buffer.is_focused then
-                  return buffer.devicon.color
+                    return active_bg_color
                 end
-              end
-          },
-          {
-              text = function(buffer)
-                return buffer.unique_prefix .. buffer.filename .. ' '
-              end,
-              fg = function(buffer)
-                  if(buffer.diagnostics.errors > 0) then
-                      return error_color
-                  end
-              end,
-              style = function(buffer)
-                  local text_style = 'NONE'
-                  if buffer.is_focused then
-                      text_style = 'bold'
-                  end
-                  if buffer.diagnostics.errors > 0 then
-                      if text_style ~= 'NONE' then
-                          text_style = text_style .. ',underline'
-                      else
-                          text_style = 'underline'
-                      end
-                  end
-                  return text_style
-              end
-          },
-          {
-              text = function(buffer)
-                  local errors = buffer.diagnostics.errors
-                  if(errors <= 9) then
-                      errors = ''
-                  else
-                      errors = "🙃"
-                  end
-                  return errors .. ' '
-              end,
-              fg = function(buffer)
-                if buffer.diagnostics.errors == 0 then
-                  return no_error_color
-                elseif buffer.diagnostics.errors <= 9 then
-                  return error_color
-                end
-              end
-          },
-          {
-              text = ' ',
-              delete_buffer_on_left_click = true
-          },
-          {
-            text = function(buffer)
-              if buffer.is_focused or buffer.is_last then
-                return ''
-              else
-                return ' '
-              end
             end,
-            fg = function(buffer)
-              if buffer.is_focused then
-                return active_bg_color
-              elseif buffer.is_last then
-                return inactive_bg_color
-              else
-                return bg_color
-              end
-            end,
-            bg = function(buffer)
-              if buffer.is_focused then
-                if buffer.is_last then
-                  return bg_color
-                else
-                  return inactive_bg_color
+        },
+        components = {
+            {
+                text = function(buffer)
+                    local _text = ''
+                    if buffer.index > 1 then _text = ' ' end
+                    if buffer.is_focused or buffer.is_first then
+                        _text = _text .. ''
+                    end
+                    return _text
+                end,
+                fg = function(buffer)
+                    if buffer.is_focused then
+                        return active_bg_color
+                    elseif buffer.is_first then
+                        return inactive_bg_color
+                    end
+                end,
+                bg = function(buffer)
+                    if buffer.is_focused then
+                        if buffer.is_first then
+                            return bg_color
+                        else
+                            return inactive_bg_color
+                        end
+                    elseif buffer.is_first then
+                        return bg_color
+                    end
                 end
-              elseif buffer.is_last then
-                  return bg_color
-              end
-            end
-          }
-      },
-  }
-  cokeline.setup(setup)
+            },
+            {
+                text = function(buffer)
+                    local status = ''
+                    if buffer.is_readonly then
+                        status = ' ➖'
+                    elseif buffer.is_modified then
+                        status = ' '
+                    end
+                    return status
+                end,
+                fg = function(buffer)
+                    if buffer.is_focused and
+                        (
+                        buffer.is_readonly
+                            or buffer.is_modified
+                        ) then
+                        return warn_color
+                    end
+                end
+            },
+            {
+                text = function(buffer)
+                    return " " .. buffer.devicon.icon
+                end,
+                fg = function(buffer)
+                    if buffer.is_focused then
+                        return buffer.devicon.color
+                    end
+                end
+            },
+            {
+                text = function(buffer)
+                    return buffer.unique_prefix .. buffer.filename .. ' '
+                end,
+                fg = function(buffer)
+                    if (buffer.diagnostics.errors > 0) then
+                        return error_color
+                    end
+                end,
+                style = function(buffer)
+                    local text_style = 'NONE'
+                    if buffer.is_focused then
+                        text_style = 'bold'
+                    end
+                    if buffer.diagnostics.errors > 0 then
+                        if text_style ~= 'NONE' then
+                            text_style = text_style .. ',underline'
+                        else
+                            text_style = 'underline'
+                        end
+                    end
+                    return text_style
+                end
+            },
+            {
+                text = function(buffer)
+                    local errors = buffer.diagnostics.errors
+                    if (errors <= 9) then
+                        errors = ''
+                    else
+                        errors = "🙃"
+                    end
+                    return errors .. ' '
+                end,
+                fg = function(buffer)
+                    if buffer.diagnostics.errors == 0 then
+                        return no_error_color
+                    elseif buffer.diagnostics.errors <= 9 then
+                        return error_color
+                    end
+                end
+            },
+            {
+                text = ' ',
+                delete_buffer_on_left_click = true
+            },
+            {
+                text = function(buffer)
+                    if buffer.is_focused or buffer.is_last then
+                        return ''
+                    else
+                        return ' '
+                    end
+                end,
+                fg = function(buffer)
+                    if buffer.is_focused then
+                        return active_bg_color
+                    elseif buffer.is_last then
+                        return inactive_bg_color
+                    else
+                        return bg_color
+                    end
+                end,
+                bg = function(buffer)
+                    if buffer.is_focused then
+                        if buffer.is_last then
+                            return bg_color
+                        else
+                            return inactive_bg_color
+                        end
+                    elseif buffer.is_last then
+                        return bg_color
+                    end
+                end
+            }
+        },
+    }
+    cokeline.setup(setup)
 end)
 
 -- Setup nvim-cmp
@@ -506,106 +507,126 @@ vim.cmd(string.format("highlight! CmpItemKindUnit guibg=NONE guifg=%s", CmpItemK
 vim.cmd(string.format("highlight! TreesitterContext guibg=%s gui=bold", TreesitterContext))
 
 local kind_icons = {
-  Text = "",
-  Method = "",
-  Function = "",
-  Constructor = "",
-  Field = "",
-  Variable = "",
-  Class = "ﴯ",
-  Interface = "",
-  Module = "",
-  Property = "ﰠ",
-  Unit = "",
-  Value = "",
-  Enum = "",
-  Keyword = "",
-  Snippet = "",
-  Color = "",
-  File = "",
-  Reference = "",
-  Folder = "",
-  EnumMember = "",
-  Constant = "",
-  Struct = "",
-  Event = "",
-  Operator = "",
-  TypeParameter = ""
+    Text = "",
+    Method = "",
+    Function = "",
+    Constructor = "",
+    Field = "",
+    Variable = "",
+    Class = "ﴯ",
+    Interface = "",
+    Module = "",
+    Property = "ﰠ",
+    Unit = "",
+    Value = "",
+    Enum = "",
+    Keyword = "",
+    Snippet = "",
+    Color = "",
+    File = "",
+    Reference = "",
+    Folder = "",
+    EnumMember = "",
+    Constant = "",
+    Struct = "",
+    Event = "",
+    Operator = "",
+    TypeParameter = ""
 }
 
 
 import('cmp', function(cmp)
     local luasnip = nil
     local lspkind = nil
-    import('luasnip', function(_) luasnip = _ end)
-    import("lspkind", function(_) lspkind = _ end)
+    import({ "luasnip", "lspkind" }, function(modules)
+        luasnip = modules.luasnip
+        lspkind = modules.lspkind
+    end)
     assert(luasnip)
     assert(lspkind)
+    local has_words_before = function()
+        local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+        return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+    end
     cmp.setup({
+        formatting = {
+            format = function(entry, vim_item)
+                vim_item.kind = string.format('%s %s', kind_icons[vim_item.kind], vim_item.kind)
+                vim_item.menu = ({
+                    buffer = "[Buffer]",
+                    nvim_lsp = "[LSP]",
+                    luasnip = "[LuaSnip]",
+                    nvim_lua = "[Lua]",
+                    latex_symbols = "[LaTeX]",
+                })[entry.source_name]
+                return vim_item
+            end
+            -- lspkind.cmp_format(),
+        },
+        snippet = {
+            expand = function(args)
+                luasnip.lsp_expand(args.body) -- For `luasnip` users.
+            end,
+        },
+        mapping = {
+            ['<Enter>'] = cmp.mapping(cmp.mapping.confirm({ select = true }), { 'i' }),
+            ["<Tab>"] = cmp.mapping(function(fallback)
+                if cmp.visible() then
+                    cmp.select_next_item()
+                elseif luasnip.expand_or_jumpable() then
+                    luasnip.expand_or_jump()
+                elseif has_words_before() then
+                    cmp.complete()
+                else
+                    fallback()
+                end
+            end, { "i", "s" }),
 
-      formatting = {
-        format = function(entry, vim_item)
-          vim_item.kind = string.format('%s %s', kind_icons[vim_item.kind], vim_item.kind)
-          vim_item.menu = ({
-            buffer = "[Buffer]",
-            nvim_lsp = "[LSP]",
-            luasnip = "[LuaSnip]",
-            nvim_lua = "[Lua]",
-            latex_symbols = "[LaTeX]",
-          })[entry.source_name]
-          return vim_item
-        end
-    -- lspkind.cmp_format(),
-      },
-      snippet = {
-        expand = function(args)
-          luasnip.lsp_expand(args.body) -- For `luasnip` users.
-        end,
-      },
-      mapping = {
-        ['<Up>'] = cmp.mapping(cmp.mapping.select_prev_item(), {'i', 'c'}),
-        ['<Down>'] = cmp.mapping(cmp.mapping.select_next_item(), {'i', 'c'}),
-        ['<Enter>'] = cmp.mapping(cmp.mapping.confirm({select=true}), {'i'}),
-        -- ['<Space>'] = cmp.mapping(cmp.mapping.confirm({select=true}), {'i'}),
-        ['<Tab>'] = cmp.mapping(cmp.mapping.confirm({select=true}), {'i'}),
-        ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
-        ['<C-Up>'] = cmp.mapping(cmp.mapping.scroll_docs(-4)),
-        ['<C-Down>'] = cmp.mapping(cmp.mapping.scroll_docs(4)),
-        ['<Esc>'] = cmp.mapping({
-            i = cmp.mapping.abort(),
-            c = cmp.mapping.close(),
+            ["<S-Tab>"] = cmp.mapping(function(fallback)
+                if cmp.visible() then
+                    cmp.select_prev_item()
+                elseif luasnip.jumpable(-1) then
+                    luasnip.jump(-1)
+                else
+                    fallback()
+                end
+            end, { "i", "s" }),
+            ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
+            ['<C-Up>'] = cmp.mapping(cmp.mapping.scroll_docs(-4)),
+            ['<C-Down>'] = cmp.mapping(cmp.mapping.scroll_docs(4)),
+            ['<Esc>'] = cmp.mapping({
+                i = cmp.mapping.abort(),
+                c = cmp.mapping.close(),
+            })
+        },
+        sources = cmp.config.sources({
+            { name = 'nvim_lsp' },
+            { name = 'luasnip' }, -- For luasnip users.
+            -- { name = 'orgmode' },
+            { name = 'calc' },
+            { name = 'dictionary', keyword_length = 2 },
+            { name = 'path' },
+            { name = "nvim_lua" },
+            -- { name = "treesitter" }
+        }, {
+            -- { name = 'buffer' },
         })
-      },
-      sources = cmp.config.sources({
-        { name = 'nvim_lsp' },
-        { name = 'luasnip' }, -- For luasnip users.
-        -- { name = 'orgmode' },
-        { name = 'calc' },
-        { name = 'dictionary', keyword_length=2 },
-        { name = 'path' },
-        { name = "nvim_lua" },
-        { name = "treesitter" }
-      }, {
-        -- { name = 'buffer' },
-      })
     })
 
     cmp.setup.cmdline('/', {
-      sources = {
-        { name = 'buffer' }
-      }
+        sources = {
+            { name = 'buffer' }
+        }
     })
 
     cmp.setup.cmdline(':', {
-      sources = cmp.config.sources({
-        { name = 'path' }
-      }, {
-        { name = 'cmdline' }
-      })
+        sources = cmp.config.sources({
+            { name = 'path' }
+        }, {
+            { name = 'cmdline' }
+        })
     })
 end)
-
--- import("cmp_dictionary", function(cmp_dictionary) cmp_dictionary.setup({dic = {["*"] = {"/usr/share/dict/words"}}, first_case_insensitive=true}) end)
 
 import('telescope', function(telescope)
     local t_actions = nil
@@ -624,16 +645,16 @@ import('telescope', function(telescope)
                     ["<C-Down>"] = t_actions.preview_scrolling_down
                 },
                 i = {
-                  ["<C-Up>"] = t_actions.preview_scrolling_up,
-                  ["<C-Down>"] = t_actions.preview_scrolling_down
+                    ["<C-Up>"] = t_actions.preview_scrolling_up,
+                    ["<C-Down>"] = t_actions.preview_scrolling_down
                 }
             },
             layout_strategy = "vertical"
         },
         extensions = {
             file_browser = {
-                grouped = true,
-                hidden  = true,
+                grouped           = true,
+                hidden            = true,
                 respect_gitignore = false,
             }
         },
@@ -644,20 +665,24 @@ import('telescope', function(telescope)
 end)
 
 import('trouble', function(trouble) trouble.setup({
-  icons = true
-}) end)
+        icons = true
+    })
+end)
 
 
-import('todo-comments', function(todo_comments) todo_comments.setup({
-
-}) end)
+-- import('todo-comments', function(todo_comments) todo_comments.setup({
+--
+--     })
+-- end)
 
 -- DAP Setup
-import('dap', function(dap)
-    vim.fn.sign_define('DapBreakpoint', {text='🔴', texthl='', linehl='', numhl=''})
-    vim.fn.sign_define('DapBreakpointCondition', {text='🔵', texthl='', linehl='', numhl=''})
+import({'dap', 'dapui'}, function(modules)
+    local dap = modules.dap
+    local dapui = modules.dapui
+    if not dap.launch_server then dap.launch_server = {} end
+    vim.fn.sign_define('DapBreakpoint', { text = '🔴', texthl = '', linehl = '', numhl = '' })
+    vim.fn.sign_define('DapBreakpointCondition', { text = '🔵', texthl = '', linehl = '', numhl = '' })
     require('dap.ext.vscode').load_launchjs()
-    local dapui = require("dapui")
     dapui.setup({})
     dap.listeners.after.event_initialized['dapui_config'] = function()
         dapui.open()
@@ -668,27 +693,55 @@ import('dap', function(dap)
     dap.listeners.after.event_exited['dapui_config'] = function()
         dapui.close()
     end
+    import({'dap', 'osv'}, function(_modules)
+        local _dap = _modules.dap
+        local _osv = _modules.osv
+        local port = 8086
+        local output = vim.fn.system(string.format('netstat -tlupn | grep %s', port))
+        _dap.configurations.lua = {
+            {
+                type = 'nlua',
+                request = 'attach',
+                name = "Attach to running Neovim instance",
+            }
+        }
+        _dap.adapters.nlua = function(callback, config)
+            callback({ type = 'server', host = config.host or "127.0.0.1", port = config.port or port })
+        end
+        _dap.launch_server['nil'] = function()
+            if output:match(string.format('%s', port)) then
+                print("There is already a process running on port 8086")
+                -- Found free port
+                return
+            end
+            print("Starting OSV DAP Server")
+            _osv.launch({port = port})
+        end
+    end)
 end)
 
 import('netman')
 import('aerial', function(aerial) aerial.setup({
-    ignore = { filetypes = excluded_filetypes_array },
-    filter_kind = {
-        "Class",
-        "Constructor",
-        "Enum",
-        "Function",
-        "Interface",
-        "Module",
-        "Method",
-        "Struct",
-        -- "Variable"
-    },
-    placement_editor_edge = true,
-    update_events = "TextChanged,InsertLeave,WinEnter,WinLeave",
-    show_guides = true,
-    attach_mode = "global",
-}) end)
+        ignore = { filetypes = excluded_filetypes_array },
+        filter_kind = {
+            "Class",
+            "Constructor",
+            "Enum",
+            "Function",
+            "Interface",
+            "Module",
+            "Method",
+            "Struct",
+            -- "Variable"
+        },
+        layout = {
+            placement = "edge"
+        },
+        update_events = "TextChanged,InsertLeave,WinEnter,WinLeave",
+        show_guides = true,
+        attach_mode = "global",
+    })
+end)
 
 -- Tree-sitter configuration
 import({'nvim-treesitter.configs', 'nvim-treesitter.highlight'}, function(modules)
@@ -715,21 +768,23 @@ import('ccc', function(ccc)
 end)
 
 import('neo-tree', function(neo_tree)
-  neo_tree.setup({
-      sources = {
-        "filesystem",
-        "buffers",
-        -- "netman",
+    neo_tree.setup({
+        sources = {
+            "filesystem",
+            "buffers",
+            "netman.ui.neo-tree",
+        },
         filesystem = {
             filtered_items = {
+                visible = true,
                 hide_gitignored = false,
                 hide_hidden = false,
                 hide_dotfiles = false,
             },
             follow_current_file = true
         }
-    }
-  })
+        -- }
+    })
 end)
 
 import("osc52", function(osc52)
@@ -939,7 +994,7 @@ import('ufo', function(ufo)
             else
                 chunkText = truncate(chunkText, targetWidth - curWidth)
                 local hlGroup = chunk[2]
-                table.insert(newVirtText, {chunkText, hlGroup})
+                table.insert(newVirtText, { chunkText, hlGroup })
                 chunkWidth = vim.fn.strdisplaywidth(chunkText)
                 -- str width returned from truncate() may less than 2nd argument, need padding
                 if curWidth + chunkWidth < targetWidth then
@@ -949,13 +1004,13 @@ import('ufo', function(ufo)
             end
             curWidth = curWidth + chunkWidth
         end
-        table.insert(newVirtText, {suffix, 'MoreMsg'})
+        table.insert(newVirtText, { suffix, 'MoreMsg' })
         return newVirtText
     end
 
     ufo.setup({
         provider_selector = function()
-            return { 'treesitter', 'indent'}
+            return { 'treesitter', 'indent' }
         end,
         fold_virt_text_handler = handler
     })

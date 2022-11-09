@@ -186,6 +186,7 @@ _S_: Stop Debugger
 _j_: Step out of code block
 _k_: Step over code block
 _l_: Step into code block
+_L_: Launches DAP Server
 ^
 _r_: Open Live REPL
 ^
@@ -199,6 +200,17 @@ _s_/_q_/_<Esc>_: Exit Hydra
             {"j", cmd "lua require('dap').step_out()", {desc = "Step out of code block", silent = true}},
             {"k", cmd "lua require('dap').step_over()", {desc = "Step over code block", silent = true}},
             {"l", cmd "lua require('dap').step_into()", {desc = "Step into code block", silent = true}},
+            {"L", function()
+                local filetype = vim.api.nvim_buf_get_option(0, 'filetype')
+                local dap = require("dap")
+                if filetype == '' then filetype = 'nil' end
+                if dap and dap.launch_server and dap.launch_server[filetype] then
+                    dap.launch_server[filetype]()
+                else
+                    print(string.format("No DAP Launch server configured for filetype %s", filetype))
+                end
+            end, {desc = "Launches Dap Server"}},
+            -- {"L", cmd "lua require('dap')"}
             {"r", cmd "lua require('dap').repl.open()", {desc = "Open Live REPL", silent = true}},
             {"S", cmd "lua require('dap').terminate({},{terminateDebuggee = true}, function() require('dap').close() end)", {desc = "Stop Debugger", exit = true}},
             {"s",       nil, {desc = "quit", exit = true, nowait = true}},

@@ -16,13 +16,14 @@ local lsp_on_attach = function(client, bufnr)
     -- import('illuminate', function(illuminate)
     --     illuminate.on_attach(client)
     -- end)
-    import('aerial', function(aerial)
-        aerial.on_attach(client, bufnr)
-    end)
+    -- import('aerial', function(aerial)
+    --     aerial.on_attach(client, bufnr)
+    -- end)
 end
 
 local lsp_capabilities = vim.lsp.protocol.make_client_capabilities()
 lsp_capabilities.textDocument.completion.completionItem.snippetSupport = true
+-- lsp_capabilities.textDocument.foldingRange = {dynamicRegistration = false, lineFoldingOnly = true}
 -- import('cmp_nvim_lsp', function(cmp_nvim_lsp)
 --     capabilities = cmp_nvim_lsp.update_capabilities(capabilities)
 -- end)
