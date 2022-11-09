@@ -3,6 +3,7 @@
 #TODO(Mike):
 # [ ] Installer
 # [ ] Merge existing rc files into this (as a sort of template?)
+# [ ] Rewrite this thing
 
 RC_PATH=0
 check_rc_update(){
@@ -34,10 +35,14 @@ check_rc_update(){
 profile_rc() {
   # export TERM="xterm-256color"
   export LANG=en_US.UTF-8
+  export SCREENDIR=$HOME/.cache/screen
   export whatsmyip() {
     local_ip=$(dig @resolver4.opendns.com myip.opendns.com +short)
     echo $local_ip
   }
+  if ! [ -d $SCREENDIR ]; then
+    mkdir -p $SCREENDIR
+  fi
   # [ ! -e "$HOME/.shellrc" ] && 
   # User configuration
 
