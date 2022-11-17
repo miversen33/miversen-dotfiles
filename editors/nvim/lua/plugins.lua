@@ -84,7 +84,6 @@ require('packer').startup(function(use)
     -- use 'folke/todo-comments.nvim' -- Neovim TODO Comment Highlighting
     -- -- use 'f-person/git-blame.nvim' -- Neovim Git Blame (shows via virtual text)
     -- -- use 'rhysd/git-messenger.vim' -- Vim git blame in popup wi use 'rhysd/git-messenger.vim' -- Vim git blame in popup windowndow
-    use 'lewis6991/gitsigns.nvim' -- Neovim Git Stuffs (Depending on how much git we want to use, we might want to go this route)
     -- -- use {'ms-jpq/chadtree', branch = 'chad', run = 'python3 -m chadtree deps'} -- Neovim File Explorer with no external dependencies. Doesn't appear to have ssh support
     -- -- use {
     -- --   'kyazdani42/nvim-tree.lua', -- Neovim File Explorer with no external dependencies. Does appear to have _some_ form of ssh support
@@ -112,6 +111,14 @@ require('packer').startup(function(use)
     -- use 'romgrk/nvim-treesitter-context' -- Neovim code context
 
     -- -- Utilies
+    use 'lewis6991/gitsigns.nvim' -- Neovim Git Stuffs (Depending on how much git we want to use, we might want to go this route)
+    use {
+        'TimUntersberger/neogit',
+        requires = {
+            'nvim-lua/plenary.nvim',
+            'sindrets/diffview.nvim'
+        }
+    }
     use { 'kevinhwang91/nvim-ufo', requires = 'kevinhwang91/promise-async' } -- Better folding? Idk we will see
     use 'anuvyklack/hydra.nvim'
     use {
@@ -1017,6 +1024,9 @@ import('ufo', function(ufo)
     ufo.setFoldVirtTextHandler(vim.api.nvim_get_current_buf(), handler)
 end)
 
+import('neogit', function(neogit)
+    neogit.setup()
+end)
 --- Custom shits below
 
 import('custom_plugins', nil, { hide_output = true })
