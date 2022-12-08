@@ -68,6 +68,7 @@ require('packer').startup(function(use)
     -- use 'uga-rosa/cmp-dictionary' -- vim/neovim dictionary snippets? Maybe spellcheck without spellcheck?
     -- use 'hrsh7th/cmp-nvim-lua' -- vim/neovim lua api completion
     -- -- use 'kristijanhusak/vim-dadbod-completion' -- Vim Database Autocompletion
+    use 'hrsh7th/cmp-nvim-lsp-signature-help'
     use 'ray-x/cmp-treesitter' -- Neovim snippet for treesitter (Maybe replace the buffer completion?)
     use 'nvim-telescope/telescope-file-browser.nvim' -- Neovim Telescope File Manager
     -- -- use 'nvim-telescope/telescope-project.nvim' -- Neovim Telescope Project Manager
@@ -208,6 +209,7 @@ vim.g['db_ui_auto_execute_table_helpers'] = 1
 
 import('lsp_lines', function(lsp_lines)
     lsp_lines.setup()
+    vim.diagnostic.config({virtual_text=false})
 end)
 
 import('indent_blankline', function(indent_blankline)
@@ -577,7 +579,7 @@ import('cmp', function(cmp)
         },
         mapping = {
             ['<Enter>'] = cmp.mapping(cmp.mapping.confirm({ select = true }), { 'i' }),
-            ["<Tab>"] = cmp.mapping(function(fallback)
+            ["<Down>"] = cmp.mapping(function(fallback)
                 if cmp.visible() then
                     cmp.select_next_item()
                 elseif luasnip.expand_or_jumpable() then
@@ -587,9 +589,9 @@ import('cmp', function(cmp)
                 else
                     fallback()
                 end
-            end, { "i", "s" }),
+            end, { "i", "s", "c" }),
 
-            ["<S-Tab>"] = cmp.mapping(function(fallback)
+            ["<Up>"] = cmp.mapping(function(fallback)
                 if cmp.visible() then
                     cmp.select_prev_item()
                 elseif luasnip.jumpable(-1) then
@@ -597,7 +599,7 @@ import('cmp', function(cmp)
                 else
                     fallback()
                 end
-            end, { "i", "s" }),
+            end, { "i", "s", "c" }),
             ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
             ['<C-Up>'] = cmp.mapping(cmp.mapping.scroll_docs(-4)),
             ['<C-Down>'] = cmp.mapping(cmp.mapping.scroll_docs(4)),
@@ -609,6 +611,7 @@ import('cmp', function(cmp)
         sources = cmp.config.sources({
             { name = 'nvim_lsp' },
             { name = 'luasnip' }, -- For luasnip users.
+            { name = 'nvim_lsp_signature_help' },
             -- { name = 'orgmode' },
             { name = 'calc' },
             { name = 'dictionary', keyword_length = 2 },

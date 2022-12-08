@@ -32,7 +32,7 @@ vim.opt.encoding      = 'UTF-8'
 vim.log.level         = "warn"
 vim.opt.number        = true
 vim.opt.syntax        = 'enable'
-vim.opt.termguicolors = true
+vim.o.termguicolors = true
 vim.opt.tabstop       = 4
 vim.opt.shiftwidth    = 4
 vim.opt.softtabstop   = 4
@@ -63,7 +63,7 @@ vim.opt.splitright    = true
 vim.opt.splitbelow    = true
 vim.opt.expandtab     = true
 vim.opt.smarttab      = true
-vim.o.completeopt     = 'longest,preview,menuone,noselect'
+vim.opt.completeopt   = 'longest,preview,menuone,noselect'
 vim.g.vimsyn_embed    = 'lPrj'
 
 if not DEBUG then
