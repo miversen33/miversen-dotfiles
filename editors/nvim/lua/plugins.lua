@@ -191,16 +191,7 @@ require("import").config({output_split_type='vertical', import_enable_better_pri
 import('notify', function(notify)
     -- Overriding vim.notify with fancy notify if fancy notify exists
     vim.notify = notify
-    print = function(...)
-        local print_safe_args = {}
-        local _ = { ... }
-        for i = 1, #_ do
-            table.insert(print_safe_args, tostring(_[i]))
-        end
-        notify(table.concat(print_safe_args, ' '), "info")
-    end
-    notify.setup({
-    })
+    notify.setup({})
 end)
 -- Plugin Configurations
 local excluded_filetypes_array = { 'lsp-installer', 'lspinfo', 'Outline', 'help', 'packer', 'netrw', 'qf', 'dbui',
