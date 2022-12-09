@@ -15,6 +15,7 @@ require('packer').startup(function(use)
     use 'jbyuki/one-small-step-for-vimkind' -- Neovim plugin debugger
     --
     -- -- LSP Setup
+    use 'ray-x/lsp_signature.nvim' -- Neovim lsp signature help
     use 'neovim/nvim-lspconfig' -- Neovim LSP Setup
     -- use 'williamboman/nvim-lsp-installer' -- Neovim LSP Installer
     -- use 'RRethy/vim-illuminate' -- Neovim highlight word under cursor
@@ -49,17 +50,20 @@ require('packer').startup(function(use)
 
     -- -- IDE Specific
     use 'windwp/nvim-autopairs'
+    use 'rafamadriz/friendly-snippets' -- Snippets boi
     use 'kevinhwang91/nvim-hlslens'
     use 'yamatsum/nvim-cursorline'
     -- use 'ojroques/vim-oscyank'
     use 'ojroques/nvim-osc52' -- Neovim clipboard integration
     -- use 'wakatime/vim-wakatime'
     use 'hrsh7th/nvim-cmp' -- Neovim autocompletion
+    use 'rcarriga/cmp-dap' -- Neovim autocomplete for dap
     use 'L3MON4D3/LuaSnip' -- Neovim Lua based snippet manager
     -- use 'nvim-pack/nvim-spectre' -- Neovim Search and Replace
     -- use 'tpope/vim-fugitive' -- Vim Git Wrapper
     use 'saadparwaiz1/cmp_luasnip' -- Neovim LuaSnip autocompletion engine for nvim-cmp
     use 'hrsh7th/cmp-nvim-lsp' -- vim/neovim snippet stuffs
+    use 'KadoBOT/cmp-plugins' -- Neovim plugin autocompletion
     -- use 'f3fora/cmp-spell' -- neovim spellcheck snippet stuffs
     use 'hrsh7th/cmp-buffer' -- vim/neovim snippet stuffs
     use 'hrsh7th/cmp-path' -- vim/neovim snippet stuffs
@@ -544,33 +548,44 @@ local kind_icons = {
 }
 
 
-import('cmp', function(cmp)
-    local luasnip = nil
-    local lspkind = nil
-    import({ "luasnip", "lspkind" }, function(modules)
-        luasnip = modules.luasnip
-        lspkind = modules.lspkind
-    end)
-    assert(luasnip)
-    assert(lspkind)
-    local has_words_before = function()
-        local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-        return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+import({'cmp', 'luasnip', 'lspkind', 'cmp_dap', 'cmp-plugins'},  function(modules)
+    local cmp     = modules.cmp
+    local luasnip = modules.luasnip
+    local lspkind = modules.lspkind
+    local cmp_dap = modules.cmp_dap
+    modules['cmp-plugins'].setup({files = { ".*\\.lua"}})
+    require("luasnip.loaders.from_vscode").lazy_load()
+    local confirm_mapping = function(fallback)
+        if luasnip.expandable() then
+            return luasnip.expand()
+        end
+        if cmp and cmp.visible() and cmp.get_active_entry() then
+            cmp.confirm()
+            return
+        end
+        fallback()
+    end
+
+    local next_option_mapping = function(fallback)
+        if cmp.visible() then
+            cmp.select_next_item()
+        else
+            fallback()
+        end
+    end
+    local previous_option_mapping = function(fallback)
+        if cmp.visible() then
+            cmp.select_prev_item()
+        else
+            fallback()
+        end
     end
     cmp.setup({
+        enabled = function()
+            return vim.api.nvim_buf_get_option(0, 'buftype') ~= 'prompt' or cmp_dap.is_dap_buffer()
+        end,
         formatting = {
-            format = function(entry, vim_item)
-                vim_item.kind = string.format('%s %s', kind_icons[vim_item.kind], vim_item.kind)
-                vim_item.menu = ({
-                    buffer = "[Buffer]",
-                    nvim_lsp = "[LSP]",
-                    luasnip = "[LuaSnip]",
-                    nvim_lua = "[Lua]",
-                    latex_symbols = "[LaTeX]",
-                })[entry.source_name]
-                return vim_item
-            end
-            -- lspkind.cmp_format(),
+            format = lspkind.cmp_format()
         },
         snippet = {
             expand = function(args)
@@ -578,31 +593,17 @@ import('cmp', function(cmp)
             end,
         },
         mapping = {
-            ['<Enter>'] = cmp.mapping(cmp.mapping.confirm({ select = true }), { 'i' }),
-            ["<Down>"] = cmp.mapping(function(fallback)
-                if cmp.visible() then
-                    cmp.select_next_item()
-                elseif luasnip.expand_or_jumpable() then
-                    luasnip.expand_or_jump()
-                elseif has_words_before() then
-                    cmp.complete()
-                else
-                    fallback()
-                end
-            end, { "i", "s", "c" }),
-
-            ["<Up>"] = cmp.mapping(function(fallback)
-                if cmp.visible() then
-                    cmp.select_prev_item()
-                elseif luasnip.jumpable(-1) then
-                    luasnip.jump(-1)
-                else
-                    fallback()
-                end
-            end, { "i", "s", "c" }),
-            ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
-            ['<C-Up>'] = cmp.mapping(cmp.mapping.scroll_docs(-4)),
-            ['<C-Down>'] = cmp.mapping(cmp.mapping.scroll_docs(4)),
+            ['<Enter>'] = confirm_mapping,
+            ['<Tab>']   = cmp.mapping({
+                i = confirm_mapping,
+                c = next_option_mapping
+            }),
+            ['<Down>']  = cmp.mapping(next_option_mapping, {'i'}),
+            ['<Up>']    = cmp.mapping(previous_option_mapping, {'i'}),
+            ['<S-Tab>'] = cmp.mapping(previous_option_mapping, {'c'}),
+            ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), {'i', 'c'}),
+            ['<C-Up>']    = cmp.mapping(cmp.mapping.scroll_docs(-4)),
+            ['<C-Down>']  = cmp.mapping(cmp.mapping.scroll_docs(4)),
             ['<Esc>'] = cmp.mapping({
                 i = cmp.mapping.abort(),
                 c = cmp.mapping.close(),
@@ -610,16 +611,15 @@ import('cmp', function(cmp)
         },
         sources = cmp.config.sources({
             { name = 'nvim_lsp' },
-            { name = 'luasnip' }, -- For luasnip users.
+            { name = 'plugins' },
+            { name = 'luasnip', option = { show_autosnippets = true } }, -- For luasnip users.
             { name = 'nvim_lsp_signature_help' },
-            -- { name = 'orgmode' },
-            { name = 'calc' },
+
             { name = 'dictionary', keyword_length = 2 },
             { name = 'path' },
-            { name = "nvim_lua" },
             -- { name = "treesitter" }
         }, {
-            -- { name = 'buffer' },
+            { name = 'buffer' },
         })
     })
 
@@ -635,6 +635,9 @@ import('cmp', function(cmp)
         }, {
             { name = 'cmdline' }
         })
+    })
+    cmp.setup.filetype({'dap-repl', 'dapui_watches', 'dapui_hover'}, {
+        sources = { name = 'dap'}
     })
 end)
 
