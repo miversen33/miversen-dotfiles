@@ -195,8 +195,27 @@ import('notify', function(notify)
     notify.setup({})
 end)
 -- Plugin Configurations
-local excluded_filetypes_array = { 'lsp-installer', 'lspinfo', 'Outline', 'help', 'packer', 'netrw', 'qf', 'dbui',
-    'Trouble', 'fugitive', 'floaterm', 'spectre_panel', 'spectre_panel_write', 'checkhealth', 'man', 'dap-repl' }
+local excluded_filetypes_array = {
+    'lsp-installer',
+    'lspinfo', 'Outline',
+    'help',
+    'packer',
+    'netrw',
+    'qf',
+    'dbui',
+    'Trouble',
+    'fugitive',
+    'floaterm',
+    'spectre_panel',
+    'spectre_panel_write',
+    'checkhealth',
+    'man',
+    'dap-repl',
+    'toggleterm',
+    'neo-tree',
+    'ImportManager',
+    'aerial'
+}
 local excluded_filetypes_table = {}
 for _, value in ipairs(excluded_filetypes_array) do
     excluded_filetypes_table[value] = 1
@@ -239,23 +258,40 @@ import({'lualine', 'nvim-navic', 'lspkind'}, function(modules)
         end
         return table.concat(details, ' > ')
     end
+    local get_buf_filetype = function()
+        return vim.api.nvim_buf_get_option(0, 'filetype')
+    end
+    local format_name = function(output)
+        if excluded_filetypes_table[get_buf_filetype()] then return '' end
+        return output
+    end
     lualine.setup({
         options = {
             theme = 'catppuccin',
-            disabled_filetypes = excluded_filetypes_array,
+            disabled_filetypes = {
+                winbar = excluded_filetypes_array
+            },
             globalstatus = true
         },
-        extensions = { 'quickfix' },
         sections = {
             lualine_a = {
                 'mode',
-                'branch',
+                {
+                    'branch',
+                    fmt = function(output)
+                        if output:len() >= 50 then
+                            output = output:sub(1, 48) .. '...'
+                        end
+                        return output
+                    end
+                },
             },
             lualine_b = {
                 {
                     'filename',
                     file_status = false,
-                    path = 1
+                    path = 1,
+                    fmt = format_name
                 },
                 {
                     'diagnostics',
@@ -290,7 +326,8 @@ import({'lualine', 'nvim-navic', 'lspkind'}, function(modules)
                 },
                 {
                     'filename',
-                    path = 1
+                    path = 1,
+                    fmt = format_name
                 }
             },
             lualine_x = {
@@ -305,7 +342,8 @@ import({'lualine', 'nvim-navic', 'lspkind'}, function(modules)
         },
         winbar = {
             lualine_a = {
-                {'filename', file_status = false, path = 0}
+                {'filetype', icon_only = true, icon = { align = 'left'}},
+                {'filename', file_status = false, path = 0},
             },
             lualine_b = {},
             lualine_c = { create_symbol_bar },
@@ -314,7 +352,10 @@ import({'lualine', 'nvim-navic', 'lspkind'}, function(modules)
             lualine_z = {}
         },
         inactive_winbar = {
-            lualine_a = {},
+            lualine_a = {
+                {'filetype', icon_only = true, icon = { align = 'left'}},
+                {'filename', file_status = false, path = 0},
+            },
             lualine_b = {},
             lualine_c = {},
             lualine_x = {},
