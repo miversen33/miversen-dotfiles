@@ -510,53 +510,33 @@ vim.cmd(string.format("highlight! CmpItemKindProperty guibg=NONE guifg=%s", CmpI
 vim.cmd(string.format("highlight! CmpItemKindUnit guibg=NONE guifg=%s", CmpItemKindUnit))
 vim.cmd(string.format("highlight! TreesitterContext guibg=%s gui=bold", TreesitterContext))
 
-local kind_icons = {
-    Text = "",
-    Method = "",
-    Function = "",
-    Constructor = "",
-    Field = "",
-    Variable = "",
-    Class = "ﴯ",
-    Interface = "",
-    Module = "",
-    Property = "ﰠ",
-    Unit = "",
-    Value = "",
-    Enum = "",
-    Keyword = "",
-    Snippet = "",
-    Color = "",
-    File = "",
-    Reference = "",
-    Folder = "",
-    EnumMember = "",
-    Constant = "",
-    Struct = "",
-    Event = "",
-    Operator = "",
-    TypeParameter = ""
-}
-
-
-import({'cmp', 'luasnip', 'lspkind', 'cmp_dap', 'cmp-plugins'},  function(modules)
-    local cmp     = modules.cmp
-    local luasnip = modules.luasnip
-    local lspkind = modules.lspkind
-    local cmp_dap = modules.cmp_dap
-    modules['cmp-plugins'].setup({files = { ".*\\.lua"}})
+import({'cmp', 'luasnip', 'lspkind', 'cmp_dap', 'cmp-plugins', 'nvim-autopairs'},  function(modules)
+    local cmp            = modules.cmp
+    local luasnip        = modules.luasnip
+    local lspkind        = modules.lspkind
+    local cmp_dap        = modules.cmp_dap
+    local cmp_plugins    = modules['cmp-plugins']
+    local nvim_autopairs = modules['nvim-autopairs']
+    local cmp_autopairs  = require("nvim-autopairs.completion.cmp")
+    nvim_autopairs.setup({
+        disabled_filetypes = excluded_filetypes_array
+    })
+    cmp_plugins.setup({files = { ".*\\.lua"}})
+    luasnip.config.set_config({ history = true, update_events = 'TextChanged,TextChangedI'})
     require("luasnip.loaders.from_vscode").lazy_load()
     local confirm_mapping = function(fallback)
         if luasnip.expandable() then
             return luasnip.expand()
         end
         if cmp and cmp.visible() and cmp.get_active_entry() then
-            cmp.confirm()
+            cmp.confirm({
+                behavior = cmp.ConfirmBehavior.Replace,
+                select = false
+            })
             return
         end
         fallback()
     end
-
     local next_option_mapping = function(fallback)
         if cmp.visible() then
             cmp.select_next_item()
@@ -596,8 +576,8 @@ import({'cmp', 'luasnip', 'lspkind', 'cmp_dap', 'cmp-plugins'},  function(module
             ['<C-Up>']    = cmp.mapping(cmp.mapping.scroll_docs(-4)),
             ['<C-Down>']  = cmp.mapping(cmp.mapping.scroll_docs(4)),
             ['<Esc>'] = cmp.mapping({
-                i = cmp.mapping.abort(),
-                c = cmp.mapping.close(),
+                i = cmp.abort(),
+                c = cmp.close(),
             })
         },
         sources = cmp.config.sources({
@@ -630,6 +610,7 @@ import({'cmp', 'luasnip', 'lspkind', 'cmp_dap', 'cmp-plugins'},  function(module
     cmp.setup.filetype({'dap-repl', 'dapui_watches', 'dapui_hover'}, {
         sources = { name = 'dap'}
     })
+    cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done())
 end)
 
 import('telescope', function(telescope)
@@ -886,14 +867,6 @@ import('hlslens', function(hlslens)
             au User visual_multi_exit lua require('vmlens').exit()
         aug END
     ]])
-end)
-
-import('nvim-autopairs', function(nvim_autopairs)
-    -- https://github.com/windwp/nvim-autopairs
-    -- TODO: Setup nvim-autopairs to work with nvim-cmp
-    nvim_autopairs.setup({
-        disabled_filetypes = excluded_filetypes_array
-    })
 end)
 
 import('nvim_context_vt', function(nvim_context_vt)
