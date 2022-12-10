@@ -116,6 +116,7 @@ require('packer').startup(function(use)
     -- use 'romgrk/nvim-treesitter-context' -- Neovim code context
 
     -- -- Utilies
+    use 'SmiteshP/nvim-navic' -- Neovim location based symbol loader...?
     use 'lewis6991/gitsigns.nvim' -- Neovim Git Stuffs (Depending on how much git we want to use, we might want to go this route)
     use {
         'TimUntersberger/neogit',
@@ -220,7 +221,24 @@ end)
 
 import('Comment', function(comment) comment.setup() end)
 import('custom_theme')
-import('lualine', function(lualine)
+import({'lualine', 'nvim-navic', 'lspkind'}, function(modules)
+    local lualine = modules.lualine
+    local lspkind = modules.lspkind
+    local nvim_navic = modules['nvim-navic']
+    nvim_navic.setup({
+        seperator = '',
+        highlight = true,
+    })
+    local create_symbol_bar = function()
+        if not nvim_navic.is_available() then
+            return ''
+        end
+        local details = {}
+        for _, item in ipairs(nvim_navic.get_data()) do
+            table.insert(details, item.icon .. item.name)
+        end
+        return table.concat(details, ' > ')
+    end
     lualine.setup({
         options = {
             theme = 'catppuccin',
@@ -230,30 +248,31 @@ import('lualine', function(lualine)
         extensions = { 'quickfix' },
         sections = {
             lualine_a = {
-                'mode', 'branch',
+                'mode',
+                'branch',
             },
             lualine_b = {
                 {
-                    symbols = {
-                        modified = '',
-                        readonly = '',
-                        unamed = ''
-                    },
+                    'filename',
+                    file_status = false,
                     path = 1
-                }
-            },
-            lualine_c = {
+                },
                 {
                     'diagnostics',
-                    update_in_insert = false
-                }
+                    update_in_insert = true
+                },
             },
+            lualine_c = {},
             lualine_x = {
-                "aerial",
                 "import"
             },
             lualine_y = {
-                'encoding', 'progress',
+                {
+                    'filetype',
+                    icon_only = true
+                },
+                'encoding',
+                'progress',
             },
             lualine_z = {
                 'location'
@@ -283,6 +302,24 @@ import('lualine', function(lualine)
             lualine_z = {
 
             }
+        },
+        winbar = {
+            lualine_a = {
+                {'filename', file_status = false, path = 0}
+            },
+            lualine_b = {},
+            lualine_c = { create_symbol_bar },
+            lualine_x = {},
+            lualine_y = {},
+            lualine_z = {}
+        },
+        inactive_winbar = {
+            lualine_a = {},
+            lualine_b = {},
+            lualine_c = {},
+            lualine_x = {},
+            lualine_y = {},
+            lualine_z = {}
         }
     })
 end)
@@ -708,6 +745,7 @@ end)
 import('netman')
 import('aerial', function(aerial) aerial.setup({
         ignore = { filetypes = excluded_filetypes_array },
+        backends = { 'treesitter', 'lsp', 'markdown', 'man' },
         filter_kind = {
             "Class",
             "Constructor",
@@ -717,11 +755,12 @@ import('aerial', function(aerial) aerial.setup({
             "Module",
             "Method",
             "Struct",
-            -- "Variable"
+            "Variable"
         },
         layout = {
             placement = "edge"
         },
+        lazy_mode = false,
         update_events = "TextChanged,InsertLeave,WinEnter,WinLeave",
         show_guides = true,
         attach_mode = "global",
