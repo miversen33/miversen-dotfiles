@@ -265,6 +265,8 @@ import({'lualine', 'nvim-navic', 'lspkind'}, function(modules)
         if excluded_filetypes_table[get_buf_filetype()] then return '' end
         return output
     end
+    local branch_max_width = 40
+    local branch_min_width = 10
     lualine.setup({
         options = {
             theme = 'catppuccin',
@@ -279,8 +281,13 @@ import({'lualine', 'nvim-navic', 'lspkind'}, function(modules)
                 {
                     'branch',
                     fmt = function(output)
-                        if output:len() >= 50 then
-                            output = output:sub(1, 48) .. '...'
+                        local win_width = vim.api.nvim_win_get_width(0)
+                        local max = branch_max_width
+                        if win_width * .25 < max then max = math.floor(win_width * .25) end
+                        if max < branch_min_width then max = branch_min_width end
+                        if max % 2 ~= 0 then max = max + 1 end
+                        if output:len() >= max then
+                            return output:sub(1, (max / 2) - 1 ) .. '...' .. output:sub(-1 * ((max / 2) - 1), -1)
                         end
                         return output
                     end
