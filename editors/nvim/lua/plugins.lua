@@ -281,7 +281,7 @@ import({'lualine', 'nvim-navic', 'lspkind'}, function(modules)
                 {
                     'branch',
                     fmt = function(output)
-                        local win_width = vim.api.nvim_win_get_width(0)
+                        local win_width = vim.o.columns
                         local max = branch_max_width
                         if win_width * .25 < max then max = math.floor(win_width * .25) end
                         if max < branch_min_width then max = branch_min_width end
