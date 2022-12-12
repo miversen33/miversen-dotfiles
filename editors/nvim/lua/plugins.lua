@@ -43,7 +43,6 @@ require('packer').startup(function(use)
     use 'noib3/nvim-cokeline' -- Neovim Tab/Buffer Bar. More customizable than barbar, potentially use this?
     -- use 'edluffy/specs.nvim' -- Neovim cursorline jump highlighter
     use 'onsails/lspkind-nvim' -- Neovim lsp pictograms
-    -- use 'rebelot/heirline.nvim' -- See if you care enough to set this up?
     -- -- use 'tomasr/molokai' -- Molokai Theme
     -- -- use 'karb94/neoscroll.nvim' -- Neovim Better Scrolling
     -- -- use 'SmiteshP/nvim-gps' -- Neovim status bar component for locating yourself within your code
@@ -1085,6 +1084,7 @@ end)
 import('neogit', function(neogit)
     neogit.setup()
 end)
+
 --- Custom shits below
 
 import('custom_plugins', nil, { hide_output = true })
