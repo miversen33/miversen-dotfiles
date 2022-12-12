@@ -33,6 +33,7 @@ require('packer').startup(function(use)
     -- -- use {'iamcco/markdown-preview.nvim', run = 'cd app && yarn install', cmd = 'MarkdownPreview'} -- Neovim Markdown tool
     -- use {'ellisonleao/glow.nvim', run = ':GlowInstall' } -- Neovim Markdown Preview in Neovim
     use "folke/neodev.nvim" -- Neovim Developer Auto complete
+    use {'mfussenegger/nvim-jdtls', ft = {"java"}} -- Neovim jdtls extensions for java
 
     -- -- Theme(s)
     use { "catppuccin/nvim", as = "catppuccin" }
