@@ -54,18 +54,16 @@ use("https://git.sr.ht/~whynothugo/lsp_lines.nvim")
 -- -- Language Specific
 -- use('sheerun/vim-polyglot') -- testing out some language specific packages?
 -- -- use('gennaro-tedesco/nvim-jqx') -- Neovim JSON query tool
--- use('simrat39/rust-tools.nvim') -- Neovim Rust Tool
+use('simrat39/rust-tools.nvim') -- Neovim Rust Tool
 -- -- use {'iamcco/markdown-preview.nvim', run = 'cd app && yarn install', cmd = 'MarkdownPreview'} -- Neovim Markdown tool
 -- use {'ellisonleao/glow.nvim', run = ':GlowInstall' } -- Neovim Markdown Preview in Neovim
--- use("folke/neodev.nvim", {ft = {"lua"}}) -- Neovim Developer Auto complete
-use("folke/neodev.nvim", {ft = {"lua"}})
-use('mfussenegger/nvim-jdtls', {ft = {"java"}}) -- Neovim jdtls extensions for java
+use("folke/neodev.nvim")
+use('mfussenegger/nvim-jdtls') -- Neovim jdtls extensions for java
 
 -- -- Theme(s)
 use("catppuccin/nvim", { as = "catppuccin" })
 use('nvim-lualine/lualine.nvim') -- Neovim status line
 use('kyazdani42/nvim-web-devicons') -- Devicons
--- -- is the route we want to go
 use('noib3/nvim-cokeline') -- Neovim Tab/Buffer Bar. More customizable than barbar, potentially use this?
 -- use('edluffy/specs.nvim') -- Neovim cursorline jump highlighter
 use('onsails/lspkind-nvim') -- Neovim lsp pictograms
