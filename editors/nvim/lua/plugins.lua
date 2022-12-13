@@ -23,7 +23,8 @@ packer.init()
 
 local use = function(plugin, opts)
     opts = opts or {}
-    if opts.dev and vim.fn.glob(opts.dev) then
+    local _ = vim.fn.glob(opts.dev)
+    if opts.dev and _ and _:len() > 0 then
         -- Check to see if location exists. If so, use it
         plugin = opts.dev
         opts.dev = nil
@@ -155,7 +156,7 @@ use('bennypowers/nvim-regexplainer', {
     },
     run = ':TSInstall regex'
 })
-use('miversen33/netman.nvim', { dev = '~/git/netman.nvim' })
+use('miversen33/netman.nvim', { dev = '~/git/netman.nvim', branch = "v1.1" })
 use('hkupty/iron.nvim')
 use('haringsrob/nvim_context_vt')
 use('ziontee113/icon-picker.nvim', { requires = 'stevearc/dressing.nvim' }) -- Nerdfont picker
