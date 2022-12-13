@@ -6,187 +6,194 @@ vim.cmd([[
   augroup end
 ]])
 
-require('packer').startup(function(use)
-    use 'wbthomason/packer.nvim' -- Neovim Use Packer
+local ensure_packer = function()
+  local fn = vim.fn
+  local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
+  if fn.empty(fn.glob(install_path)) > 0 then
+    fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
+    vim.cmd [[packadd packer.nvim]]
+    return true
+  end
+  return false
+end
 
-    -- -- Debugger
-    use 'mfussenegger/nvim-dap' -- Neovim Debug Adapter Protocol
-    use 'rcarriga/nvim-dap-ui' -- Neovim DAP UI components. May not be necessary?
-    use 'jbyuki/one-small-step-for-vimkind' -- Neovim plugin debugger
-    --
-    -- -- LSP Setup
-    use 'ray-x/lsp_signature.nvim' -- Neovim lsp signature help
-    use 'neovim/nvim-lspconfig' -- Neovim LSP Setup
-    -- use 'williamboman/nvim-lsp-installer' -- Neovim LSP Installer
-    -- use 'RRethy/vim-illuminate' -- Neovim highlight word under cursor
-    use 'folke/lsp-colors.nvim' -- Neovim create missing lsp color highlight groups
-    use 'folke/trouble.nvim' -- Neovim better diagnostics?
-    -- use 'RishabhRD/nvim-lsputils'
-    use("https://git.sr.ht/~whynothugo/lsp_lines.nvim")
-    -- -- use 'glepnir/lspsaga.nvim' -- Neovim LSP tools
-    -- -- use 'jose-elias-alvarez/null-ls.nvim' -- Neovim "non lsp" lsp
-    --
-    -- -- Language Specific
-    -- use 'sheerun/vim-polyglot' -- testing out some language specific packages?
-    -- -- use 'gennaro-tedesco/nvim-jqx' -- Neovim JSON query tool
-    -- use 'simrat39/rust-tools.nvim' -- Neovim Rust Tool
-    -- -- use {'iamcco/markdown-preview.nvim', run = 'cd app && yarn install', cmd = 'MarkdownPreview'} -- Neovim Markdown tool
-    -- use {'ellisonleao/glow.nvim', run = ':GlowInstall' } -- Neovim Markdown Preview in Neovim
-    use {"folke/neodev.nvim", ft = {"lua"}} -- Neovim Developer Auto complete
-    use {'mfussenegger/nvim-jdtls', ft = {"java"}} -- Neovim jdtls extensions for java
+local packer = require("packer")
+packer.reset()
+packer.init()
 
-    -- -- Theme(s)
-    use { "catppuccin/nvim", as = "catppuccin" }
-    use 'nvim-lualine/lualine.nvim' -- Neovim status line
-    use 'kyazdani42/nvim-web-devicons' -- Devicons
-    -- -- is the route we want to go
-    use 'noib3/nvim-cokeline' -- Neovim Tab/Buffer Bar. More customizable than barbar, potentially use this?
-    -- use 'edluffy/specs.nvim' -- Neovim cursorline jump highlighter
-    use 'onsails/lspkind-nvim' -- Neovim lsp pictograms
-    -- -- use 'tomasr/molokai' -- Molokai Theme
-    -- -- use 'karb94/neoscroll.nvim' -- Neovim Better Scrolling
-    -- -- use 'SmiteshP/nvim-gps' -- Neovim status bar component for locating yourself within your code
-    -- -- use 'folke/zen-mode.nvim' -- Neovim "zen" style coding where it hides everything except the pane you're in. Not sold on it being actually useful though
-
-    -- -- IDE Specific
-    use 'windwp/nvim-autopairs'
-    use 'rafamadriz/friendly-snippets' -- Snippets boi
-    use 'kevinhwang91/nvim-hlslens'
-    use 'yamatsum/nvim-cursorline'
-    -- use 'ojroques/vim-oscyank'
-    use 'ojroques/nvim-osc52' -- Neovim clipboard integration
-    -- use 'wakatime/vim-wakatime'
-    use 'hrsh7th/nvim-cmp' -- Neovim autocompletion
-    use 'rcarriga/cmp-dap' -- Neovim autocomplete for dap
-    use 'L3MON4D3/LuaSnip' -- Neovim Lua based snippet manager
-    -- use 'nvim-pack/nvim-spectre' -- Neovim Search and Replace
-    -- use 'tpope/vim-fugitive' -- Vim Git Wrapper
-    use 'saadparwaiz1/cmp_luasnip' -- Neovim LuaSnip autocompletion engine for nvim-cmp
-    use 'hrsh7th/cmp-nvim-lsp' -- vim/neovim snippet stuffs
-    use 'KadoBOT/cmp-plugins' -- Neovim plugin autocompletion
-    -- use 'f3fora/cmp-spell' -- neovim spellcheck snippet stuffs
-    use 'hrsh7th/cmp-buffer' -- vim/neovim snippet stuffs
-    use 'hrsh7th/cmp-path' -- vim/neovim snippet stuffs
-    use 'hrsh7th/cmp-cmdline' -- vim/neovim snippet stuffs
-    -- use 'hrsh7th/cmp-calc' -- vim/neovim snippet stuffs
-    -- use 'uga-rosa/cmp-dictionary' -- vim/neovim dictionary snippets? Maybe spellcheck without spellcheck?
-    -- use 'hrsh7th/cmp-nvim-lua' -- vim/neovim lua api completion
-    -- -- use 'kristijanhusak/vim-dadbod-completion' -- Vim Database Autocompletion
-    use 'hrsh7th/cmp-nvim-lsp-signature-help'
-    use 'ray-x/cmp-treesitter' -- Neovim snippet for treesitter (Maybe replace the buffer completion?)
-    use 'nvim-telescope/telescope-file-browser.nvim' -- Neovim Telescope File Manager
-    -- -- use 'nvim-telescope/telescope-project.nvim' -- Neovim Telescope Project Manager
-    -- -- use 'cljoly/telescope-repo.nvim' -- Neovim Telescope Repository Project Manager
-    -- -- use 'simrat39/symbols-outline.nvim' -- Neovim symbol viewer (use treesitter vs ctags)
-    -- use 'tpope/vim-dadbod' -- Vim Database interaction
-    -- use 'kristijanhusak/vim-dadbod-ui' -- Vim UI for database interaction
-    -- -- use 'folke/which-key.nvim' -- Neovim keybinding help display
-    -- -- use 'rcarriga/vim-ultest' -- Neovim unit testing your code?
-    -- -- use 'gelguy/wilder.nvim' -- Neovim command autocomplete?
-    -- -- use 'steelsojka/pears.nvim' -- Neovim auto pair
-    -- use 'kevinhwang91/nvim-bqf' -- Neovim Better Quickfix
-    use 'numToStr/Comment.nvim' -- Neovim Commenting
-    -- use 'folke/todo-comments.nvim' -- Neovim TODO Comment Highlighting
-    -- -- use 'f-person/git-blame.nvim' -- Neovim Git Blame (shows via virtual text)
-    -- -- use 'rhysd/git-messenger.vim' -- Vim git blame in popup wi use 'rhysd/git-messenger.vim' -- Vim git blame in popup windowndow
-    -- -- use {'ms-jpq/chadtree', branch = 'chad', run = 'python3 -m chadtree deps'} -- Neovim File Explorer with no external dependencies. Doesn't appear to have ssh support
-    -- -- use {
-    -- --   'kyazdani42/nvim-tree.lua', -- Neovim File Explorer with no external dependencies. Does appear to have _some_ form of ssh support
-    -- --   requires = {
-    -- --     'kyazdani42/nvim-web-devicons', -- optional, for file icon
-    -- --   },
-    -- -- }
-    use 'mg979/vim-visual-multi'
-    use 'lukas-reineke/indent-blankline.nvim' -- Neovim indentation handling
-    use 'tami5/sqlite.lua' -- Neovim SQlite database
-    use {
-        'nvim-treesitter/nvim-treesitter', -- Neovim Treesitter setup
-        run = ':TSUpdate'
-    }
-    use 'nvim-telescope/telescope.nvim' -- Fuzzy Finder
-    use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' } -- Fuzzy Finder with fzf-native
-    use 'nvim-telescope/telescope-live-grep-args.nvim'
-    -- use 'nvim-orgmode/orgmode'
-    use 'uga-rosa/ccc.nvim' -- Neovim color picker?
-    -- -- use 'ahmedkhalf/project.nvim' -- Neovim project management
-    -- -- use 'gbprod/substitute.nvim' -- Neovim better substitution
-    -- -- use 'filipdutescu/renamer.nvim' -- Neovim vscode style variable renaming
-    -- -- use 'ethanholz/nvim-lastplace' -- Neovim open file in the last place you were (if the file has been opened before?)
-    use 'rcarriga/nvim-notify' -- Neovim notifications?
-    -- use 'romgrk/nvim-treesitter-context' -- Neovim code context
-
-    -- -- Utilies
-    use 'SmiteshP/nvim-navic' -- Neovim location based symbol loader...?
-    use 'lewis6991/gitsigns.nvim' -- Neovim Git Stuffs (Depending on how much git we want to use, we might want to go this route)
-    use {
-        'TimUntersberger/neogit',
-        requires = {
-            'nvim-lua/plenary.nvim',
-            'sindrets/diffview.nvim'
-        }
-    }
-    use { 'kevinhwang91/nvim-ufo', requires = 'kevinhwang91/promise-async' } -- Better folding? Idk we will see
-    use 'anuvyklack/hydra.nvim'
-    use {
-        'VonHeikemen/searchbox.nvim', -- Puts a searchbox in the top right corner. I mean... Why not?
-        requires = {
-            { 'MunifTanjim/nui.nvim' }
-        }
-    }
-    use {
-        'bennypowers/nvim-regexplainer',
-        requires = {
-            'nvim-treesitter/nvim-treesitter',
-            'MunifTanjim/nui.nvim'
-        },
-        run = ':TSInstall regex'
-    }
-  -- use '~/git/netman.nvim/'
-    use 'hkupty/iron.nvim'
-    use 'haringsrob/nvim_context_vt'
-    use {
-        'ziontee113/icon-picker.nvim', -- Nerdfont picker
-        requires = {
-            'stevearc/dressing.nvim'
-        }
-    }
-    -- use 'David-Kunz/markid'
-    -- -- use 'monaqa/dial.nvim' -- Neovim better increment?
-    -- use 'lewis6991/satellite.nvim' -- Scrollbar?
-    use 'miversen33/import.nvim' -- Local import function
-    use {
-        'nvim-neo-tree/neo-tree.nvim', -- File Browser
-        branch = "v2.x",
-        requires = {
-            "nvim-lua/plenary.nvim",
-            "kyazdani42/nvim-web-devicons", -- not strictly required, but recommended
-            "MunifTanjim/nui.nvim",
-        }
-    }
-    use 'vimwiki/vimwiki'
-    use 'nvim-lua/plenary.nvim' -- Neovim "Utility functions"
-    use 'mrjones2014/smart-splits.nvim' -- Neovim better split handling?
-    use 'stevearc/aerial.nvim' -- Better code outline??
-    -- -- Configure this so its "pretty"
-    -- -- use 'voldikss/vim-floaterm' -- Vim/Neovim floating terminal
-    use 'akinsho/toggleterm.nvim' -- Neovim Floating Terminal Framework
-    use {
-        'm-demare/hlargs.nvim',
-        requires = { 'nvim-treesitter/nvim-treesitter' }
-    }
-    use 'declancm/maximize.nvim'
-    -- -- use 'aserowy/tmux.nvim' -- Neovim Tmux integration
-    -- -- use 'numToStr/Navigator.nvim' -- Neovim better pane handling
-    --
-    -- -- We can almost certainly remove fzf...?
-    -- use 'junegunn/fzf'
-    -- use 'junegunn/fzf.vim'
-    -- Automatically set up your configuration after cloning packer.nvim
-    -- Put this at the end after all plugins
-    if packer_bootstrap then
-        require('packer').sync()
+local use = function(plugin, opts)
+    opts = opts or {}
+    if opts.dev and vim.fn.glob(opts.dev) then
+        -- Check to see if location exists. If so, use it
+        plugin = opts.dev
+        opts.dev = nil
     end
-end)
+    opts[1] = plugin
+    packer.use(opts)
+end
+
+use('wbthomason/packer.nvim') -- Neovim Use Packer
+
+-- -- Debugger
+use('mfussenegger/nvim-dap') -- Neovim Debug Adapter Protocol
+use('rcarriga/nvim-dap-ui') -- Neovim DAP UI components. May not be necessary?
+use('jbyuki/one-small-step-for-vimkind') -- Neovim plugin debugger
+--
+-- -- LSP Setup
+use('ray-x/lsp_signature.nvim') -- Neovim lsp signature help
+use('neovim/nvim-lspconfig') -- Neovim LSP Setup
+-- use('williamboman/nvim-lsp-installer') -- Neovim LSP Installer
+-- use('RRethy/vim-illuminate') -- Neovim highlight word under cursor
+use('folke/lsp-colors.nvim') -- Neovim create missing lsp color highlight groups
+use('folke/trouble.nvim') -- Neovim better diagnostics?
+-- use('RishabhRD/nvim-lsputils')
+use("https://git.sr.ht/~whynothugo/lsp_lines.nvim")
+-- -- use('glepnir/lspsaga.nvim') -- Neovim LSP tools
+-- -- use('jose-elias-alvarez/null-ls.nvim' -- Neovim "non lsp") lsp
+--
+-- -- Language Specific
+-- use('sheerun/vim-polyglot') -- testing out some language specific packages?
+-- -- use('gennaro-tedesco/nvim-jqx') -- Neovim JSON query tool
+-- use('simrat39/rust-tools.nvim') -- Neovim Rust Tool
+-- -- use {'iamcco/markdown-preview.nvim', run = 'cd app && yarn install', cmd = 'MarkdownPreview'} -- Neovim Markdown tool
+-- use {'ellisonleao/glow.nvim', run = ':GlowInstall' } -- Neovim Markdown Preview in Neovim
+-- use("folke/neodev.nvim", {ft = {"lua"}}) -- Neovim Developer Auto complete
+use("folke/neodev.nvim", {ft = {"lua"}})
+use('mfussenegger/nvim-jdtls', {ft = {"java"}}) -- Neovim jdtls extensions for java
+
+-- -- Theme(s)
+use("catppuccin/nvim", { as = "catppuccin" })
+use('nvim-lualine/lualine.nvim') -- Neovim status line
+use('kyazdani42/nvim-web-devicons') -- Devicons
+-- -- is the route we want to go
+use('noib3/nvim-cokeline') -- Neovim Tab/Buffer Bar. More customizable than barbar, potentially use this?
+-- use('edluffy/specs.nvim') -- Neovim cursorline jump highlighter
+use('onsails/lspkind-nvim') -- Neovim lsp pictograms
+-- -- use('tomasr/molokai') -- Molokai Theme
+-- -- use('karb94/neoscroll.nvim') -- Neovim Better Scrolling
+-- -- use('SmiteshP/nvim-gps') -- Neovim status bar component for locating yourself within your code
+-- -- use('folke/zen-mode.nvim' -- Neovim "zen" style coding where it hides everything except the pane you')re in. Not sold on it being actually useful though
+
+-- -- IDE Specific
+use('windwp/nvim-autopairs')
+use('rafamadriz/friendly-snippets') -- Snippets boi
+use('kevinhwang91/nvim-hlslens')
+use('yamatsum/nvim-cursorline')
+-- use('ojroques/vim-oscyank')
+use('ojroques/nvim-osc52') -- Neovim clipboard integration
+-- use('wakatime/vim-wakatime')
+use('hrsh7th/nvim-cmp') -- Neovim autocompletion
+use('rcarriga/cmp-dap') -- Neovim autocomplete for dap
+use('L3MON4D3/LuaSnip') -- Neovim Lua based snippet manager
+-- use('nvim-pack/nvim-spectre') -- Neovim Search and Replace
+-- use('tpope/vim-fugitive') -- Vim Git Wrapper
+use('saadparwaiz1/cmp_luasnip') -- Neovim LuaSnip autocompletion engine for nvim-cmp
+use('hrsh7th/cmp-nvim-lsp') -- vim/neovim snippet stuffs
+use('KadoBOT/cmp-plugins') -- Neovim plugin autocompletion
+-- use('f3fora/cmp-spell') -- neovim spellcheck snippet stuffs
+use('hrsh7th/cmp-buffer') -- vim/neovim snippet stuffs
+use('hrsh7th/cmp-path') -- vim/neovim snippet stuffs
+use('hrsh7th/cmp-cmdline') -- vim/neovim snippet stuffs
+-- use('hrsh7th/cmp-calc') -- vim/neovim snippet stuffs
+-- use('uga-rosa/cmp-dictionary') -- vim/neovim dictionary snippets? Maybe spellcheck without spellcheck?
+-- use('hrsh7th/cmp-nvim-lua') -- vim/neovim lua api completion
+-- -- use('kristijanhusak/vim-dadbod-completion') -- Vim Database Autocompletion
+use('hrsh7th/cmp-nvim-lsp-signature-help')
+use('ray-x/cmp-treesitter') -- Neovim snippet for treesitter (Maybe replace the buffer completion?)
+use('nvim-telescope/telescope-file-browser.nvim') -- Neovim Telescope File Manager
+-- -- use('nvim-telescope/telescope-project.nvim') -- Neovim Telescope Project Manager
+-- -- use('cljoly/telescope-repo.nvim') -- Neovim Telescope Repository Project Manager
+-- -- use('simrat39/symbols-outline.nvim') -- Neovim symbol viewer (use treesitter vs ctags)
+-- use('tpope/vim-dadbod') -- Vim Database interaction
+-- use('kristijanhusak/vim-dadbod-ui') -- Vim UI for database interaction
+-- -- use('folke/which-key.nvim') -- Neovim keybinding help display
+-- -- use('rcarriga/vim-ultest') -- Neovim unit testing your code?
+-- -- use('gelguy/wilder.nvim') -- Neovim command autocomplete?
+-- -- use('steelsojka/pears.nvim') -- Neovim auto pair
+-- use('kevinhwang91/nvim-bqf') -- Neovim Better Quickfix
+use('numToStr/Comment.nvim') -- Neovim Commenting
+-- use('folke/todo-comments.nvim') -- Neovim TODO Comment Highlighting
+-- -- use('f-person/git-blame.nvim') -- Neovim Git Blame (shows via virtual text)
+-- -- use('rhysd/git-messenger.vim') -- Vim git blame in popup wi use 'rhysd/git-messenger.vim' -- Vim git blame in popup windowndow
+-- -- use {'ms-jpq/chadtree', branch = 'chad', run = 'python3 -m chadtree deps'} -- Neovim File Explorer with no external dependencies. Doesn't appear to have ssh support
+-- -- use {
+-- --   'kyazdani42/nvim-tree.lua', -- Neovim File Explorer with no external dependencies. Does appear to have _some_ form of ssh support
+-- --   requires = {
+-- --     'kyazdani42/nvim-web-devicons', -- optional, for file icon
+-- --   },
+-- -- }
+use('mg979/vim-visual-multi')
+use('lukas-reineke/indent-blankline.nvim') -- Neovim indentation handling
+use('tami5/sqlite.lua') -- Neovim SQlite database
+use('nvim-treesitter/nvim-treesitter', { run = ':TSUpdate' }) -- Neovim treesitter
+use('nvim-telescope/telescope.nvim') -- Fuzzy Finder
+use('nvim-telescope/telescope-fzf-native.nvim', { run = 'make' }) -- Fuzzy Finder with fzf-native
+use('nvim-telescope/telescope-live-grep-args.nvim')
+-- use('nvim-orgmode/orgmode')
+use('uga-rosa/ccc.nvim') -- Neovim color picker?
+-- -- use('ahmedkhalf/project.nvim') -- Neovim project management
+-- -- use('gbprod/substitute.nvim') -- Neovim better substitution
+-- -- use('filipdutescu/renamer.nvim') -- Neovim vscode style variable renaming
+-- -- use('ethanholz/nvim-lastplace') -- Neovim open file in the last place you were (if the file has been opened before?)
+use('rcarriga/nvim-notify') -- Neovim notifications?
+-- use('romgrk/nvim-treesitter-context') -- Neovim code context
+
+-- -- Utilies
+use('SmiteshP/nvim-navic') -- Neovim location based symbol loader...?
+use('lewis6991/gitsigns.nvim') -- Neovim Git Stuffs (Depending on how much git we want to use, we might want to go this route)
+use('TimUntersberger/neogit', {
+    requires = {
+        'nvim-lua/plenary.nvim',
+        'sindrets/diffview.nvim'
+    }
+})
+use('kevinhwang91/nvim-ufo', { requires = 'kevinhwang91/promise-async' }) -- Better folding? Idk we will see
+use('anuvyklack/hydra.nvim')
+use('VonHeikemen/searchbox.nvim', { requires = 'MunifTanjim/nui.nvim' }) -- Puts a searchbox in the top right corner. I mean... Why not?
+use('bennypowers/nvim-regexplainer', {
+    requires = {
+        'nvim-treesitter/nvim-treesitter',
+        'MunifTanjim/nui.nvim'
+    },
+    run = ':TSInstall regex'
+})
+use('miversen33/netman.nvim', { dev = '~/git/netman.nvim' })
+use('hkupty/iron.nvim')
+use('haringsrob/nvim_context_vt')
+use('ziontee113/icon-picker.nvim', { requires = 'stevearc/dressing.nvim' }) -- Nerdfont picker
+-- use('David-Kunz/markid')
+-- -- use('monaqa/dial.nvim') -- Neovim better increment?
+-- use('lewis6991/satellite.nvim') -- Scrollbar?
+use('miversen33/import.nvim', { dev = "~/git/import.nvim" }) -- Local import function
+use('nvim-neo-tree/neo-tree.nvim', {
+    branch = "v2.x",
+    requires = {
+        "nvim-lua/plenary.nvim",
+        "kyazdani42/nvim-web-devicons", -- not strictly required, but recommended
+        "MunifTanjim/nui.nvim",
+    }
+}) -- File Explorer
+use('vimwiki/vimwiki')
+use('nvim-lua/plenary.nvim') -- Neovim "Utility functions"
+use('mrjones2014/smart-splits.nvim') -- Neovim better split handling?
+use('stevearc/aerial.nvim') -- Better code outline??
+-- -- Configure this so its "pretty"
+-- -- use('voldikss/vim-floaterm') -- Vim/Neovim floating terminal
+use('akinsho/toggleterm.nvim') -- Neovim Floating Terminal Framework
+use('m-demare/hlargs.nvim', { requires = 'nvim-treesitter/nvim-treesitter' })
+use('declancm/maximize.nvim')
+-- -- use('aserowy/tmux.nvim') -- Neovim Tmux integration
+-- -- use('numToStr/Navigator.nvim') -- Neovim better pane handling
+--
+-- -- We can almost certainly remove fzf...?
+-- use('junegunn/fzf')
+-- use('junegunn/fzf.vim')
+-- Automatically set up your configuration after cloning packer.nvim
+-- Put this at the end after all plugins
+if ensure_packer() then
+    packer.sync()
+end
+-- end)
 
 require("import").config({output_split_type='vertical', import_enable_better_printing=true})
 import('notify', function(notify)
@@ -235,8 +242,6 @@ import('indent_blankline', function(indent_blankline)
         use_treesitter = true,
     })
 end)
-
--- vim.g['gitblame_display_virtual_text'] = 0
 
 import('Comment', function(comment) comment.setup() end)
 import('custom_theme')
@@ -785,7 +790,7 @@ import({'dap', 'dapui'}, function(modules)
                 return
             end
             print("Starting OSV DAP Server")
-            _osv.launch({port = port})
+            _osv.launch({port = port, log = true})
         end
     end)
 end)
@@ -860,7 +865,6 @@ import('neo-tree', function(neo_tree)
 end)
 
 import("osc52", function(osc52)
-    -- TODO: This isn't quite working
     osc52.setup({
         max_length = 0,
         silent = false,
@@ -890,18 +894,7 @@ import("osc52", function(osc52)
             ['*'] = paste
         },
     }
-
-    -- Now the '+' register will copy to system clipboard using OSC52
-    -- vim.keymap.set('n', '<C-c>', '"+y')
-    -- vim.keymap.set('v', '<C-c>', '"+y')
-    -- vim.keymap.set('n', '<leader>cc', '"+yy')
 end)
-
--- import('windex', function(windex)
---     windex.setup({
---         default_keymaps = false
---     })
--- end)
 
 import('hlslens', function(hlslens)
     local kopts = { noremap = true, silent = true }
@@ -968,11 +961,6 @@ end)
 import('regexplainer', function(regexplainer)
     regexplainer.setup()
 end)
-
-import('neodev', function(neodev)
-    neodev.setup()
-end)
-
 
 import('hlargs', function(hlargs) hlargs.setup() end)
 
