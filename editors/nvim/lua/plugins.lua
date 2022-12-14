@@ -386,7 +386,7 @@ import('cokeline', function(cokeline)
     local warn_color = '#e1c400'
     import('catppuccin.palettes', function(cc)
         local pallet = cc.get_palette()
-        active_bg_color = pallet.lavender
+        active_bg_color = pallet.overlay1
         inactive_bg_color = pallet.base
         bg_color = pallet.base
         error_color = pallet.red
