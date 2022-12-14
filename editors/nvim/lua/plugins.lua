@@ -258,7 +258,9 @@ import({'lualine', 'nvim-navic', 'lspkind'}, function(modules)
         end
         local details = {}
         for _, item in ipairs(nvim_navic.get_data()) do
-            table.insert(details, item.icon .. item.name)
+            -- For some reason sumneko adds a random ` ->` to the end of the name *sometimes*
+            -- This accounts for that I guess...
+            table.insert(details, item.icon .. item.name:gsub('%s*->%s*', ''))
         end
         return table.concat(details, ' > ')
     end
