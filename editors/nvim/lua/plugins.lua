@@ -138,6 +138,7 @@ use('rcarriga/nvim-notify') -- Neovim notifications?
 -- use('romgrk/nvim-treesitter-context') -- Neovim code context
 
 -- -- Utilies
+use('famiu/bufdelete.nvim') -- Better buffer deletion
 use('SmiteshP/nvim-navic') -- Neovim location based symbol loader...?
 use('lewis6991/gitsigns.nvim') -- Neovim Git Stuffs (Depending on how much git we want to use, we might want to go this route)
 use('TimUntersberger/neogit', {
@@ -759,7 +760,7 @@ import({'dap', 'dapui'}, function(modules)
     vim.fn.sign_define('DapBreakpoint', { text = '🔴', texthl = '', linehl = '', numhl = '' })
     vim.fn.sign_define('DapBreakpointCondition', { text = '🔵', texthl = '', linehl = '', numhl = '' })
     require('dap.ext.vscode').load_launchjs()
-    dapui.setup({})
+    dapui.setup()
     dap.listeners.after.event_initialized['dapui_config'] = function()
         dapui.open()
     end
@@ -769,29 +770,27 @@ import({'dap', 'dapui'}, function(modules)
     dap.listeners.after.event_exited['dapui_config'] = function()
         dapui.close()
     end
-    import({'dap', 'osv'}, function(_modules)
-        local _dap = _modules.dap
-        local _osv = _modules.osv
+    import('osv', function(osv)
         local port = 8086
         local output = vim.fn.system(string.format('netstat -tlupn | grep %s', port))
-        _dap.configurations.lua = {
+        dap.configurations.lua = {
             {
                 type = 'nlua',
                 request = 'attach',
                 name = "Attach to running Neovim instance",
             }
         }
-        _dap.adapters.nlua = function(callback, config)
+        dap.adapters.nlua = function(callback, config)
             callback({ type = 'server', host = config.host or "127.0.0.1", port = config.port or port })
         end
-        _dap.launch_server['nil'] = function()
+        dap.launch_server['nil'] = function()
             if output:match(string.format('%s', port)) then
                 print("There is already a process running on port 8086")
                 -- Found free port
                 return
             end
             print("Starting OSV DAP Server")
-            _osv.launch({port = port, log = true})
+            osv.launch({port = port})
         end
     end)
 end)
@@ -1073,6 +1072,8 @@ end)
 import('neogit', function(neogit)
     neogit.setup()
 end)
+
+import('neodev', function(neodev) neodev.setup() end)
 
 --- Custom shits below
 
