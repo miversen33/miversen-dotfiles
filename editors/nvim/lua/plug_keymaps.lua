@@ -32,13 +32,13 @@ _h?_: Show Help Tags            _c?_: Show Vim Commands         _m?_: Show Man P
             {"s",      cmd "Telescope current_buffer_fuzzy_find skip_empty_lines=true", {desc = "Fuzzy find in current buffer", silent = true}},
             {"y",      cmd "IronRepl", {desc = "Repl", silent = true}},
             {"d",      cmd "lua require('telescope').extensions.live_grep_args.live_grep_args()", {desc = "Ripgrep CWD", silent = true}},
-            {"'",       cmd "AerialToggle!", {desc = "Opens Symbols Outline", exit = true, silent = true}},
+            {"'",      cmd "AerialToggle!", {desc = "Opens Symbols Outline", exit = true, silent = true}},
             -- {"k?",     ":lua require('telescope.builtin').keymaps()<CR>", {desc = "Open Neovim Keymaps", silent = true}},
             {"m?",     cmd "Telescope man_pages", {desc = "Opens Man Pages", silent = true}},
             {"T",      cmd "TroubleToggle", {desc = "Opens Diag Quickfix", silent = true}},
             {"t",      cmd "CFloatTerm", {desc = "Floating Term", silent = true}},
-            {"o",      cmd "CFloatTerm horizontal", {desc = "Horizontal Term", silent = true}},
-            {"p",      cmd "CFloatTerm vertical", {desc = "Vertical Term", silent = true}},
+            {"o",      cmd "CSplitTerm horizontal", {desc = "Horizontal Term", silent = true}},
+            {"p",      cmd "CSplitTerm vertical", {desc = "Vertical Term", silent = true}},
             {"q",      nil, {desc = "quit", exit = true, nowait = true}},
             {"<Esc>",  nil, {desc = "quit", exit = true, nowait = true}}
         }
@@ -210,7 +210,6 @@ _s_/_q_/_<Esc>_: Exit Hydra
                     print(string.format("No DAP Launch server configured for filetype %s", filetype))
                 end
             end, {desc = "Launches Dap Server"}},
-            -- {"L", cmd "lua require('dap')"}
             {"r", cmd "lua require('dap').repl.open()", {desc = "Open Live REPL", silent = true}},
             {"S", cmd "lua require('dap').terminate({},{terminateDebuggee = true}, function() require('dap').close() end)", {desc = "Stop Debugger", exit = true}},
             {"s",       nil, {desc = "quit", exit = true, nowait = true}},

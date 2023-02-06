@@ -2,7 +2,6 @@
 -- A helper lsp function would be wise
 local home = vim.loop.os_homedir()
 local lsp_dir = home .. "/.local/share/nvim/lsps/jdtls"
-local lsp = ""
 
 import('jdtls', function(jdtls)
     local project_root = require('jdtls.setup').find_root({'.git', 'mvnw', 'gradlew'})

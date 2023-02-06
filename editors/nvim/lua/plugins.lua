@@ -38,6 +38,7 @@ use('wbthomason/packer.nvim') -- Neovim Use Packer
 -- -- Debugger
 use('mfussenegger/nvim-dap') -- Neovim Debug Adapter Protocol
 use('rcarriga/nvim-dap-ui') -- Neovim DAP UI components. May not be necessary?
+use('theHamsta/nvim-dap-virtual-text', { run = ':TSUpdate' }) -- Neovim DAP Virutal Text lol what else do you think this is?
 use('jbyuki/one-small-step-for-vimkind') -- Neovim plugin debugger
 --
 -- -- LSP Setup
@@ -171,7 +172,8 @@ use('nvim-neo-tree/neo-tree.nvim', {
         "nvim-lua/plenary.nvim",
         "kyazdani42/nvim-web-devicons", -- not strictly required, but recommended
         "MunifTanjim/nui.nvim",
-    }
+    },
+    dev = "~/git/neo-tree.nvim"
 }) -- File Explorer
 use('vimwiki/vimwiki')
 use('nvim-lua/plenary.nvim') -- Neovim "Utility functions"
@@ -602,14 +604,16 @@ vim.cmd(string.format("highlight! CmpItemKindProperty guibg=NONE guifg=%s", CmpI
 vim.cmd(string.format("highlight! CmpItemKindUnit guibg=NONE guifg=%s", CmpItemKindUnit))
 vim.cmd(string.format("highlight! TreesitterContext guibg=%s gui=bold", TreesitterContext))
 
-import({'cmp', 'luasnip', 'lspkind', 'cmp_dap', 'cmp-plugins', 'nvim-autopairs'},  function(modules)
+import({'cmp', 'luasnip', 'lspkind', 'cmp_dap', 'nvim-dap-virtual-text', 'cmp-plugins', 'nvim-autopairs'},  function(modules)
     local cmp            = modules.cmp
+    local ndvt           = modules['nvim-dap-virtual-text']
     local luasnip        = modules.luasnip
     local lspkind        = modules.lspkind
     local cmp_dap        = modules.cmp_dap
     local cmp_plugins    = modules['cmp-plugins']
     local nvim_autopairs = modules['nvim-autopairs']
     local cmp_autopairs  = require("nvim-autopairs.completion.cmp")
+    ndvt.setup()
     nvim_autopairs.setup({
         disabled_filetypes = excluded_filetypes_array
     })
@@ -858,8 +862,8 @@ import('neo-tree', function(neo_tree)
                 hide_hidden = false,
                 hide_dotfiles = false,
             },
-            follow_current_file = true
-        }
+            follow_current_file = true,
+        },
         -- }
     })
 end)
