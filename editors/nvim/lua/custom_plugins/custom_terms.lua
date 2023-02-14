@@ -4,24 +4,6 @@ local HEIGHT_SCALE = 0.3
 local WIDTH_SCALE = 0.3
 
 local lang_repl_map = {
---     python = {
---         cmd = "python3",
---         direction = "vertical",
---         close_on_exit = false,
---         auto_scroll = true,
---     },
---     lua = {
---         cmd = "croissant",
---         direction = "vertical",
---         close_on_exit = false,
---         auto_scroll = true,
---     },
---     perl = {
---         cmd = "perl -de 1",
---         direction = "vertical",
---         close_on_exit = false,
---         auto_scroll = true,
---     },
     term = {
         direction = "float",
         close_on_exit = false,
@@ -30,12 +12,6 @@ local lang_repl_map = {
         direction = "vertical",
         close_on_exit = false
     },
-    -- javascript = {
-    --     cmd = "node",
-    --     direction = "vertical",
-    --     close_on_exit = false,
-    --     auto_scroll = true
-    -- },
     hterm = {
         direction = "horizontal",
         close_on_exit = false
@@ -51,7 +27,8 @@ function M.get_lang_repl(filetype)
     if ignored_repl_map[filetype] or not lang_repl_map[filetype] then
         print("Unable to find repl for " .. tostring(filetype))
         ignored_repl_map[filetype] = 1
-    return end
+        return
+    end
     local repl_map = lang_repl_map[filetype]
     local term = new_terms[filetype] or require("toggleterm.terminal").Terminal:new(repl_map)
     new_terms[filetype] = term
@@ -91,6 +68,7 @@ function M.init()
             }
         })
         vim.api.nvim_create_user_command('CFloatTerm', function() M.get_lang_repl('term'):toggle() end, {})
+        -- Split term dies if you already have one open???
         vim.api.nvim_create_user_command('CSplitTerm', function(args)
             local split = args.fargs[1]
             local term = ''
@@ -123,3 +101,4 @@ function M.init()
 end
 
 M.init()
+
