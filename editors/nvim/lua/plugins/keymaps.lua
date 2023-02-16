@@ -71,6 +71,10 @@ _<C-q>_/_<Esc>_: Exit Hydra
                        if not filetype or filetype:len() == 0 then
                            filetype = 'lua'
                        end
+                       if vim.api.nvim_buf_get_name(0):len() > 0 then
+                            -- Save the file
+                            vim.api.nvim_command('write')
+                       end
                        require("iron.core").send_file(filetype)
                    end,
                    {desc = "Writes current file to repl", silent = true}
