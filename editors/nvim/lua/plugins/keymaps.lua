@@ -1,16 +1,94 @@
 local hydra = require("hydra")
 local cmd = require("hydra.keymap-util").cmd
-
+hydra({
+    name = "Search Commands",
+    mode = {"n", "v"},
+    hint = [[
+                             Search Commands
+^
+_d_: Search Directory           _w_: Search with highlighted word
+_/_: Search File
+^
+^ ^                              _q_/_<Esc>_: Exit Hydra
+]],
+    config = {
+        color = 'teal',
+        invoke_on_body = true,
+        hint = {
+            type = 'window',
+            position = 'bottom',
+            border = 'rounded',
+            show_name = true
+        }
+    },
+    body = 'f',
+    heads = {
+        {"d",      cmd 'lua require("spectre").open()<CR>', {desc = "Search", silent = true}},
+        {"w",      cmd 'lua require("spectre").open_visual({select_word=true})<CR>', {desc = "Search word", silent = true}},
+        {"/",      cmd 'lua require("spectre").open_file_search()<CR>', {desc = "Search File", silent = true}},
+        {"q",      nil, {desc = "quit", exit = true, nowait = true}},
+        {"<Esc>",  nil, {desc = "quit", exit = true, nowait = true}}
+    }
+})
+hydra({
+    name = "Repl Commands",
+    mode = {"n", "i"},
+    hint = [[
+Repl Commands
+^
+_<C-z>_: Open Language Shell
+_<C-t>_: Scratch Pad
+_<C-s>_: Send file to repl
+_<C-g>_: Restart Repl
+^
+_<C-q>_/_<Esc>_: Exit Hydra
+    ]],
+    config = {
+        color = "pink",
+        invoke_on_body = true,
+        hint = {
+            type = "window",
+            position = "top-right",
+            border = "rounded",
+            show_name = true
+        },
+    },
+    body = "<C-e>",
+    heads = {
+        {"<C-z>",      cmd "IronRepl", {desc = "Language Shell", silent = true}},
+        {"<C-t>",  function()
+                       local filetype = vim.api.nvim_buf_get_option(0, 'filetype')
+                       if not filetype or filetype:len() == 0 then
+                           filetype = 'lua'
+                       end
+                       require("iron.core").repl_for(filetype)
+                   end,
+                   {desc = "Buffer as Repl Scratch pad", silent = true}
+        },
+        {"<C-g>",      cmd "echo 'yes'"},
+        {"<C-s>",  function()
+                       local filetype = vim.api.nvim_buf_get_option(0, 'filetype')
+                       if not filetype or filetype:len() == 0 then
+                           filetype = 'lua'
+                       end
+                       require("iron.core").send_file(filetype)
+                   end,
+                   {desc = "Writes current file to repl", silent = true}
+        },
+        {"<C-q>",      nil, {desc = "quit", exit = true, nowait = true}},
+        {"<Esc>",  nil, {desc = "quit", exit = true, nowait = true}}
+    }
+})
 hydra({
     name = "Quick/Common Commands",
     mode = {"n"},
     hint = [[
                              Quick/Common Commands
 ^
-_f_: Show Filesystem            _t_: Show Terminal (float)      _T_: Open Quickfix
-_s_: Buffer Fuzzy Search        _d_: CWD Fuzzy Search           _'_: Open Symbols Outline
-_o_: Open Horizontal Terminal   _p_: Open Vertical Terminal     _y_: Open REPL
-_h?_: Show Help Tags            _c?_: Show Vim Commands         _m?_: Show Man Pages
+_f_: Show Filesystem            _t_: Show Terminal (float)      _x_: Open Quickfix
+_s_: Buffer Fuzzy Search        _'_: Open Symbols Outline       _o_: Open Horizontal Terminal
+_p_: Open Vertical Terminal     _h?_: Show Help Tags            _c?_: Show Vim Commands
+_m?_: Show Man Pages
 ^
 ^ ^                              _q_/_<Esc>_: Exit Hydra
     ]],
@@ -30,12 +108,10 @@ _h?_: Show Help Tags            _c?_: Show Vim Commands         _m?_: Show Man P
         {"h?",     cmd "Telescope help_tags", {desc = "Open Help Tags", silent = true}},
         {"c?",     cmd "Telescope commands", {desc = "Open Available Telescope Commands", silent = true}},
         {"s",      cmd "Telescope current_buffer_fuzzy_find skip_empty_lines=true", {desc = "Fuzzy find in current buffer", silent = true}},
-        {"y",      cmd "IronRepl", {desc = "Repl", silent = true}},
-        {"d",      cmd "lua require('telescope').extensions.live_grep_args.live_grep_args()", {desc = "Ripgrep CWD", silent = true}},
         {"'",      cmd "AerialToggle!", {desc = "Opens Symbols Outline", exit = true, silent = true}},
         -- {"k?",     ":lua require('telescope.builtin').keymaps()<CR>", {desc = "Open Neovim Keymaps", silent = true}},
         {"m?",     cmd "Telescope man_pages", {desc = "Opens Man Pages", silent = true}},
-        {"T",      cmd "TroubleToggle", {desc = "Opens Diag Quickfix", silent = true}},
+        {"x",      cmd "copen", {desc = "Opens Quickfix", silent = true}},
         {"t",      cmd "CFloatTerm", {desc = "Floating Term", silent = true}},
         {"o",      cmd "CSplitTerm horizontal", {desc = "Horizontal Term", silent = true}},
         {"p",      cmd "CSplitTerm vertical", {desc = "Vertical Term", silent = true}},
@@ -60,9 +136,9 @@ hydra({
                                                  Navigation Commands
 ^
 _<Left>_: Resize Window Left     _<Right>_: Resize Window Right     _<Up>_: Resize Window Up     _<Down>_: Resize Window Down
- _u_: Move current tab left     _i_: Move current tab right        _z_: Maximize current pane
+ _u_: Move current tab left      _i_: Move current tab right        _z_: Maximize current pane
 ^
-^ ^                                                 _q_/_<Esc>_: Exit Hydra
+^ ^                                              _q_/_<Esc>_: Exit Hydra
         ]],
     body = "<C-Space>",
     heads = {
