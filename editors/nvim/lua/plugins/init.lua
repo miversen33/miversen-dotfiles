@@ -956,6 +956,17 @@ local function get_plugins()
                 vim.keymap.set("n", "K", require("hover").hover, {desc = "hover.nvim"})
                 vim.keymap.set("n", "gK", require("hover").hover_select, {desc = "hover.nvim (select)"})
             end
+        },
+        -- Keep both and lets see which we prefer
+        {
+            "ellisonleao/glow.nvim",
+            config = true,
+            cmd = "Glow"
+        },
+        {
+            "toppair/peek.nvim",
+            build = "deno task --quiet build:fast",
+            config = true,
         }
         -- Debugger
     }
