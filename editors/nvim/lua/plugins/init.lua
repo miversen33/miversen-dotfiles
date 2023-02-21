@@ -925,7 +925,6 @@ local function get_plugins()
             'miversen33/hover.nvim',
             dir = "~/git/hover.nvim",
             dev = true,
-            branch = "configRemoveHoverError",
             config = function()
                 require("hover").setup({
                     init = function()
