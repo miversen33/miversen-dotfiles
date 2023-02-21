@@ -219,7 +219,7 @@ Common Actions
 - _h_: Show Hover Doc
 - _f_: Format Buffer
 - _a_: Code Actions
-- _s_: Show Definition
+- _s_: Jump to Definition
 ^
 Help
 - _e_: Show Declerations
@@ -232,8 +232,8 @@ _;_/_q_/_<Esc>_: Exit Hydra
 ]],
     body = ";",
     heads = {
-        {"s", vim.lsp.buf.definition, {desc = "Show Description", silent = true}},
-        {"h", vim.lsp.buf.hover, {desc = "Show Hover Doc", silent = true}},
+        {"s", vim.lsp.buf.definition, {desc = "Jump to Definition", silent = true}},
+        {"h", require("hover").hover,  {desc = "Show Hover Doc", silent = true}},
         {"o", vim.lsp.buf.implementation, {desc = "Show Implementations", silent = true}},
         {"j", vim.lsp.buf.signature_help, {desc = "Show Sig Help", silent = true}},
         {"r", vim.lsp.buf.references, {desc = "Show References", silent = true}},
