@@ -48,6 +48,7 @@ local function vim_settings()
     vim.opt.smarttab      = true
     vim.opt.completeopt   = 'longest,preview,menuone,noselect'
     vim.g.vimsyn_embed    = 'lPrj'
+    vim.opt.updatetime    = 2000
 end
 
 local function setup_basic_keycommands()

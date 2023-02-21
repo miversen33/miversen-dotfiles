@@ -430,13 +430,13 @@ local function get_plugins()
                 require("illuminate").configure()
                 vim.api.nvim_set_keymap(
                     "n",
-                    "n",
+                    "<C-n>",
                     ':lua require("illuminate").goto_next_reference()<CR>',
                     { silent = true, noremap = true }
                 )
                 vim.api.nvim_set_keymap(
                     "n",
-                    "N",
+                    "<C-N>",
                     ':lua require("illuminate").goto_prev_reference()<CR>',
                     { silent = true, noremap = true }
                 )
@@ -920,6 +920,43 @@ local function get_plugins()
                 })
             end,
         },
+        {
+            -- miversen fork of hover to make it quiet
+            'miversen33/hover.nvim',
+            dir = "~/git/hover.nvim",
+            dev = true,
+            branch = "configRemoveHoverError",
+            config = function()
+                require("hover").setup({
+                    init = function()
+                        require("hover.providers.lsp")
+                    end,
+                    preview_opts = {
+                        border = 'rounded'
+                    },
+                    auto = true,
+                    quiet = true,
+                    excluded_fts = excluded_filetypes_array,
+                    -- Whether the contents of a currently open hover window should be moved
+                    -- to a :h preview-window when pressing the hover keymap.
+                    preview_window = false,
+                        title = true
+                })
+                -- -- Setup keymaps
+                vim.api.nvim_create_autocmd({'CursorHold'},
+                    {
+                        callback = function()
+                          local ft = vim.api.nvim_buf_get_option(0, 'filetype')
+                            if not excluded_filetypes_table[ft] then
+                                require("hover").hover()
+                            end
+                        end
+                    }
+                )
+                vim.keymap.set("n", "K", require("hover").hover, {desc = "hover.nvim"})
+                vim.keymap.set("n", "gK", require("hover").hover_select, {desc = "hover.nvim (select)"})
+            end
+        }
         -- Debugger
     }
     for _, plugin in ipairs(plugins) do

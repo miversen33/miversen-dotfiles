@@ -65,7 +65,11 @@ _<C-q>_/_<Esc>_: Exit Hydra
                    end,
                    {desc = "Buffer as Repl Scratch pad", silent = true}
         },
-        {"<C-g>",      cmd "echo 'yes'"},
+        {"<C-g>",  function()
+                       require("iron.core").repl_restart()
+                   end,
+                   {desc = "Restarts Repl", silent = true}
+        },
         {"<C-s>",  function()
                        local filetype = vim.api.nvim_buf_get_option(0, 'filetype')
                        if not filetype or filetype:len() == 0 then
