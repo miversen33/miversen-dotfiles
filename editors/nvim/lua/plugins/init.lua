@@ -922,9 +922,7 @@ local function get_plugins()
         },
         {
             -- miversen fork of hover to make it quiet
-            'miversen33/hover.nvim',
-            dir = "~/git/hover.nvim",
-            dev = true,
+            'lewis6991/hover.nvim',
             config = function()
                 require("hover").setup({
                     init = function()
@@ -933,13 +931,10 @@ local function get_plugins()
                     preview_opts = {
                         border = 'rounded'
                     },
-                    auto = true,
-                    quiet = true,
-                    excluded_fts = excluded_filetypes_array,
                     -- Whether the contents of a currently open hover window should be moved
                     -- to a :h preview-window when pressing the hover keymap.
                     preview_window = false,
-                        title = true
+                    title = true
                 })
                 -- -- Setup keymaps
                 vim.api.nvim_create_autocmd({'CursorHold'},
@@ -952,7 +947,6 @@ local function get_plugins()
                         end
                     }
                 )
-                vim.keymap.set("n", "K", require("hover").hover, {desc = "hover.nvim"})
                 vim.keymap.set("n", "gK", require("hover").hover_select, {desc = "hover.nvim (select)"})
             end
         },
