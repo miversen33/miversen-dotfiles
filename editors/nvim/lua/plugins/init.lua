@@ -45,6 +45,7 @@ local function get_plugins()
     for _, value in ipairs(excluded_filetypes_array) do
         excluded_filetypes_table[value] = 1
     end
+    local active_bg = '#A066E8'
     local plugins = {
         -- Local import function
         {
@@ -109,6 +110,22 @@ local function get_plugins()
                 -- Enable italic comment
                 italic_comments = true,
             },
+        },
+        {
+            'nvim-zh/colorful-winsep.nvim',
+            config = function()
+                local winsep = require("colorful-winsep")
+                local bg = require("vscode.colors").get_colors().vscBack
+                winsep.setup({
+                    highlight = {
+                        fg = active_bg,
+                        bg = bg
+                    },
+                    no_exec_files = excluded_filetypes_array,
+                    -- Rounded corners gud
+                    symbols = { "─", "│", "╭", "╮", "╰", "╯" },
+                })
+            end
         },
         {
             "nvim-lualine/lualine.nvim", -- Neovim status line
@@ -296,8 +313,7 @@ local function get_plugins()
                 local cokeline = require("cokeline")
                 local colors = require("vscode.colors").get_colors()
                 local get_hex = require("cokeline.utils").get_hex
-                local active_bg_color = "#931E9E"
-                active_bg_color = "#A066E8"
+                local active_bg_color = active_bg
                 local inactive_bg_color = colors.vscContext
                 local bg_color = get_hex("ColorColumn", "bg")
                 local no_error_color = "#3DEB63"
