@@ -897,6 +897,7 @@ local function get_plugins()
             dir = "~/git/neo-tree.nvim",
             dev = true,
             config = {
+                popup_border_style = 'rounded',
                 sources = {
                     "filesystem",
                     "buffers",
@@ -917,7 +918,6 @@ local function get_plugins()
             "miversen33/netman.nvim", -- Remove Resource Browser
             dir = "~/git/netman.nvim",
             dev = true,
-            branch = "v1.1",
             config = function()
                 require("netman")
             end,
