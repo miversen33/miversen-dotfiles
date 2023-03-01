@@ -654,6 +654,9 @@ local function get_plugins()
             "simrat39/rust-tools.nvim", -- Rust tools specific to neovim
             config = true,
         },
+        {
+            'mfussenegger/nvim-jdtls', -- Setup is done in the java filetype loader
+        },
         -- IDE
         {
             "nvim-pack/nvim-spectre", -- Better search and replace?
