@@ -195,7 +195,7 @@ local function get_plugins()
                                     if output:len() >= max then
                                         return output:sub(1, (max / 2) - 1)
                                             .. "..."
-                                            .. output:sub(-1 * ((max / 2) - 1), -1)
+                                            .. output:sub( -1 * ((max / 2) - 1), -1)
                                     end
                                     return output
                                 end,
@@ -223,8 +223,8 @@ local function get_plugins()
                                 function()
                                     local lsps = vim.lsp.get_active_clients({ bufnr = vim.fn.bufnr() })
                                     local icon = require("nvim-web-devicons").get_icon_by_filetype(
-                                        vim.api.nvim_buf_get_option(0, "filetype")
-                                    )
+                                            vim.api.nvim_buf_get_option(0, "filetype")
+                                        )
                                     if lsps and #lsps > 0 then
                                         local names = {}
                                         for _, lsp in ipairs(lsps) do
@@ -240,8 +240,8 @@ local function get_plugins()
                                 end,
                                 color = function()
                                     local _, color = require("nvim-web-devicons").get_icon_cterm_color_by_filetype(
-                                        vim.api.nvim_buf_get_option(0, "filetype")
-                                    )
+                                            vim.api.nvim_buf_get_option(0, "filetype")
+                                        )
                                     return { fg = color }
                                 end,
                             },
@@ -283,7 +283,7 @@ local function get_plugins()
                     },
                     winbar = {
                         lualine_a = {
-                            { "filetype", icon_only = true, icon = { align = "left" } },
+                            { "filetype", icon_only = true,    icon = { align = "left" } },
                             { "filename", file_status = false, path = 0 },
                         },
                         lualine_b = {},
@@ -294,7 +294,7 @@ local function get_plugins()
                     },
                     inactive_winbar = {
                         lualine_a = {
-                            { "filetype", icon_only = true, icon = { align = "left" } },
+                            { "filetype", icon_only = true,    icon = { align = "left" } },
                             { "filename", file_status = false, path = 0 },
                         },
                         lualine_b = {},
@@ -846,7 +846,7 @@ local function get_plugins()
                         ["<Up>"] = cmp.mapping(previous_option_mapping, { "i" }),
                         ["<S-Tab>"] = cmp.mapping(previous_option_mapping, { "c" }),
                         ["<C-Space>"] = cmp.mapping(cmp.mapping.complete(), { "i", "c" }),
-                        ["<C-Up>"] = cmp.mapping(cmp.mapping.scroll_docs(-4)),
+                        ["<C-Up>"] = cmp.mapping(cmp.mapping.scroll_docs( -4)),
                         ["<C-Down>"] = cmp.mapping(cmp.mapping.scroll_docs(4)),
                         ["<Esc>"] = cmp.mapping({
                             i = cmp.abort(),
@@ -856,10 +856,10 @@ local function get_plugins()
                     sources = cmp.config.sources({
                         { name = "nvim_lsp" },
                         { name = "plugins" },
-                        { name = "luasnip", option = { show_autosnippets = true } }, -- For luasnip users.
+                        { name = "luasnip",                option = { show_autosnippets = true } }, -- For luasnip users.
                         { name = "nvim_lsp_signature_help" },
 
-                        { name = "dictionary", keyword_length = 2 },
+                        { name = "dictionary",             keyword_length = 2 },
                         { name = "path" },
                         -- { name = "treesitter" }
                     }, {
@@ -993,17 +993,17 @@ local function get_plugins()
                     title = true
                 })
                 -- -- Setup keymaps
-                vim.api.nvim_create_autocmd({'CursorHold'},
+                vim.api.nvim_create_autocmd({ 'CursorHold' },
                     {
                         callback = function()
-                          local ft = vim.api.nvim_buf_get_option(0, 'filetype')
+                            local ft = vim.api.nvim_buf_get_option(0, 'filetype')
                             if not excluded_filetypes_table[ft] then
                                 require("hover").hover()
                             end
                         end
                     }
                 )
-                vim.keymap.set("n", "gK", require("hover").hover_select, {desc = "hover.nvim (select)"})
+                vim.keymap.set("n", "gK", require("hover").hover_select, { desc = "hover.nvim (select)" })
             end
         },
         -- Keep both and lets see which we prefer
