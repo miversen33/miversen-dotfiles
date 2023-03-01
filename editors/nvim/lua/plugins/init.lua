@@ -57,6 +57,11 @@ local function get_plugins()
             end,
             priority = 1001, -- Highest priority?
         },
+        -- General Utilities
+        {
+            "folke/trouble.nvim",
+            config = true
+        },
         -- Themes
         {
             "Mofiqul/vscode.nvim", -- Vscode type theme
