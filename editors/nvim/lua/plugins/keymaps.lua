@@ -96,7 +96,7 @@ hydra({
 _f_: Show Filesystem            _t_: Show Terminal (float)      _x_: Open Quickfix
 _s_: Buffer Fuzzy Search        _'_: Open Symbols Outline       _o_: Open Horizontal Terminal
 _p_: Open Vertical Terminal     _h?_: Show Help Tags            _c?_: Show Vim Commands
-_m?_: Show Man Pages
+_m?_: Show Man Pages            _l_: Open Location List
 ^
 ^ ^                              _q_/_<Esc>_: Exit Hydra
     ]],
@@ -119,7 +119,8 @@ _m?_: Show Man Pages
         {"'",      cmd "AerialToggle!", {desc = "Opens Symbols Outline", exit = true, silent = true}},
         -- {"k?",     ":lua require('telescope.builtin').keymaps()<CR>", {desc = "Open Neovim Keymaps", silent = true}},
         {"m?",     cmd "Telescope man_pages", {desc = "Opens Man Pages", silent = true}},
-        {"x",      cmd "copen", {desc = "Opens Quickfix", silent = true}},
+        {"x",      cmd "TroubleToggle quickfix", {desc = "Opens Quickfix", silent = true}},
+        {"l",      cmd "TroubleToggle loclist", {desc = "Opens Location List", silent = true}},
         {"t",      cmd "CFloatTerm", {desc = "Floating Term", silent = true}},
         {"o",      cmd "CSplitTerm horizontal", {desc = "Horizontal Term", silent = true}},
         {"p",      cmd "CSplitTerm vertical", {desc = "Vertical Term", silent = true}},
@@ -175,11 +176,11 @@ hydra({
         },
     },
         hint = [[
-Terminal Commands
+                                                          Terminal Commands
 ^
-_<Left>_: Resize Window Left        _<Right>_: Resize Window Right     _<Up>_: Resize Window Up     _<Down>_: Resize Window Down
- _h_: Move Focus Left                 _j_: Move Focus Down            _k_: Move Focus Up             _l_: Move Focus Right
- _z_: Maximize current pane   _<C-Space>_: Escape Terminal Mode
+_<Left>_: Resize Window Left          _<Right>_: Resize Window Right     _<Up>_: Resize Window Up     _<Down>_: Resize Window Down
+ _h_: Move Focus Left                 _j_: Move Focus Down               _k_: Move Focus Up             _l_: Move Focus Right
+ _z_: Maximize current pane           _<C-Space>_: Escape Terminal Mode  _x_: Close Terminal
 ^
 ^ ^                                                      _q_/_<Esc>_: Exit Hydra
         ]],
@@ -195,6 +196,7 @@ _<Left>_: Resize Window Left        _<Right>_: Resize Window Right     _<Up>_: R
         {"l",       cmd "lua require('smart-splits').move_cursor_right()",{desc = "Move Focus Right", exit = true, silent = true}},
         {"z",       cmd "lua require('maximize').toggle()", {desc = "Maximize current pane", exit = true, silent = true}},
         {"<C-Space>", "<C-\\><C-n>", {desc = "Escape Terminal Mode", exit = true}},
+        {"x",       "<C-\\><C-n>:q<CR>", {desc = "Close Terminal", exit = true}},
         {"q",       nil, {desc = "quit", exit = true, nowait = true}},
         {"<Esc>",   nil, {desc = "quit", exit = true, nowait = true}}
     }
@@ -220,6 +222,8 @@ Common Actions
 - _f_: Format Buffer
 - _a_: Code Actions
 - _s_: Jump to Definition
+- _d_: Show Diagnostics
+- _w_: Show Workspace Diagnostics
 ^
 Help
 - _e_: Show Declerations
@@ -232,14 +236,16 @@ _;_/_q_/_<Esc>_: Exit Hydra
 ]],
     body = ";",
     heads = {
-        {"s", vim.lsp.buf.definition, {desc = "Jump to Definition", silent = true}},
+        {"s", cmd 'TroubleToggle lsp_definitions', {desc = "Jump to Definition", silent = true}},
         {"h", require("hover").hover,  {desc = "Show Hover Doc", silent = true}},
-        {"o", vim.lsp.buf.implementation, {desc = "Show Implementations", silent = true}},
+        {"o", cmd 'TroubleToggle lsp_implementations', {desc = "Show Implementations", silent = true}},
         {"j", vim.lsp.buf.signature_help, {desc = "Show Sig Help", silent = true}},
-        {"r", vim.lsp.buf.references, {desc = "Show References", silent = true}},
+        {"r", cmd 'TroubleToggle lsp_references', {desc = "Show References", silent = true}},
         {"f", function() vim.lsp.buf.format({ async = true }) end, {desc = "Format Buffer", silent = true}},
         {"a", vim.lsp.buf.code_action, {desc = "Show Code Actions", silent = true}},
-        {"D", vim.lsp.buf.type_definition, {desc = "Show Type Definition", silent = true}},
+        {"d", cmd 'TroubleToggle document_diagnostics', {desc = "Show Diagnostics", silent = true}},
+        {"w", cmd 'TroubleToggle workspace_diagnostics', {desc = "Show Workspace Diagnostics", silent = true}},
+        {"D", cmd 'TroubleToggle lsp_definitions', {desc = "Show Type Definition", silent = true}},
         {"e", vim.lsp.buf.decleration, {desc = "Show Declerations", silent = true}},
         {";",       nil, {desc = "quit", exit = true, nowait = true}},
         {"q",       nil, {desc = "quit", exit = true, nowait = true}},
