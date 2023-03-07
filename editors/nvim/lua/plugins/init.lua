@@ -1062,17 +1062,6 @@ local function get_plugins()
         }
         -- Debugger
     }
-    for _, plugin in ipairs(plugins) do
-        -- Check if 'dev' is enabled, if it is, check if the directory it points to exists
-        -- if it doesn't, switch dev to false
-        if plugin.dev then
-            local dir_glob = vim.fn.glob(plugin.dir)
-            if not plugin.dir or not dir_glob or dir_glob:len() == 0 then
-                plugin.dev = false
-                plugin.dir = nil
-            end
-        end
-    end
     return plugins
 end
 
