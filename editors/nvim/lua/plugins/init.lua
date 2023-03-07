@@ -50,7 +50,6 @@ local function get_plugins()
         -- Local import function
         {
             "miversen33/import.nvim",
-            dir = "~/git/import.nvim",
             lazy = false,
             dev = true,
             config = function()
@@ -897,8 +896,7 @@ local function get_plugins()
                 "kyazdani42/nvim-web-devicons", -- not strictly required, but recommended
                 "MunifTanjim/nui.nvim",
             },
-            dir = "~/git/neo-tree.nvim",
-            dev = true,
+            dev = false,
             config = {
                 popup_border_style = 'rounded',
                 sources = {
@@ -919,7 +917,6 @@ local function get_plugins()
         },
         {
             "miversen33/netman.nvim", -- Remove Resource Browser
-            dir = "~/git/netman.nvim",
             dev = true,
             config = function()
                 require("netman")
@@ -1039,7 +1036,13 @@ end
 local function setup_plugins()
     -- Currently using lazy, though we might use packer instead
     local plugins = get_plugins()
-    require("lazy").setup(plugins)
+    require("lazy").setup(plugins, {
+        dev = {
+            path = "~/git",
+            patterns = { "miversen33" },
+            fallback = true
+        }
+    })
     require("custom_plugins") -- Load local plugins
 end
 
