@@ -674,11 +674,13 @@ local function get_plugins()
             dependencies = {
                 "neovim/nvim-lspconfig", -- Neovim LSP Setup
                 "williamboman/mason-lspconfig.nvim", -- Mason lsp config bindings
+                "rcarriga/nvim-dap-ui", -- UI for Dap
                 "mfussenegger/nvim-dap", -- Debugger, setup below
                 "mfussenegger/nvim-lint", -- Neovim linter
                 "mhartington/formatter.nvim", -- Neovim formatter
                 "SmiteshP/nvim-navic", -- Navigational helper using lspconfig
                 "hrsh7th/cmp-nvim-lsp", -- Neovim LSP feeder for cmp
+                "jbyuki/one-small-step-for-vimkind", -- Neovim Dap
             },
             config = function()
                 require("mason").setup()
@@ -686,6 +688,9 @@ local function get_plugins()
                 local mason_lspconfig = require("mason-lspconfig")
                 local nvim_navic = require("nvim-navic")
                 local cmp_nvim_lsp = require("cmp_nvim_lsp")
+                local dap = require("dap")
+                local dapui = require("dapui")
+                local osv = require("osv")
                 local lsp_capabilities = cmp_nvim_lsp.default_capabilities()
                 lsp_capabilities.textDocument.completion.completionItem.snippetSupport = true
                 local lsp_handlers = {
@@ -770,6 +775,35 @@ local function get_plugins()
                         },
                     },
                 })
+                vim.fn.sign_define('DapBreakpoint', { text = '🔴', texthl = '', linehl = '', numhl = '' })
+                vim.fn.sign_define('DapBreakpointCondition', { text = '🔵', texthl = '', linehl = '', numhl = '' })
+                require('dap.ext.vscode').load_launchjs()
+                dapui.setup()
+                dap.listeners.after.event_initialized['dapui_config'] = function()
+                    dapui.open()
+                end
+                dap.listeners.before.event_terminated['dapui_config'] = function()
+                    dapui.close()
+                end
+                dap.listeners.after.event_exited['dapui_config'] = function()
+                    dapui.close()
+                end
+                local osv_port = 8086
+                if not dap.launch_server then dap.launch_server = {} end
+                dap.configurations.lua = {
+                    {
+                        type = 'nlua',
+                        request = 'attach',
+                        name = "Attach to running Neovim instance",
+                    }
+                }
+                dap.adapters.nlua = function(callback, config)
+                    callback({ type = 'server', host = config.host or "127.0.0.1", port = config.port or osv_port })
+                end
+                dap.launch_server['nil'] = function()
+                    print("Starting OSV DAP Server")
+                    osv.launch({port = osv_port})
+                end
             end,
         },
         {
