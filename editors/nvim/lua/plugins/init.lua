@@ -132,12 +132,15 @@ local function get_plugins()
                 "kyazdani42/nvim-web-devicons",
                 "SmiteshP/nvim-navic",
                 "onsails/lspkind-nvim",
+                "f-person/git-blame.nvim"
             },
             lazy = false,
             priority = 999,
             config = function()
+                vim.g.gitblame_display_virtual_text = 0
                 local lualine = require("lualine")
                 local nvim_navic = require("nvim-navic")
+                local git_blame = require("gitblame")
                 nvim_navic.setup({
                     seperator = "",
                     highlight = true,
@@ -212,7 +215,13 @@ local function get_plugins()
                                 update_in_insert = true,
                             },
                         },
-                        lualine_c = {},
+                        lualine_c = {
+                            {
+                                git_blame.get_current_blame_text,
+                                cond = git_blame.is_blame_text_available,
+                                color = { fg = '#ABABAB', gui='italic'}
+                            }
+                        },
                         lualine_x = {
                             "import",
                         },
