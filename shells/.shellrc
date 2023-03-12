@@ -43,6 +43,28 @@ profile_rc() {
   if ! [ -d $SCREENDIR ]; then
     mkdir -p $SCREENDIR
   fi
+  
+  # Setup rclone syncs
+  if [ -x "$(command -v rclone)" ] && [ -f $HOME/.config/rclone/rclone.conf ] ; then
+    # Rclone exists and is configured
+    # Check to see if there is a neovim-notes-sync in the config
+    STUPID_VAR_TO_CAPTURE_UNNECESSARY_OUTPUT_BECAUSE_BASH_IS_IRRITATING=$(crontab -l | grep '#rclone neovim-notes-sync bisync')
+    if [ `grep 'neovim-notes-sync' $HOME/.config/rclone/rclone.conf` ] && [ -z $STUPID_VAR_TO_CAPTURE_UNNECESSARY_OUTPUT_BECAUSE_BASH_IS_IRRITATING ]; then
+        mkdir -p ~/.local/share/nvim/neorg/
+        mkdir -p ~/.local/share/mind.nvim/
+        # Forking the following 2 rclone jobs off to make sure everything is setup properly
+        echo "Running initial rclone syncs in background"
+        (rclone bisync --remove-empty-dirs --resync neovim-notes-sync:/Mind.nvim ~/.local/share/mind.nvim &) > /dev/null 2>&1
+        (rclone bisync --remove-empty-dirs --resync neovim-notes-sync:/Neorg ~/.local/share/nvim/neorg/ &) > /dev/null 2>&1
+        # This user's crontab doesn't have an entry for the rclone job
+        crontab -l > /tmp/$USER.cron
+        echo "#rclone neovim-notes-sync bisync" >> /tmp/$USER.cron
+        echo "1 * * * * $(command -v rclone) bisync --remove-empty-dirs neovim-notes-sync:/Mind.nvim ~/.local/share/mind.nvim/" >> /tmp/$USER.cron
+        echo "1 * * * * $(command -v rclone) bisync --remove-empty-dirs neovim-notes-sync:/Neorg ~/.local/share/nvim/neorg/" >> /tmp/$USER.cron
+        crontab /tmp/$USER.cron
+        # rm /tmp/$USER.cron
+    fi
+  fi
   # [ ! -e "$HOME/.shellrc" ] && 
   # User configuration
 
