@@ -961,6 +961,7 @@ local function get_plugins()
         {
             "miversen33/netman.nvim", -- Remove Resource Browser
             dev = true,
+            branch = "v1.15",
             config = function()
                 require("netman")
             end,
@@ -1059,6 +1060,11 @@ local function get_plugins()
             "toppair/peek.nvim",
             build = "deno task --quiet build:fast",
             config = true,
+        },
+        {
+            -- Git
+            "TimUntersberger/neogit",
+            config = true
         }
         -- Debugger
     }
