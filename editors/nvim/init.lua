@@ -55,6 +55,7 @@ local function setup_basic_keycommands()
     -- Keymappings
     vim.keymap.set('n', '<Space>',   '<Nop>', {silent = true})
     vim.g.mapleader = ' '
+    vim.g.maplocalleader = ','
 
     vim.keymap.set('n', 'AA',       'ggVG', {silent = true})
     vim.keymap.set('v', 'AA',       'ggV', {silent = true})
