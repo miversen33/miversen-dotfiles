@@ -58,9 +58,9 @@ profile_rc() {
         (rclone bisync --remove-empty-dirs --resync neovim-notes-sync:/Neorg ~/.local/share/nvim/neorg/ &) > /dev/null 2>&1
         # This user's crontab doesn't have an entry for the rclone job
         crontab -l > /tmp/$USER.cron
-        echo "#rclone neovim-notes-sync bisync" >> /tmp/$USER.cron
-        echo "1 * * * * $(command -v rclone) bisync --remove-empty-dirs neovim-notes-sync:/Mind.nvim ~/.local/share/mind.nvim/" >> /tmp/$USER.cron
-        echo "1 * * * * $(command -v rclone) bisync --remove-empty-dirs neovim-notes-sync:/Neorg ~/.local/share/nvim/neorg/" >> /tmp/$USER.cron
+        echo -e "\n#rclone neovim-notes-sync bisync" >> /tmp/$USER.cron
+        echo "* * * * * $(command -v rclone) bisync --remove-empty-dirs neovim-notes-sync:/Mind.nvim ~/.local/share/mind.nvim/" >> /tmp/$USER.cron
+        echo "* * * * * $(command -v rclone) bisync --remove-empty-dirs neovim-notes-sync:/Neorg ~/.local/share/nvim/neorg/" >> /tmp/$USER.cron
         crontab /tmp/$USER.cron
         # rm /tmp/$USER.cron
     fi
