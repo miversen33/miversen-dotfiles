@@ -256,6 +256,7 @@ Common Actions
 - _s_: Jump to Definition
 - _d_: Show Diagnostics
 - _w_: Show Workspace Diagnostics
+- _n_: Rename
 ^
 Help
 - _e_: Show Declerations
@@ -273,6 +274,7 @@ _;_/_q_/_<Esc>_: Exit Hydra
         {"o", cmd 'TroubleToggle lsp_implementations', {desc = "Show Implementations", silent = true}},
         {"j", vim.lsp.buf.signature_help, {desc = "Show Sig Help", silent = true}},
         {"r", cmd 'TroubleToggle lsp_references', {desc = "Show References", silent = true}},
+        {"n", vim.lsp.buf.rename, {desc = "Rename Object Under Cursor", silent = true}},
         {"f", function() vim.lsp.buf.format({ async = true }) end, {desc = "Format Buffer", silent = true}},
         {"a", vim.lsp.buf.code_action, {desc = "Show Code Actions", silent = true}},
         {"d", cmd 'TroubleToggle document_diagnostics', {desc = "Show Diagnostics", silent = true}},
