@@ -151,7 +151,7 @@ profile_rc() {
     export VIMRC="$HOME/.vimrc"
   fi;
 
-  if [ -x "$(command -v tmux)" ] && [ ! -n "${MYVIMRC+set}" ] && [ ! -n "${TMUX+set}" ] && [ "${TERM_PROGRAM}" != "vscode" ] && [ ! -f $HOME/.notmux ] && [[ ! -n "${SSH_CLIENT+set}" ||  -f $HOME/.isproxy ]]; then
+  if [ -x "$(command -v tmux)" ] && [ ! -n "${NOTMUX+set}" ] && [ ! -n "${MYVIMRC+set}" ] && [ ! -n "${TMUX+set}" ] && [ "${TERM_PROGRAM}" != "vscode" ] && [ ! -f $HOME/.notmux ] && [[ ! -n "${SSH_CLIENT+set}" ||  -f $HOME/.isproxy ]]; then
       tmux -2 a -t default || tmux -2 new -s default;
       exit 0
   fi
