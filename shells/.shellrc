@@ -58,9 +58,9 @@ profile_rc() {
         (rclone bisync --remove-empty-dirs --resync neovim-notes-sync:/Neorg ~/.local/share/nvim/neorg/ &) > /dev/null 2>&1
         # This user's crontab doesn't have an entry for the rclone job
         crontab -l > /tmp/$USER.cron
-        echo "#rclone neovim-notes-sync bisync" >> /tmp/$USER.cron
-        echo "1 * * * * $(command -v rclone) bisync --remove-empty-dirs neovim-notes-sync:/Mind.nvim ~/.local/share/mind.nvim/" >> /tmp/$USER.cron
-        echo "1 * * * * $(command -v rclone) bisync --remove-empty-dirs neovim-notes-sync:/Neorg ~/.local/share/nvim/neorg/" >> /tmp/$USER.cron
+        echo -e "\n#rclone neovim-notes-sync bisync" >> /tmp/$USER.cron
+        echo "* * * * * $(command -v rclone) bisync --remove-empty-dirs neovim-notes-sync:/Mind.nvim ~/.local/share/mind.nvim/" >> /tmp/$USER.cron
+        echo "* * * * * $(command -v rclone) bisync --remove-empty-dirs neovim-notes-sync:/Neorg ~/.local/share/nvim/neorg/" >> /tmp/$USER.cron
         crontab /tmp/$USER.cron
         # rm /tmp/$USER.cron
     fi
@@ -118,7 +118,6 @@ profile_rc() {
 
   [ -d "$HOME/.local/bin" ] && [[ "$PATH" != *"$HOME/.local/bin"* ]] && PATH="$PATH:$HOME/.local/bin"
   [ -d "$HOME/.cargo/bin" ] && [[ "$PATH" != *"$HOME/.cargo/bin"* ]] && PATH="$PATH:$HOME/.cargo/bin"
-  [ -d "$HOME/.deno" ] && export DENO_INSTALL="$HOME/.deno" && export PATH="$DENO_INSTALL/bin:$PATH"
   if [ -d "$HOME/perl5" ]; then #The perl shits
     export PATH="$PATH:$HOME/perl5/bin"; # Adds perl5 (perlbrew) to path if it exists
     export PERL5LIB="$HOME/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}";
@@ -152,7 +151,7 @@ profile_rc() {
     export VIMRC="$HOME/.vimrc"
   fi;
 
-  if [ -x "$(command -v tmux)" ] && [ ! -n "${MYVIMRC+set}" ] && [ ! -n "${TMUX+set}" ] && [ "${TERM_PROGRAM}" != "vscode" ] && [ ! -f $HOME/.notmux ] && [[ ! -n "${SSH_CLIENT+set}" ||  -f $HOME/.isproxy ]]; then
+  if [ -x "$(command -v tmux)" ] && [ ! -n "${NOTMUX+set}" ] && [ ! -n "${MYVIMRC+set}" ] && [ ! -n "${TMUX+set}" ] && [ "${TERM_PROGRAM}" != "vscode" ] && [ ! -f $HOME/.notmux ] && [[ ! -n "${SSH_CLIENT+set}" ||  -f $HOME/.isproxy ]]; then
       tmux -2 a -t default || tmux -2 new -s default;
       exit 0
   fi
@@ -334,10 +333,6 @@ reload() {
     echo "Reloading ${SHELL_RC}"
     source $SHELL_RC
   fi
-}
-
-ide() {
-  tmux split-window -v \; resize-pane -y 10
 }
 
 cleanup() {
