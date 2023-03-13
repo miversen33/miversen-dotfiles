@@ -118,7 +118,6 @@ profile_rc() {
 
   [ -d "$HOME/.local/bin" ] && [[ "$PATH" != *"$HOME/.local/bin"* ]] && PATH="$PATH:$HOME/.local/bin"
   [ -d "$HOME/.cargo/bin" ] && [[ "$PATH" != *"$HOME/.cargo/bin"* ]] && PATH="$PATH:$HOME/.cargo/bin"
-  [ -d "$HOME/.deno" ] && export DENO_INSTALL="$HOME/.deno" && export PATH="$DENO_INSTALL/bin:$PATH"
   if [ -d "$HOME/perl5" ]; then #The perl shits
     export PATH="$PATH:$HOME/perl5/bin"; # Adds perl5 (perlbrew) to path if it exists
     export PERL5LIB="$HOME/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}";
