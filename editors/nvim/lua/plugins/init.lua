@@ -110,7 +110,8 @@ local function get_plugins()
                                 notes = "~/.local/share/nvim/neorg/notes",
                                 ideas = "~/.local/share/nvim/neorg/ideas",
                                 presentations = "~/.local/share/nvim/neorg/presentations",
-                                scratch = "~/.local/share/nvim/neorg/scratch"
+                                scratch = "~/.local/share/nvim/neorg/scratch",
+                                work    = "~/.local/share/nvim/neorg/work"
                             },
                             default_workspace = "scratch"
                         },
