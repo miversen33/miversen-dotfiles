@@ -32,16 +32,15 @@ _/_: Search File
 })
 hydra({
     name = "Repl Commands",
-    mode = {"n", "i"},
+    mode = {"n", "i", "v"},
     hint = [[
 Repl Commands
 ^
 _<C-z>_: Open Language Shell
-_<C-t>_: Scratch Pad
 _<C-s>_: Send file to repl
 _<C-g>_: Restart Repl
 ^
-_<C-q>_/_<Esc>_: Exit Hydra
+_<C-e>_: Exit Hydra
     ]],
     config = {
         color = "pink",
@@ -55,36 +54,69 @@ _<C-q>_/_<Esc>_: Exit Hydra
     },
     body = "<C-e>",
     heads = {
-        {"<C-z>",      cmd "IronRepl", {desc = "Language Shell", silent = true}},
-        {"<C-t>",  function()
-                       local filetype = vim.api.nvim_buf_get_option(0, 'filetype')
-                       if not filetype or filetype:len() == 0 then
-                           filetype = 'lua'
-                       end
-                       require("iron.core").repl_for(filetype)
-                   end,
-                   {desc = "Buffer as Repl Scratch pad", silent = true}
+        {"<C-z>",
+            function()
+                local bufhandle = vim.api.nvim_get_current_buf()
+                local winhandle = vim.api.nvim_get_current_win()
+                vim.api.nvim_command('CRepl')
+                vim.api.nvim_set_current_win(winhandle)
+                vim.api.nvim_set_current_buf(bufhandle)
+            end,
+            {
+                desc = "Language Shell",
+                silent = true
+            }
         },
-        {"<C-g>",  function()
-                       require("iron.core").repl_restart()
-                   end,
-                   {desc = "Restarts Repl", silent = true}
+        {"<C-g>",
+            function()
+                local filetype = vim.api.nvim_buf_get_option(0, 'filetype')
+                local bufhandle = vim.api.nvim_get_current_buf()
+                local winhandle = vim.api.nvim_get_current_win()
+                vim.api.nvim_command(string.format("CResetTerms %s", filetype))
+                vim.api.nvim_command('CRepl')
+                vim.api.nvim_set_current_win(winhandle)
+                vim.api.nvim_set_current_buf(bufhandle)
+            end,
+            {
+                desc = "Restarts Repl",
+                silent = true
+            }
         },
-        {"<C-s>",  function()
-                       local filetype = vim.api.nvim_buf_get_option(0, 'filetype')
-                       if not filetype or filetype:len() == 0 then
-                           filetype = 'lua'
-                       end
-                       if vim.api.nvim_buf_get_name(0):len() > 0 then
-                            -- Save the file
-                            vim.api.nvim_command('write')
-                       end
-                       require("iron.core").send_file(filetype)
-                   end,
-                   {desc = "Writes current file to repl", silent = true}
+        {"<C-s>",
+            function()
+                local mode = vim.api.nvim_get_mode().mode
+                if mode == 'v' then
+                    -- Get selection
+                    vim.api.nvim_command("CReplSendLines")
+                else
+                    local filetype = vim.api.nvim_buf_get_option(0, 'filetype')
+                    -- vim.api.nvim_command(string.format("CResetTerms %s", filetype))
+                    local sep = vim.loop.os_uname().sysname:lower():match('windows') and '\\' or '/'
+                    local filename = vim.fn.getcwd() .. sep .. vim.fn.bufname()
+                    local bufhandle = vim.api.nvim_get_current_buf()
+                    local winhandle = vim.api.nvim_get_current_win()
+                    vim.api.nvim_command(string.format("CRepl %s %s", filetype, filename))
+                    vim.api.nvim_set_current_win(winhandle)
+                    vim.api.nvim_set_current_buf(bufhandle)
+
+                end
+                -- if we are in visual mode, we should pull the selected lines instead of sending the whole file?
+                local filetype = vim.api.nvim_buf_get_option(0, 'filetype')
+                if not filetype or filetype:len() == 0 then
+                    filetype = 'lua'
+                end
+                if vim.api.nvim_buf_get_name(0):len() > 0 then
+                    -- Save the file
+                    vim.api.nvim_command('write')
+                end
+                require("iron.core").send_file(filetype)
+                end,
+            {
+                desc = "Writes current file to repl",
+                silent = true
+            }
         },
-        {"<C-q>",      nil, {desc = "quit", exit = true, nowait = true}},
-        {"<Esc>",  nil, {desc = "quit", exit = true, nowait = true}}
+        {"<C-e>",      nil, {desc = "quit", exit = true, nowait = true}},
     }
 })
 hydra({
