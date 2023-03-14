@@ -46,6 +46,12 @@ profile_rc() {
   
   # Setup rclone syncs
   if [ -x "$(command -v rclone)" ] && [ -f $HOME/.config/rclone/rclone.conf ] ; then
+    # Checking to see if cron is running
+    SERVICE_CRON_STOPPED=$(service cron status | grep 'not running')
+    SYSTEMCTL_CRON_ENABLED=$(systemctl status cronie 2>&1 | grep 'running')
+    if [ $SERVICE_CRON_STOPPED ] && [ -z $SYSTEMCTL_CRON_ENABLED ]; then
+        echo "Cron is not running, sync jobs wont work!"
+    fi
     # Rclone exists and is configured
     # Check to see if there is a neovim-notes-sync in the config
     STUPID_VAR_TO_CAPTURE_UNNECESSARY_OUTPUT_BECAUSE_BASH_IS_IRRITATING=$(crontab -l | grep '#rclone neovim-notes-sync bisync')
