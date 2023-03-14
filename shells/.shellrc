@@ -6,6 +6,8 @@
 # [ ] Rewrite this thing
 
 RC_PATH=0
+IS_RUNNING_INITD=$(command -v service)
+IS_RUNNING_SYSTEMD=$(command -v systemctl)
 check_rc_update(){
   # This doesn't catch the fact that the rc may be completely diverged from the head. We need to account for that
   REPO_DIRECTORY="$(dirname $RC_PATH)/../"
@@ -47,8 +49,8 @@ profile_rc() {
   # Setup rclone syncs
   if [ -x "$(command -v rclone)" ] && [ -f $HOME/.config/rclone/rclone.conf ] ; then
     # Checking to see if cron is running
-    SERVICE_CRON_STOPPED=$(service cron status | grep 'not running')
-    SYSTEMCTL_CRON_ENABLED=$(systemctl status cronie 2>&1 | grep 'running')
+    [ $IS_RUNNING_INITD ] && SERVICE_CRON_STOPPED=$(service cron status | grep 'not running') || SERVICE_CRON_STOPPED=0
+    [ $IS_RUNNING_SYSTEMD ] && SYSTEMCTL_CRON_ENABLED=$(systemctl status cronie 2>&1 | grep 'running') || SYSTEMCTL_CRON_ENABLED=0
     if [ $SERVICE_CRON_STOPPED ] && [ -z $SYSTEMCTL_CRON_ENABLED ]; then
         echo "Cron is not running, sync jobs wont work!"
     fi
