@@ -183,6 +183,7 @@ function lib.compile_config_to_wez(config)
     if config.color_scheme then
         wez_conf.color_scheme = config.color_scheme
     end
+    wez_conf.prefer_egl = config.prefer_egl and config.prefer_egl or false
     if config.colors then
         wez_conf.colors = config.colors
     end
@@ -685,10 +686,12 @@ lib.default_config = {
     -- raw_left_status_bar = function(),
     -- raw_right_status_bar = function()
     --
-    tab_bar_alignment = 'Center'
+    tab_bar_alignment = 'Center',
     -- This can be 'Left', 'Center', or 'Right'
     -- and will align the tab bar to any of those locations
     -- as best it can
+    prefer_egl = true,
+    -- Passed directly to wezterm
 }
 
 function lib.merge_config(user_config)
