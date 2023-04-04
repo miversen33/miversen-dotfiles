@@ -330,60 +330,40 @@ lib.components = {
     end,
     spacer = function(padding)
         return function()
-            return { Text = string.format("%-" .. string.format("%ss", padding or 1), '') }
+            return string.format("%-" .. string.format("%ss", padding or 1), '')
         end
     end,
     user = function()
         return function(window, pane)
-            return pane:get_user_vars().WEZTERM_USER and {{ Text = pane:get_user_vars().WEZTERM_USER }} or {}
+            return pane:get_user_vars().WEZTERM_USER
         end
     end,
     host = function()
         return function(window, pane)
-            return pane:get_user_vars().WEZTERM_HOST and {{ Text = pane:get_user_vars().WEZTERM_HOST }} or {}
+            return pane:get_user_vars().WEZTERM_HOST
         end
     end,
     workspace = function()
-        return nil
+        return function(window, pane)
+            return nil
+        end
     end,
     -- @param format_string: string
     --     Default: %H:%M:%S %a %B %Y
     --     If provided, sets the time/date format string
-    time = function(format_string, text_format_opts)
-        local text_opts = {}
+    time = function(format_string)
         format_string = format_string or '%H:%M:%S %a %B %Y'
-        text_format_opts, text_opts = parse_text_opts(text_format_opts)
         return function(window, pane)
-            local foreground = text_opts.Foreground or wezterm.color.get_default_colors().foreground
-            local background = text_opts.Background or wezterm.color.get_default_colors().background
-            local return_info = {
-                { Background = { Color = background }},
-                { Foreground = { Color = foreground }}
-            }
-            table.insert(return_info, { Text = wezterm.strftime(format_string)})
-            return return_info, { Background = background, Foreground = foreground }
+            return wezterm.strftime(format_string)
         end
     end,
     -- @param icon: string
     --     Default: ↑
     --     If provided, sets the icon to display if the leader key is activated
-    leader = function(icon, text_format_opts)
-        local text_opts = {}
+    leader = function(icon)
         icon = icon or '↑'
-        text_format_opts, text_opts = parse_text_opts(text_format_opts)
         return function(window, pane)
-            local foreground = text_opts.Foreground or wezterm.color.get_default_colors().foreground
-            local background = text_opts.Background or wezterm.color.get_default_colors().background
-            local return_info = {
-                { Background = { Color = background }},
-                { Foreground = { Color = foreground }}
-            }
-            if window:leader_is_active() then
-                table.insert(return_info, { Text = icon })
-                return return_info, { Background = background, Foreground = foreground }
-            else
-                return {}
-            end
+            return window:leader_is_active() and icon
         end
     end,
     -- @param warn_threshold: double
@@ -391,18 +371,13 @@ lib.components = {
     --     If provided, this is the discharge level at which
     --     we warn you that the battery needs to be charged.
     --     NOTE: Should be between 0 and 1
-    battery = function(warn_threshold, text_format_opts)
-        local text_opts = {}
+    battery = function(warn_threshold)
         warn_threshold = warn_threshold or 0.2
-        text_format_opts, text_opts = parse_text_opts(text_format_opts)
         return function(window, pane)
-            local foreground = text_opts.Foreground or wezterm.color.get_default_colors().foreground
-            local background = text_opts.Background or wezterm.color.get_default_colors().background
-            local return_info = {
-                { Background = { Color = background }},
-                { Foreground = { Color = foreground }}
-            }
             local battery_info = wezterm.battery_info()
+            -- Short circuit if we cant read the battery for some reason
+            if not battery_info then return end
+            battery_info = battery_info[1]
             local current_charge_level = lib.round_down_to_nearest(battery_info.state_of_charge)
             local current_charge_state = battery_info.state
             local remaining = (current_charge_state == 'Charging' or current_charge_state == 'Full') and battery_info.time_to_full or battery_info.time_to_empty
@@ -426,8 +401,7 @@ lib.components = {
             end
             nerdfont_query_string = string.format(nerdfont_query_string, remaining)
             local battery_icon = string.format("%s%s", warn_state, nerdfonts[nerdfont_query_string])
-            table.insert(return_info, { Text = battery_icon })
-            return return_info, { Background = background, Foreground = foreground }
+            return battery_icon
         end
     end
 }
