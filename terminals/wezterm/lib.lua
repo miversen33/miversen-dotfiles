@@ -452,14 +452,14 @@ lib.tab_styles = {
             if wezterm.miversen_wezconf.merged_conf.tab_bar_appearance ~= 'Fancy' then
                 tab_components = {
                     { Foreground = { Color = tab_background }},
-                    { Background = { Color = tab_foreground }},
+                    { Background = { Color = inactive_foreground }},
                     { Attribute = { Intensity = 'Bold'}},
                     { Text = left_div },
                     { Background = { Color = tab_background }},
                     { Foreground = { Color = tab_foreground }},
                     { Text = title },
                     { Foreground = { Color = tab_background }},
-                    { Background = { Color = tab_foreground }},
+                    { Background = { Color = inactive_foreground }},
                     { Text = right_div }
                 }
             else
