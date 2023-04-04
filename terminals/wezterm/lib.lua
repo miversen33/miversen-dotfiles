@@ -349,12 +349,12 @@ lib.components = {
     end,
     user = function()
         return function(window, pane)
-            return pane:get_user_vars().WEZTERM_USER
+            return pane:get_user_vars() and pane:get_user_vars().WEZTERM_USER
         end
     end,
     host = function()
         return function(window, pane)
-            return pane:get_user_vars().WEZTERM_HOST
+            return pane:get_user_vars() and pane:get_user_vars().WEZTERM_HOST
         end
     end,
     workspace = function()
