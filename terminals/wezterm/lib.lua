@@ -1,3 +1,5 @@
+-- An abstraction/wrapper to make creating wezterm configurations a bit easier
+
 local wezterm = require("wezterm")
 local nerdfonts = wezterm.nerdfonts
 
