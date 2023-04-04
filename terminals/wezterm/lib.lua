@@ -48,113 +48,128 @@ function lib.merge_table(base_table, apply_table)
 end
 
 function lib.generate_statusbar(window, pane, statusbar, location)
-    local default_foreground = wezterm.color.get_default_colors().foreground
-    local default_background = wezterm.color.get_default_colors().background
-    local default_soft_div = statusbar.soft_div_icon or nerdfonts[string.format("pl_%s_soft_divider", location:lower())]
-    local default_hard_div = statusbar.hard_div_icon or nerdfonts[string.format("pl_%s_hard_divider", location:lower())]
+    -- It would be pretty slick if we could allow
+    -- components to also control their color??
     local components = {}
-
-    table.insert(components, 'ResetAttributes')
-
-    local foreground = default_foreground
-    local background = default_background
-    local hard_div_indexes = {}
+    local status_bar = {}
+    local default_soft_div = statusbar.soft_div_icon or nerdfonts[string.format('pl_%s_soft_divider', location:lower())]
+    local default_hard_div = statusbar.hard_div_icon or nerdfonts[string.format("pl_%s_hard_divider", location:lower())]
+    local default_foreground = statusbar.foreground or wezterm.color.get_default_colors().foreground
+    local default_background = statusbar.background or wezterm.color.get_default_colors().background
+    local default_attributes = statusbar.attributes or {}
     for _, group in ipairs(statusbar) do
-        -- Consider if there are no colors provided, making this
-        -- gradient from the current background color to black/white (depending on if we are
-        -- in dark or light mode at a system level)
-        local attributes = group.attributes or {}
-        if attributes.underline then
-            table.insert(components, { Attribute = { Underline = attributes.underline}})
-        end
-        if attributes.intensity then
-            table.insert(components, { Attribute = { Intensity = attributes.intensity}})
-        end
-        if attributes.italic then
-            table.insert(components, { Attribute = { Italic = attributes.italic }})
-        end
-        if location == 'right' then
-            if #hard_div_indexes > 0 then
-                components[hard_div_indexes[#hard_div_indexes]] = { Foreground = { Color = background }}
-                table.remove(hard_div_indexes, #hard_div_indexes)
-            end
-        end
-        local previous_background = background
-        foreground = group.foreground or default_foreground
-        background = group.background or default_background
-        -- Back propegate the background as the foreground of the most recent
-        -- hard_div_index
-        if location == 'left' then
-            if #hard_div_indexes > 0 then
-                components[hard_div_indexes[#hard_div_indexes]] = { Background = { Color = background }}
-                table.remove(hard_div_indexes, #hard_div_indexes)
-            end
-        end
-        local soft_div_icon = group.soft_div_icon or default_soft_div
-        local hard_div_icon = group.hard_div_icon or default_hard_div
-        local hard_div = {
-            { Foreground = { Color = background }},
-            { Background = { Color = location == 'right' and previous_background or foreground }},
-            { Text = hard_div_icon },
-            'ResetAttributes'
-        }
-        local soft_div = {
-            { Text = soft_div_icon }
-        }
-        local div = location == 'right' and hard_div or soft_div
-        local has_item = false
+        -- Iterating over each indivdual group in the statusbar
+        local foreground = group.foreground    or default_foreground
+        local background = group.background    or default_background
+        local attributes = group.attributes    or default_attributes
+        local soft_div   = group.soft_div_icon or default_soft_div
+        local hard_div   = group.hard_div_icon or default_hard_div
+        local used_hard_div = false
         for key, value in pairs(group) do
-            -- If key is an integer, it is a component
-            -- Anything else is an option to apply to the component
-            -- and should be ignored
+            -- Iterate through every component the group
+            -- Note, we are using pairs here because this
+            -- can be a mix of integer indexes and string keys
             if type(key) == 'number' then
-                local pieces =
+                -- Found a component
+                local component  =
+                    -- If the value is a function, call it
                     type(value) == 'function' and value(window, pane)
-                    or (type(value) == 'string' or type(value) == 'number') and {{ Text = string.format("%s", value) }}
-                if pieces and #pieces > 0 then
-                    has_item = true
-                    -- If direction is right, we will want to put a leading
-                    -- hard div icon, and we will need to come back and fix the color of it before
-                    -- returning
-                    if location == 'right' then
-                        for _, item in ipairs(div) do
-                            table.insert(components, item)
-                        end
-                        if div == hard_div then
-                            -- Setting the hard div index to change the background later
-                            table.insert(hard_div_indexes, #components - 3)
-                            div = soft_div
-                        end
+                    -- If its a string or number, cast it to a string and just 
+                    -- create the basic wezterm component of it
+                    or ( type(value) == 'string' or type(value) == 'number' )
+                        and string.format("%s", value)
+                if component then
+                    local pre_comp = {
+                        div = soft_div,
+                    }
+                    if not used_hard_div and location == 'right' then
+                        pre_comp.div = hard_div
+                        pre_comp.comp_end = true
+                        used_hard_div = true
                     end
-                    table.insert(components, { Foreground = { Color = foreground }})
-                    table.insert(components, { Background = { Color = background }})
-                    for _, piece in ipairs(pieces) do
-                        table.insert(components, piece)
-                    end
-                    table.insert(components, { Text = ''})
-                    -- Otherwise we want to put a trailing div
-                    if location == 'left' then
-                        for _, item in ipairs(div) do
-                            table.insert(components, item)
-                        end
-                    end
+                    pre_comp.text = string.format("%s", component)
+                    pre_comp.background = background
+                    pre_comp.foreground = foreground
+                    pre_comp.attributes = attributes
+                    table.insert(components, pre_comp)
                 end
             end
         end
-        if location == 'left' and #components > 0 then
-            -- Popping the last element to replace with the hard div
-            table.remove(components, #components)
-            for _, item in ipairs(hard_div) do
-                table.insert(components, item)
-            end
-            table.insert(hard_div_indexes, #components - 2)
+        if #components > 0 and location == 'left' then
+            components[#components].div = hard_div
+            components[#components].comp_end = true
         end
     end
-    if #components > 0 then
-        return wezterm.format(components)
-    else
-        return ''
+    table.insert(status_bar, 'ResetAttributes')
+    local previous_foreground = nil
+    local previous_background = nil
+    for _, component in ipairs(components) do
+        if location == 'right' then
+            local foreground = component.foreground or previous_foreground or default_foreground
+            local background = component.background or previous_background or default_background
+            if component.comp_end then
+                foreground = background
+                if _ == 1 then
+                    -- TODO: Mike Get the tab bar background, this
+                    -- should be that
+                    background = nil
+                else
+                    background = previous_background or default_background
+                end
+            end
+            if foreground then
+                table.insert(status_bar, { Foreground = { Color = foreground }})
+            end
+            if background then
+                table.insert(status_bar, { Background = { Color = background }})
+            end
+            table.insert(status_bar, { Text = component.div })
+        end
+        table.insert(status_bar, { Foreground = { Color = component.foreground }})
+        table.insert(status_bar, { Background = { Color = component.background }})
+        if component.attributes then
+            if component.attributes.underline then
+                table.insert(status_bar, { Attribute = { Underline = component.attributes.underline }})
+            end
+            if component.attributes.intensity then
+                table.insert(status_bar, { Attribute = { Intensity = component.attributes.intensity }})
+            end
+            if component.attributes.italic then
+                table.insert(status_bar, { Attribute = { Italic = component.attributes.italic }})
+            end
+        end
+        table.insert(status_bar, { Text = component.text })
+
+        if location == 'left' then
+            -- Add the div last
+            local foreground = component.foreground or previous_foreground or default_foreground
+            local background = component.background or previous_background or default_background
+            if component.comp_end then
+                foreground = background
+                if _ == #components then
+                    -- TODO: Mike Get the tab bar background, this
+                    -- should be that
+                    background = nil
+                else
+                    local next_comp = components[_ + 1]
+                    background = next_comp and next_comp.background and next_comp.background or default_background
+                end
+            end
+            table.insert(status_bar, 'ResetAttributes')
+            if foreground then
+                table.insert(status_bar, { Foreground = { Color = foreground }})
+            end
+            if background then
+                table.insert(status_bar, { Background = { Color = background }})
+            end
+            table.insert(status_bar, { Text = component.div })
+        end
+        previous_background = component.background
+        previous_foreground = component.foreground
+        table.insert(status_bar, 'ResetAttributes')
     end
+    local compiled_status_bar = wezterm.format(status_bar)
+    return compiled_status_bar
 end
 
 
