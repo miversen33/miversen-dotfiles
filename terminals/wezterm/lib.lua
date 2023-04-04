@@ -437,18 +437,28 @@ lib.tab_styles = {
                 or inactive_foreground
             local title = wezterm.truncate_right(tab.active_pane.title, max_width - 5)
             title = string.format("%s %s", tab.tab_id, title)
-            local tab_components = {
-                { Foreground = { Color = tab_background }},
-                { Background = { Color = tab_foreground }},
-                { Attribute = { Intensity = 'Bold'}},
-                { Text = left_div },
-                { Background = { Color = tab_background }},
-                { Foreground = { Color = tab_foreground }},
-                { Text = title },
-                { Foreground = { Color = tab_background }},
-                { Background = { Color = tab_foreground }},
-                { Text = right_div }
-            }
+            local tab_components = {}
+            if wezterm.miversen_wezconf.merged_conf.tab_bar_appearance ~= 'Fancy' then
+                tab_components = {
+                    { Foreground = { Color = tab_background }},
+                    { Background = { Color = tab_foreground }},
+                    { Attribute = { Intensity = 'Bold'}},
+                    { Text = left_div },
+                    { Background = { Color = tab_background }},
+                    { Foreground = { Color = tab_foreground }},
+                    { Text = title },
+                    { Foreground = { Color = tab_background }},
+                    { Background = { Color = tab_foreground }},
+                    { Text = right_div }
+                }
+            else
+                tab_components = {
+                    { Attribute = { Intensity = 'Bold'}},
+                    { Background = { Color = tab_background }},
+                    { Foreground = { Color = tab_foreground }},
+                    { Text = title },
+                }
+            end
             return tab_components
         end
     end,
