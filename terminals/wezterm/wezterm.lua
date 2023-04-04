@@ -17,7 +17,7 @@ local user_config = {
         saturation = 0.7,
         brightness = 0.2
     },
-    opacity = { window = 0.85 },
+    opacity = { window = 0.90 },
     color_scheme = 'MaterialDesignColors',
     colors = {
         tab_bar = {
