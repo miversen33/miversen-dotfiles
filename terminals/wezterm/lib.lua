@@ -12,8 +12,8 @@ local lib = {}
 -- lib.round_down_to_nearest(1107, 5) == 1105 (1105 is the nearest lower multiple of 5)
 -- Thank roblox! Very cool!
 -- https://devforum.roblox.com/t/rounding-numbers-to-the-nearest-5/443160/4
-function lib.round_down_to_nearest(number, target_multiple)
-    return math.floor(number / target_multiple) * target_multiple
+function lib.round_down_to_nearest(number)
+    return math.floor(number / .10) * .10
 end
 
 function lib.deepcopy(orig)
