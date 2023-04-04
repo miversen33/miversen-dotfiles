@@ -566,7 +566,57 @@ lib.default_config = {
         }
     },
     -- Once again, doc is above code. Deal with it
+    -- First a quick break down on terms here
+    -- - status_bar
+    --      An array of groups that are compiled and passed through to wezterm
+    -- - group
+    --      A set of components that should be contained "together"
+    -- - component
+    --      A function that when called returns a string or nil. This string is the text
+    --      content that will be rendered into the group which in turn is rendered into the
+    --      status bar. See lib.components for some pre-made components that you can use
+    --      NOTE: You can also simply use a string here instead of a function if you
+    --      have some static string you want to represent.
+    -- - options
+    --      A key value entry that specifies an attribute of some kind to apply to the that level and below by default
+    --      An example, setting the "background" of a status bar will set the background
+    --      for all components in the status bar (unless the component specifies its _own_
+    --      background)
+    --      Options Apply top down and are can be overriden by applying the same option
+    --      at a lower level
+    -- - dividers
+    --      A divider is broken up into 2 styles. Soft and Hard.
+    -- - soft divider
+    --      A special divider used to separate individual components within a group. By default
+    --      this is 'wezterm.nerdfonts.pl_left_soft_divider' or 'wezterm.nerdfonts.pl_right_soft_divider' (depending on if the status bar is a right or left status bar)
+    -- - hard divider
+    --      A special divider used to separate individual groups within the status bar.
+    --      By default, this is 'wezterm.nerdfonts.pl_left_hard_divider' or 'wezterm.nerdfonts.pl_right_hard_divider' (depending on if the status bar is a right or left status bar)
+    -- treated as a "group" of components to use.
     --
+    -- The long short, a status bar is an array of groups that can also have optional attributes at any level in the status bar (which apply down as specified in the options definition).
+    -- Note: You can have as many items in a group and as many groups as you would like,
+    -- up to whatever wezterm will allow. This just provides a (IMO) easier way to create
+    -- a "standard" status bar
+    -- Valid "options"
+    --     - background
+    --         Anything that wezterm.color.parse accepts
+    --     - foreground
+    --         Anything that wezterm.color.parse accepts
+    --     - attributes
+    --         A table representation of the "Attribute" object
+    --         used in wezterm.format
+    --         A table that can contain any of the following attributes
+    --         - intensity
+    --             - Valid options include 'Normal', 'Bold', 'Half'
+    --         - underline
+    --             - Valid options include 'Single', 'Double', 'Curley', 'Dotted', 'Dashed'
+    --         - italic
+    --             - Valid options include true, false
+    --     - soft_div_icon
+    --         The icon to display for soft dividers
+    --     - hard_div_icon
+    --         The icon to display for hard dividers
     left_status_bar = {
         {
             lib.components.user(),
