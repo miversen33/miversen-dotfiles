@@ -257,6 +257,11 @@ function lib.compile_config_to_wez(config)
             wez_conf.text_background_opacity = config.opacity.text
         end
     end
+    if config.format_tab then
+        wezterm.on('format-tab-title', function(tab, tabs, panes, _config, hover, max_width)
+            return config.format_tab(tab, tabs, panes, _config, hover, max_width)
+        end)
+    end
 
     local left_status_bar_callback = nil
     local right_status_bar_callback = nil
@@ -415,6 +420,54 @@ lib.components = {
     end
 }
 
+local function space_tabbar(tab_bar, location)
+    location = location or 'left'
+end
+
+lib.tab_styles = {
+    basic_custom = function(left_div, right_div, background, inactive_background, hover_background, foreground, inactive_foreground, hover_foreground)
+        return function(tab, tabs, panes, config, hover, max_width, location)
+            local tab_background =
+                hover and hover_background
+                or tab.is_active and background
+                or inactive_background
+            local tab_foreground =
+                hover and hover_foreground
+                or tab.is_active and foreground
+                or inactive_foreground
+            local title = wezterm.truncate_right(tab.active_pane.title, max_width - 2)
+            title = string.format("%s %s", tab.tab_id, title)
+            local tab_components = {
+                { Foreground = { Color = tab_background }},
+                { Background = { Color = tab_foreground }},
+                { Attribute = { Intensity = 'Bold'}},
+                { Text = left_div },
+                { Background = { Color = tab_background }},
+                { Foreground = { Color = tab_foreground }},
+                { Text = title },
+                { Foreground = { Color = tab_background }},
+                { Background = { Color = tab_foreground }},
+                { Text = right_div }
+            }
+            return tab_components
+        end
+    end,
+    diamond = function(background, foreground)
+        background = background or 'BLACK'
+        foreground = foreground or 'WHITE'
+        local scale = .30
+        local orig_background = background
+        local orig_foreground = foreground
+        background = wezterm.color.parse(background)
+        foreground = wezterm.color.parse(foreground)
+        local inactive_background = wezterm.color.parse(orig_background):darken(scale)
+        local inactive_foreground = wezterm.color.parse(orig_foreground):darken(scale)
+        local hover_background = wezterm.color.parse(orig_background):lighten(scale)
+        local hover_foreground = wezterm.color.parse(orig_foreground):lighten(scale)
+        return lib.tab_styles.basic_custom(nerdfonts.pl_right_hard_divider, nerdfonts.pl_left_hard_divider, background, inactive_background, hover_background, foreground, inactive_foreground, hover_foreground)
+    end
+}
+
 lib.default_config = {
     -- Font attributes
     pref_fonts = {'JetBrains Mono'},
@@ -560,6 +613,7 @@ lib.default_config = {
             foreground = 'BLACK'
         },
     },
+    format_tab = lib.tab_styles.diamond('#37b6ff', 'BLACK'),
     -- If you don't like how I have the "groups" configured,
     -- you can instead provide the following keys, with a valid callback function.
     -- Note, if these are provided, we will ignore whatever is in the "non raw" version
