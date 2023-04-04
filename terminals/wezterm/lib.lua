@@ -393,7 +393,7 @@ lib.components = {
         return function(window, pane)
             local battery_info = wezterm.battery_info()
             -- Short circuit if we cant read the battery for some reason
-            if not battery_info then return end
+            if not battery_info or not next(battery_info) then return end
             battery_info = battery_info[1]
             local current_charge_level = lib.round_down_to_nearest(battery_info.state_of_charge, .10)
             local current_charge_state = battery_info.state
