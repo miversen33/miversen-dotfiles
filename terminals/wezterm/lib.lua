@@ -12,8 +12,8 @@ local lib = {}
 -- lib.round_down_to_nearest(1107, 5) == 1105 (1105 is the nearest lower multiple of 5)
 -- Thank roblox! Very cool!
 -- https://devforum.roblox.com/t/rounding-numbers-to-the-nearest-5/443160/4
-function lib.round_down_to_nearest(number)
-    return math.floor(number / .10) * .10
+function lib.round_down_to_nearest(number, multiple)
+    return math.floor(number / multiple) * multiple
 end
 
 function lib.deepcopy(orig)
@@ -378,7 +378,7 @@ lib.components = {
             -- Short circuit if we cant read the battery for some reason
             if not battery_info then return end
             battery_info = battery_info[1]
-            local current_charge_level = lib.round_down_to_nearest(battery_info.state_of_charge)
+            local current_charge_level = lib.round_down_to_nearest(battery_info.state_of_charge, .10)
             local current_charge_state = battery_info.state
             local remaining = (current_charge_state == 'Charging' or current_charge_state == 'Full') and battery_info.time_to_full or battery_info.time_to_empty
             -- Fail safe just in case this is nil
