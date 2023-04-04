@@ -18,8 +18,23 @@ local user_config = {
         brightness = 0.2
     },
     opacity = { window = 0.85 },
+    color_scheme = 'MaterialDesignColors',
+    colors = {
+        tab_bar = {
+            background = 'BLACK',
+            new_tab = {
+                bg_color = 'BLACK',
+                fg_color = 'WHITE'
+            },
+            new_tab_hover = {
+                bg_color = wezterm.color.parse('BLACK'):lighten(.40),
+                fg_color = 'WHITE',
+                italic = true
+            }
+        },
+    },
     raw = {
-        window_close_confirmation = 'NeverPrompt'
+        window_close_confirmation = 'NeverPrompt',
     }
 }
 

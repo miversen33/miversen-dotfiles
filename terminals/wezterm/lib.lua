@@ -178,6 +178,15 @@ end
 -- convert it into something wezterm expects
 function lib.compile_config_to_wez(config)
     local wez_conf = wezterm.config_builder and wezterm.config_builder() or {}
+    if config.color_scheme then
+        wez_conf.color_scheme = config.color_scheme
+    end
+    if config.colors then
+        wez_conf.colors = config.colors
+    end
+    if config.window_frame then
+        wez_conf.window_frame = config.window_frame
+    end
     if config.pref_fonts then
         local font_opts = config.font_opts or {}
         wezterm.log_info("miversen wezconf: Compiling Font")
