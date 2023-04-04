@@ -293,26 +293,6 @@ function lib.compile_config_to_wez(config)
     return wez_conf
 end
 
-local function parse_text_opts(text_format_opts)
-    text_format_opts = text_format_opts or {}
-    local opts = {}
-    local opts_as_dict = {
-        Text = nil,
-        Attribute = {},
-        Foreground = nil,
-        Background = nil
-    }
-    for key, value in ipairs(text_format_opts) do
-        table.insert(opts, {[key] = value})
-        if key ~= 'Attribute' then
-            opts_as_dict[key] = value
-        else
-            opts_as_dict.Attribute[key] = value
-        end
-    end
-    return opts, opts_as_dict
-end
-
 -- Every function will have at minimum an optional
 -- text_format_opts param. Some functions may have additional
 -- params, they will be documented below.
@@ -336,7 +316,9 @@ lib.components = {
     test = function(comp_opts)
         local message = comp_opts.msg or ''
         return function(window, pane)
-            return {{ Text = message }}
+            return message
+        end
+    end,
         end
     end,
     spacer = function(padding)
