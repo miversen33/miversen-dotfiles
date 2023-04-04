@@ -421,7 +421,11 @@ lib.components = {
             end
             nerdfont_query_string = string.format(nerdfont_query_string, remaining)
             local battery_percentage = show_percentage and string.format(" %s%%", math.floor(current_charge_level * 100)) or ''
-            local battery_icon = string.format("%s%s%s", warn_state, nerdfonts[nerdfont_query_string], battery_percentage)
+            local charge_icon =
+                current_charge_state == 'Charging' and nerdfonts.cod_arrow_up
+                or current_charge_state == 'Discharging' and nerdfonts.cod_arrow_down
+                or ''
+            local battery_icon = string.format("%s%s%s%s", warn_state, nerdfonts[nerdfont_query_string], charge_icon, battery_percentage)
             return battery_icon
         end
     end
