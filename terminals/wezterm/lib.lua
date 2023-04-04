@@ -435,7 +435,7 @@ lib.tab_styles = {
                 hover and hover_foreground
                 or tab.is_active and foreground
                 or inactive_foreground
-            local title = wezterm.truncate_right(tab.active_pane.title, max_width - 2)
+            local title = wezterm.truncate_right(tab.active_pane.title, max_width - 5)
             title = string.format("%s %s", tab.tab_id, title)
             local tab_components = {
                 { Foreground = { Color = tab_background }},
