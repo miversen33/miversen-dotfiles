@@ -570,7 +570,7 @@ lib.default_config = {
     left_status_bar = {
         {
             lib.components.user(),
-            background = 'LIME',
+            background = '#5cf19e',
             foreground = 'BLACK',
             attributes = {
                 intensity = 'Bold'
@@ -578,7 +578,7 @@ lib.default_config = {
         },
         {
             lib.components.host(),
-            background = 'AQUA',
+            background = '#fc669b',
             foreground = 'BLACK',
             attributes = {
                 intensity = 'Bold'
