@@ -690,6 +690,7 @@ lib.default_config = {
 }
 
 function lib.merge_config(user_config)
+    user_config = user_config or {}
     local merged_conf = lib.merge_table(
         lib.deepcopy(lib.default_config),
         user_config
