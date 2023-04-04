@@ -508,71 +508,48 @@ lib.default_config = {
     left_status_bar = {
         {
             lib.components.user(),
-            attributes = {
-                intensity = 'Bold',
-            },
             background = 'LIME',
             foreground = 'BLACK',
-        },
-        {
-            lib.components.host(),
             attributes = {
-                intensity = 'Bold',
-            },
-            background = 'PINK',
-            foreground = 'BLACK',
-        },
-        {
-            lib.components.workspace(),
-        },
-        {
-            'Left Bar Test',
-            background = 'YELLOW',
-            foreground = 'BLACK'
-        },
-        soft_div_icon = nerdfonts.pl_left_soft_divider,
-        hard_div_icon = nerdfonts.pl_left_hard_divider
-    },
-    right_status_bar = {
-        {
-            lib.components.test({msg = "Hello"}),
-            lib.components.test({msg = "World"}),
-            -- components.user(),
-            -- components.host({ Background = { Color = 'RED' }})
-            -- These colors will be superceded by the colors
-            -- that are provided to the components,
-            -- if a color is provided to it
-            background = 'RED',
-            foreground = 'BLACK',
-            attributes = {
-                intensity = 'Underline'
+                intensity = 'Bold'
             }
         },
         {
-            'TESTING',
-            foreground = 'BLUE',
-            background = "GREEN"
+            lib.components.host(),
+            background = 'AQUA',
+            foreground = 'BLACK',
+            attributes = {
+                intensity = 'Bold'
+            }
         },
         {
-            'MOAR',
-            'TEST'
-        }
-        -- groups = {
-        --     -- Left Group (still on the right side)
-        --     {
-        --         -- components.battery(),
-        --         components.leader()
-        --     },
-        --     -- Right Group
-        --     {
-        --         components.time(),
-        --     },
-        -- },
-        -- -- foreground = 'WHITE',
-        -- -- background = 'LIME',
-        -- soft_div_icon = nerdfonts.pl_right_soft_divider,
-        -- hard_div_icon = nerdfonts.pl_right_hard_divider
-        -- -- No more allowed after these 2 groups
+            lib.components.workspace()
+        },
+        soft_div_icon = nerdfonts.pl_left_soft_divider,
+        hard_div_icon = nerdfonts.pl_left_hard_divider,
+        attributes = {
+            intensity = 'Bold',
+            italic = true
+        },
+    },
+    right_status_bar = {
+        -- This is built left to right
+        {
+            lib.components.leader(),
+            lib.components.spacer(),
+            lib.components.caps_indicator(),
+            lib.components.battery(),
+            lib.components.spacer(),
+            soft_div_icon = ''
+        },
+        {
+            lib.components.time(),
+            attributes = {
+                italic = true
+            },
+            background = 'WHITE',
+            foreground = 'BLACK'
+        },
     },
     -- If you don't like how I have the "groups" configured,
     -- you can instead provide the following keys, with a valid callback function.
