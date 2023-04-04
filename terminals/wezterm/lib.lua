@@ -398,7 +398,7 @@ lib.components = {
             if not battery_info or not next(battery_info) then return end
             battery_info = battery_info[1]
             local current_charge_level = battery_info.state_of_charge
-            local rounded_charge_level = lib.round_down_to_nearest(current_charge_level, .10)
+            local rounded_charge_level = math.floor(lib.round_down_to_nearest(current_charge_level, .10) * 100)
             local current_charge_state = battery_info.state
             local remaining = (current_charge_state == 'Charging' or current_charge_state == 'Full') and battery_info.time_to_full or battery_info.time_to_empty
             -- Fail safe just in case this is nil
@@ -419,13 +419,13 @@ lib.components = {
             else
                 nerdfont_query_string = nerdfont_query_string .. "_%s"
             end
-            nerdfont_query_string = string.format(nerdfont_query_string, remaining)
+            nerdfont_query_string = string.format(nerdfont_query_string, rounded_charge_level)
             local battery_percentage = show_percentage and string.format(" %s%%", math.floor(current_charge_level * 100)) or ''
             local charge_icon =
                 current_charge_state == 'Charging' and nerdfonts.cod_arrow_up
                 or current_charge_state == 'Discharging' and nerdfonts.cod_arrow_down
                 or ''
-            local battery_icon = string.format("%s%s%s%s", warn_state, nerdfonts[nerdfont_query_string], charge_icon, battery_percentage)
+            local battery_icon = string.format("%s%s%s%s", warn_state, nerdfonts[nerdfont_query_string] and nerdfonts[nerdfont_query_string] .. ' ', charge_icon, battery_percentage)
             return battery_icon
         end
     end
