@@ -388,20 +388,23 @@ lib.components = {
     --     If provided, this is the discharge level at which
     --     we warn you that the battery needs to be charged.
     --     NOTE: Should be between 0 and 1
-    battery = function(warn_threshold)
-        warn_threshold = warn_threshold or 0.2
+    battery = function(opts)
+        opts = opts or {}
+        local show_percentage = opts.show_percentage
+        local warn_threshold = opts.warn_threshold or 0.2
         return function(window, pane)
             local battery_info = wezterm.battery_info()
             -- Short circuit if we cant read the battery for some reason
             if not battery_info or not next(battery_info) then return end
             battery_info = battery_info[1]
-            local current_charge_level = lib.round_down_to_nearest(battery_info.state_of_charge, .10)
+            local current_charge_level = battery_info.state_of_charge
+            local rounded_charge_level = lib.round_down_to_nearest(current_charge_level, .10)
             local current_charge_state = battery_info.state
             local remaining = (current_charge_state == 'Charging' or current_charge_state == 'Full') and battery_info.time_to_full or battery_info.time_to_empty
             -- Fail safe just in case this is nil
             if not remaining then remaining = '' end
             local warn_state = ''
-            if current_charge_level <= warn_threshold then
+            if rounded_charge_level <= warn_threshold then
                 warn_state = nerdfonts.fa_exclamation
             end
             local nerdfont_query_string = 'mdi_battery'
@@ -417,7 +420,8 @@ lib.components = {
                 nerdfont_query_string = nerdfont_query_string .. "_%s"
             end
             nerdfont_query_string = string.format(nerdfont_query_string, remaining)
-            local battery_icon = string.format("%s%s", warn_state, nerdfonts[nerdfont_query_string])
+            local battery_percentage = show_percentage and string.format(" %s%%", math.floor(current_charge_level * 100)) or ''
+            local battery_icon = string.format("%s%s%s", warn_state, nerdfonts[nerdfont_query_string], battery_percentage)
             return battery_icon
         end
     end
@@ -663,7 +667,7 @@ lib.default_config = {
             lib.components.leader(),
             lib.components.spacer(),
             lib.components.caps_indicator(),
-            lib.components.battery(),
+            lib.components.battery({show_percentage=true}),
             lib.components.spacer(),
             soft_div_icon = ''
         },
