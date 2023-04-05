@@ -129,13 +129,17 @@ local function get_plugins()
             "Mofiqul/vscode.nvim", -- Vscode type theme
             lazy = false,
             priority = 1000,
-            config = {
-                -- -- Enable transparent background
-                -- transparent = true,
+            config = function()
+                local vscode = require("vscode")
+                vscode.setup({
+                    -- Enable transparent background
+                    transparent = true,
 
-                -- Enable italic comment
-                italic_comments = true,
-            },
+                    -- Enable italic comment
+                    italic_comments = true,
+                })
+                vscode.load()
+            end
         },
         {
             'nvim-zh/colorful-winsep.nvim',
@@ -575,7 +579,9 @@ local function get_plugins()
             config = function()
                 local notify = require("notify")
                 vim.notify = notify
-                notify.setup({})
+                notify.setup({
+                    background_colour = '#1e1e1e'
+                })
             end,
         },
         {
