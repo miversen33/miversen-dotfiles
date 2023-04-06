@@ -291,6 +291,7 @@ function lib.compile_config_to_wez(config)
         end
     end
     if config.format_tab then
+        wezterm.log_info("miversen wezconf: Setting Format Tab Event Callback")
         wezterm.on('format-tab-title', function(tab, tabs, panes, _config, hover, max_width)
             return config.format_tab(tab, tabs, panes, _config, hover, max_width)
         end)
