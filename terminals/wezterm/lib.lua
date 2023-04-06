@@ -571,21 +571,6 @@ lib.tab_styles = {
             return tab_components
         end
     end,
-    right_arrow = function(background, foreground, spacer)
-        spacer = spacer or 1
-        background = background or 'BLACK'
-        foreground = foreground or 'WHITE'
-        local scale = .30
-        local orig_background = background
-        local orig_foreground = foreground
-        background = wezterm.color.parse(background)
-        foreground = wezterm.color.parse(foreground)
-        local inactive_background = wezterm.color.parse(orig_background):darken(scale)
-        local inactive_foreground = wezterm.color.parse(orig_foreground):darken(scale)
-        local hover_background = wezterm.color.parse(orig_background):lighten(scale)
-        local hover_foreground = wezterm.color.parse(orig_foreground):lighten(scale)
-        return lib.tab_styles.basic_custom(nerdfonts.pl_right_hard_divider, nerdfonts.pl_left_hard_divider, background, inactive_background, hover_background, foreground, inactive_foreground, hover_foreground, spacer)
-    end
 }
 
 lib.default_config = {
