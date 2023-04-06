@@ -4,6 +4,7 @@ local wezterm = require("wezterm")
 local nerdfonts = wezterm.nerdfonts
 
 local lib = {}
+wezterm.miversen_wezconf = lib
 
 -- Helper functions
 
@@ -180,6 +181,16 @@ end
 -- convert it into something wezterm expects
 function lib.compile_config_to_wez(config)
     local wez_conf = wezterm.config_builder and wezterm.config_builder() or {}
+    -- Little bit of garbage to handle startup args because apparently
+    -- wezterm.config_builder returns a special table that
+    -- doesn't allow us to append items to a table inside of it...
+    local startup_args = {}
+    if config.startup_args then
+        wezterm.log_info("miversen wezconf: Compiling Startup Args")
+        for _, arg in ipairs(config.startup_args) do
+            table.insert(startup_args, arg)
+        end
+    end
     if config.detect_password_input then
         wez_conf.detect_password_input = true
     end
@@ -268,6 +279,23 @@ function lib.compile_config_to_wez(config)
             return config.format_tab(tab, tabs, panes, _config, hover, max_width)
         end)
     end
+    if config.domains then
+        wezterm.log_info("miversen wezconf: Compiling Domains")
+        local default_domain = nil
+        for domain_name, opts in pairs(config.domains) do
+            local domain_key = domain_name ~= 'tls' and string.format("%s_domains", domain_name) or 'tls_servers'
+            opts.name = domain_name
+            if opts.default then
+                opts.default = nil
+                default_domain = domain_name
+            end
+            wez_conf[domain_key] = {opts}
+        end
+        if default_domain then
+            table.insert(startup_args, 'connect')
+            table.insert(startup_args, default_domain)
+        end
+    end
 
     local left_status_bar_callback = nil
     local right_status_bar_callback = nil
@@ -299,6 +327,9 @@ function lib.compile_config_to_wez(config)
                 window:set_right_status(right_status_bar_callback(window, pane))
             end
         end)
+    end
+    if #startup_args > 0 then
+        wez_conf.default_gui_startup_args = startup_args
     end
 
     if config.raw then
@@ -538,6 +569,8 @@ lib.default_config = {
     -- If provided, we will use this to set the global environment of any program
     -- started under us
     --
+    -- startup_args = {}
+    -- If provided, we will use these args for the `default_gui_startup_args` option
     tab_bar_appearance = 'Fancy',
     -- Passed directly to wezterm
     --
@@ -728,6 +761,17 @@ lib.default_config = {
     -- as best it can
     prefer_egl = true,
     -- Passed directly to wezterm
+    domains = {
+        unix = {
+            -- Valid unix domain defaults can be placed here
+            -- Note, a special _default_ key can be provided to 
+            -- **any** of the items you put in domains.
+            -- If there are multiple defaults, the last alphabetical domain
+            -- is used (just how lua pairs works. Dont set multiple defaults
+            -- you nonce)
+            default = true
+        }
+    },
     detect_password_input = true
     -- Passed directly to wezterm
 }
@@ -755,5 +799,4 @@ function lib.load(user_config)
     return lib.compile_config_to_wez(lib.merge_config(user_config))
 end
 
-wezterm.miversen_wezconf = lib
 return lib
