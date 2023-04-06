@@ -345,6 +345,16 @@ function lib.compile_config_to_wez(config)
             end
         end)
     end
+    wezterm.on('toggle-leader', function(window, pane)
+        local override_config = window:get_config_overrides() or {}
+        if override_config.leader then
+            override_config.leader = nil
+        else
+            override_config.leader = wezterm.miversen_wezconf.merged_conf.keys.leader
+        end
+        window:set_config_overrides(override_config)
+    end)
+
     if #startup_args > 0 then
         wez_conf.default_gui_startup_args = startup_args
     end
@@ -358,6 +368,7 @@ function lib.compile_config_to_wez(config)
             wez_conf[key] = value
         end
     end
+
     return wez_conf
 end
 
@@ -428,10 +439,17 @@ lib.components = {
     -- @param icon: string
     --     Default: ↑
     --     If provided, sets the icon to display if the leader key is activated
+    --     NOTE: If the leader key is actively disabled, this will display "ﰸ"
+    --     instead
     leader = function(icon)
         icon = icon or '↑'
         return function(window, pane)
-            return window:leader_is_active() and icon
+            local text = window:leader_is_active() and icon
+            local override_config = window:get_config_overrides()
+            if override_config and wezterm.miversen_wezconf.merged_conf.keys.leader and not override_config.leader then
+                text = nerdfonts.mdi_cancel
+            end
+            return text
         end
     end,
     tmux = function(icon)
@@ -641,6 +659,8 @@ lib.default_config = {
     keys = {
         leader = { key = "a", mods = "CTRL", timeout_milliseconds = 1000},
         maps = {
+            -- Toggle Leader
+            { key = 'b', mods = "CTRL", action = wezterm.action.EmitEvent('toggle-leader') },
             -- Nasty work around to deal with the fact that CTRL+/ doesn't actually pass through...
             { key = '/', mods = 'CTRL', action=wezterm.action.SendString("\x1f") },
             -- Wezterm Specific Stuff
