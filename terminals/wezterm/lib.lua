@@ -180,6 +180,9 @@ end
 -- convert it into something wezterm expects
 function lib.compile_config_to_wez(config)
     local wez_conf = wezterm.config_builder and wezterm.config_builder() or {}
+    if config.detect_password_input then
+        wez_conf.detect_password_input = true
+    end
     if config.color_scheme then
         wez_conf.color_scheme = config.color_scheme
     end
@@ -724,6 +727,8 @@ lib.default_config = {
     -- and will align the tab bar to any of those locations
     -- as best it can
     prefer_egl = true,
+    -- Passed directly to wezterm
+    detect_password_input = true
     -- Passed directly to wezterm
 }
 
