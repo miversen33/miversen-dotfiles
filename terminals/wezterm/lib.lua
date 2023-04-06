@@ -489,20 +489,17 @@ lib.components = {
             if rounded_charge_level <= warn_threshold then
                 warn_state = nerdfonts.fa_exclamation
             end
-            local nerdfont_query_string = 'mdi_battery'
+            local nerdfont_query_string = 'mdi_battery_%'
             if current_charge_state == 'Charging' then
-                nerdfont_query_string = nerdfont_query_string .. "_charging_%s"
                 if remaining < 20 then
                     -- For some reason there is no nerdfont for charging 10 percent
                     remaining = 20
                 end
             elseif current_charge_state == 'Full' then
                 nerdfont_query_string = 'mdi_battery'
-            else
-                nerdfont_query_string = nerdfont_query_string .. "_%s"
             end
             nerdfont_query_string = string.format(nerdfont_query_string, rounded_charge_level)
-            local battery_percentage = show_percentage and string.format(" %s%%", math.floor(current_charge_level * 100)) or ''
+            local battery_percentage = show_percentage and string.format("%s%%", math.floor(current_charge_level * 100)) or ''
             local charge_icon =
                 current_charge_state == 'Charging' and nerdfonts.cod_arrow_up
                 or current_charge_state == 'Discharging' and nerdfonts.cod_arrow_down
