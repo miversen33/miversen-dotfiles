@@ -362,7 +362,7 @@ lib.components = {
     end,
     workspace = function()
         return function(window, pane)
-            return nil
+            return window:active_workspace()
         end
     end,
     -- @param format_string: string
@@ -643,26 +643,21 @@ lib.default_config = {
             lib.components.user(),
             background = '#5cf19e',
             foreground = 'BLACK',
-            attributes = {
-                intensity = 'Bold'
-            }
         },
         {
             lib.components.host(),
             background = '#fc669b',
             foreground = 'BLACK',
-            attributes = {
-                intensity = 'Bold'
-            }
         },
         {
-            lib.components.workspace()
+            lib.components.workspace(),
+            background = '#808080',
+            foreground = '#ffffff',
         },
         soft_div_icon = nerdfonts.pl_left_soft_divider,
         hard_div_icon = nerdfonts.pl_left_hard_divider,
         attributes = {
             intensity = 'Bold',
-            italic = true
         },
     },
     right_status_bar = {
