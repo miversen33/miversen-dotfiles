@@ -362,7 +362,7 @@ lib.components = {
     end,
     workspace = function()
         return function(window, pane)
-            return window:active_workspace()
+            return wezterm.mux.get_active_workspace()
         end
     end,
     -- @param format_string: string
