@@ -436,32 +436,51 @@ local function space_tabbar(tab_bar, location)
 end
 
 lib.tab_styles = {
-    basic_custom = function(left_div, right_div, background, inactive_background, hover_background, foreground, inactive_foreground, hover_foreground)
+    diamond = function(background, foreground, spacer)
+        spacer = spacer or 1
+        background = background or 'BLACK'
+        foreground = foreground or 'WHITE'
+        local scale = .30
+        local orig_background = background
+        local orig_foreground = foreground
+        background = wezterm.color.parse(background)
+        foreground = wezterm.color.parse(foreground)
+        local inactive_background = wezterm.color.parse(orig_background):darken(scale)
+        local inactive_foreground = wezterm.color.parse(orig_foreground):darken(scale)
+        local hover_background = wezterm.color.parse(orig_background):lighten(scale)
+        local hover_foreground = wezterm.color.parse(orig_foreground):lighten(scale)
+
         return function(tab, tabs, panes, config, hover, max_width, location)
             local tab_background =
-                hover and hover_background
-                or tab.is_active and background
-                or inactive_background
+            hover and hover_background
+            or tab.is_active and background
+            or inactive_background
             local tab_foreground =
-                hover and hover_foreground
-                or tab.is_active and foreground
-                or inactive_foreground
+            hover and hover_foreground
+            or tab.is_active and foreground
+            or inactive_foreground
             local title = wezterm.truncate_right(tab.active_pane.title, max_width - 5)
             title = string.format("%s %s", tab.tab_id, title)
             local tab_components = {}
             if wezterm.miversen_wezconf.merged_conf.tab_bar_appearance ~= 'Fancy' then
+                local spacer_background = spacer and { Background = { Color = inactive_foreground }}
+                local spacer_text = spacer and { Text = string.format("%-" .. string.format("%ss", spacer), '') }
                 tab_components = {
                     { Foreground = { Color = tab_background }},
                     { Background = { Color = inactive_foreground }},
                     { Attribute = { Intensity = 'Bold'}},
-                    { Text = left_div },
+                    { Text =  nerdfonts.pl_right_hard_divider },
                     { Background = { Color = tab_background }},
                     { Foreground = { Color = tab_foreground }},
                     { Text = title },
                     { Foreground = { Color = tab_background }},
                     { Background = { Color = inactive_foreground }},
-                    { Text = right_div }
+                    { Text = nerdfonts.pl_left_hard_divider },
                 }
+                if spacer then
+                    table.insert(tab_components, 1, spacer_text)
+                    table.insert(tab_components, 1, spacer_background)
+                end
             else
                 tab_components = {
                     { Attribute = { Intensity = 'Bold'}},
