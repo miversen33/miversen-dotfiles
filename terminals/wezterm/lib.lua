@@ -8,6 +8,22 @@ wezterm.miversen_wezconf = lib
 
 -- Helper functions
 
+function lib.action_exists(action)
+    local status = pcall(function()
+        local _ = wezterm.action[action]
+    end)
+    return status
+end
+
+function lib.generate_action(action_name, non_exist_msg, action_closure)
+    if not lib.action_exists(action_name) then
+        return wezterm.action_callback(function()
+            wezterm.log_warn(string.format("miversen wezconf: %s", non_exist_msg))
+        end)
+    end
+    return action_closure()
+end
+
 -- This isn't super clear but basically, this will
 -- round the provided number down to the nearest number that
 -- is a multiple of the target_multiple.
@@ -649,7 +665,69 @@ lib.default_config = {
             { key = ".", mods = "LEADER", action = wezterm.action.ActivateTabRelative(1)},
             { key = ",", mods = "LEADER", action = wezterm.action.ActivateTabRelative(-1)},
             { key = "n", mods = "LEADER|CTRL", action = wezterm.action.SpawnTab('CurrentPaneDomain')},
-        }
+            { key = "c", mods = "LEADER", action = wezterm.action.SwitchToWorkspace },
+            {
+                key = '$',
+                mods = 'LEADER|SHIFT',
+                action = lib.generate_action(
+                    'PromptInputLine',
+                    'Your current version of wezterm does not support active workspace rename.'
+                        .. ' Consider using `wezterm cli rename-workspace` instead',
+                    function()
+                        return wezterm.action.PromptInputLine({
+                            description = wezterm.format {
+                                { Attribute = { Intensity = 'Bold' } },
+                                { Foreground = { AnsiColor = 'Fuchsia' } },
+                                { Text = 'Enter name for new workspace' },
+                            },
+                            action = wezterm.action_callback(function(window, pane, line)
+                                -- line will be `nil` if they hit escape without entering anything
+                                -- An empty string if they just hit enter
+                                -- Or the actual line of text they wrote
+                                if line then
+                                    wezterm.mux.rename_workspace(
+                                        wezterm.mux.get_active_workspace(),
+                                        line
+                                    )
+                                end
+                            end)
+                        })
+                    end
+                    )},
+                {
+                    key = "s",
+                    mods = 'LEADER',
+                    action = lib.generate_action(
+                        'InputSelector',
+                        'Your current version of wezterm does not support the "InputSelector" action.'
+                        .. ' Please consider upgrading your wezterm version',
+                        function()
+                            return wezterm.action_callback(function(window, pane)
+                                local workspaces = {}
+                                for _, workspace in ipairs(wezterm.mux.get_workspace_names()) do
+                                    table.insert(workspaces, { label = workspace })
+                                end
+                                window:perform_action(
+                                    wezterm.action.InputSelector({
+                                        action = wezterm.action_callback(function(window, pane, id, label)
+                                            if not id and not label then
+                                                return
+                                            end
+                                            window:perform_action(wezterm.action.SwitchToWorkspace({ name = label}), pane)
+                                        end),
+                                        title = 'Workspace Selector',
+                                        choices = workspaces,
+                                    }),
+                                    pane
+                                )
+                            end)
+                        end)
+                },
+                -- Switch to previous workspace
+                { key = "9", mods = "LEADER", action = wezterm.action.SwitchWorkspaceRelative(-1) },
+                -- Switch to next workspace
+                { key = "0", mods = "LEADER", action = wezterm.action.SwitchWorkspaceRelative(1)  }
+       }
     },
     -- Once again, doc is above code. Deal with it
     -- First a quick break down on terms here
