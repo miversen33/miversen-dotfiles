@@ -383,6 +383,16 @@ lib.components = {
             return window:leader_is_active() and icon
         end
     end,
+    tmux = function(icon)
+        icon = icon or '﬑ '
+        return function(window, pane)
+            if not pane:get_user_vars() then return end
+            local is_tmux =
+                (pane:get_user_vars().WEZTERM_IN_TMUX and pane:get_user_vars().WEZTERM_IN_TMUX ~= "0")
+                or (pane:get_user_vars().WEZTERM_PROG and pane:get_user_vars().WEZTERM_PROG:match('^tmux'))
+            return is_tmux and icon
+        end
+    end,
     -- @param warn_threshold: double
     --     Default: 0.2
     --     If provided, this is the discharge level at which
@@ -682,6 +692,7 @@ lib.default_config = {
     right_status_bar = {
         -- This is built left to right
         {
+            lib.components.tmux(),
             lib.components.leader(),
             lib.components.spacer(),
             lib.components.caps_indicator(),
