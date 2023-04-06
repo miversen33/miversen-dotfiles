@@ -347,10 +347,12 @@ function lib.compile_config_to_wez(config)
     end
     wezterm.on('toggle-leader', function(window, pane)
         local override_config = window:get_config_overrides() or {}
-        if override_config.leader then
-            override_config.leader = nil
+        if not override_config.leader then
+            override_config.leader = {
+                key = '', mods = "CTRL|SHIFT|ALT", timeout_milliseconds = 2
+            }
         else
-            override_config.leader = wezterm.miversen_wezconf.merged_conf.keys.leader
+            override_config.leader = nil
         end
         window:set_config_overrides(override_config)
     end)
@@ -444,10 +446,11 @@ lib.components = {
     leader = function(icon)
         icon = icon or '↑'
         return function(window, pane)
-            local text = window:leader_is_active() and icon
+            local text = window:leader_is_active() and icon or ''
             local override_config = window:get_config_overrides()
-            if override_config and wezterm.miversen_wezconf.merged_conf.keys.leader and not override_config.leader then
-                text = nerdfonts.mdi_cancel
+            -- TODO: Come up with a better way to show this????
+            if override_config.leader then
+                text = text .. " " .. nerdfonts.mdi_cancel
             end
             return text
         end
