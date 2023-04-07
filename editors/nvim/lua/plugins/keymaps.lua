@@ -7,7 +7,7 @@ hydra({
                              Search Commands
 ^
 _d_: Search Directory           _w_: Search with highlighted word
-_/_: Search File
+_/_: Search File                _f_: Telescope Search
 ^
 ^ ^                              _q_/_<Esc>_: Exit Hydra
 ]],
@@ -25,6 +25,7 @@ _/_: Search File
     heads = {
         {"d",      cmd 'lua require("spectre").open()<CR>', {desc = "Search", silent = true}},
         {"w",      cmd 'lua require("spectre").open_visual({select_word=true})<CR>', {desc = "Search word", silent = true}},
+        {"f",      cmd 'Telescope live_grep', { desc = "Fuzzy Search with Telescope", silent = true}},
         {"/",      cmd 'lua require("spectre").open_file_search()<CR>', {desc = "Search File", silent = true}},
         {"q",      nil, {desc = "quit", exit = true, nowait = true}},
         {"<Esc>",  nil, {desc = "quit", exit = true, nowait = true}}
