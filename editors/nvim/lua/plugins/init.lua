@@ -554,7 +554,7 @@ local function get_plugins()
             },
         },
         {
-            "tami5/sqlite.lua", -- Neovim SQlite database
+            "kkharji/sqlite.lua", -- Neovim SQlite database
             lazy = true,
         },
         {
