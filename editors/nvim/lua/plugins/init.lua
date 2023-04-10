@@ -1096,6 +1096,15 @@ local function get_plugins()
             config = true
         },
         {
+            'fedepujol/move.nvim',
+            cmd = {
+                'MoveLine',
+                'MoveHChar',
+                'MoveBlock',
+                'MoveHBlock'
+            }
+        },
+        {
             -- Git
             "TimUntersberger/neogit",
             config = true
