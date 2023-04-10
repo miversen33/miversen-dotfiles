@@ -343,7 +343,22 @@ _s_/_q_/_<Esc>_: Exit Hydra
     }
 })
 
-vim.keymap.set('',  '<Esc>', "<ESC>:noh<CR>:lua import('notify', function(_) _.dismiss() end)<CR>", {silent = true})
+local function do_exit()
+    vim.cmd('noh')
+    local success, notify, hover = nil, nil, nil
+    success, notify = pcall(require, "notify")
+    if success then
+        notify.dismiss()
+    end
+    success, hover = pcall(require, "pretty_hover")
+    if success then
+        hover.close()
+    end
+    local key = vim.api.nvim_replace_termcodes('<ESC>', true, false, true)
+    vim.api.nvim_feedkeys(key, 'n', false)
+end
+
+vim.keymap.set({'n', 'i', 'v', 's', 'c', 't', 'x'}, '<Esc>', do_exit, {silent = true})
 vim.keymap.set('n', '<C-t>', ':CFloatTerm<CR>', {silent = true})
 vim.keymap.set('t', '<C-t>', '<C-\\><C-n>:CFloatTerm<CR>', {silent = true})
 vim.keymap.set('n', '<C-p>', ':CSplitTerm vertical<CR>', {silent = true})
