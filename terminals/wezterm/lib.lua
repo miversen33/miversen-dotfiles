@@ -447,7 +447,7 @@ lib.components = {
         icon = icon or '↑'
         return function(window, pane)
             local text = window:leader_is_active() and icon or ''
-            local override_config = window:get_config_overrides()
+            local override_config = window:get_config_overrides() or {}
             -- TODO: Come up with a better way to show this????
             if override_config.leader then
                 text = text .. " " .. nerdfonts.mdi_cancel
