@@ -137,6 +137,9 @@ local function get_plugins()
 
                     -- Enable italic comment
                     italic_comments = true,
+                    group_overrides = {
+                        CursorLine = { underline = true }
+                    }
                 })
                 vscode.load()
             end
