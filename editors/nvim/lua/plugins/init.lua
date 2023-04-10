@@ -1086,6 +1086,10 @@ local function get_plugins()
             config = true,
         },
         {
+            'nmac427/guess-indent.nvim',
+            config = true
+        },
+        {
             -- Git
             "TimUntersberger/neogit",
             config = true
