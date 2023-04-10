@@ -49,6 +49,8 @@ local function vim_settings()
     vim.opt.completeopt   = 'longest,preview,menuone,noselect'
     vim.g.vimsyn_embed    = 'lPrj'
     vim.opt.updatetime    = 2000
+    vim.opt.sessionoptions= "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
+    for _, group in ipairs(vim.fn.getcompletion("@lsp", "highlight")) do vim.api.nvim_set_hl(0, group, {}) end
 end
 
 local function setup_basic_keycommands()
