@@ -142,6 +142,8 @@ local function get_plugins()
                     }
                 })
                 vscode.load()
+                local colors = require("vscode.colors")
+                vim.api.nvim_set_hl(0, 'NeoTreeFileNameOpened', { bg = colors.vscSelection, fg = colors.vscBack, bold = true, underline = true, italic = true })
             end
         },
         {
@@ -975,9 +977,13 @@ local function get_plugins()
                 "kyazdani42/nvim-web-devicons", -- not strictly required, but recommended
                 "MunifTanjim/nui.nvim",
             },
-            dev = false,
             config = {
                 popup_border_style = 'rounded',
+                default_component_configs = {
+                    name = {
+                        highlight_opened_files = "all",
+                    }
+                },
                 sources = {
                     "filesystem",
                     "buffers",
