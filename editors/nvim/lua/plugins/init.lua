@@ -1057,33 +1057,21 @@ local function get_plugins()
             end,
         },
         {
-            -- miversen fork of hover to make it quiet
-            'lewis6991/hover.nvim',
+            "Fildo7525/pretty_hover",
+            event = "LspAttach",
             config = function()
-                require("hover").setup({
-                    init = function()
-                        require("hover.providers.lsp")
-                    end,
-                    preview_opts = {
-                        border = 'rounded'
-                    },
-                    -- Whether the contents of a currently open hover window should be moved
-                    -- to a :h preview-window when pressing the hover keymap.
-                    preview_window = false,
-                    title = true
-                })
-                -- -- Setup keymaps
+                local pretty_hover = require("pretty_hover")
+                pretty_hover.setup()
                 vim.api.nvim_create_autocmd({ 'CursorHold' },
                     {
                         callback = function()
                             local ft = vim.api.nvim_buf_get_option(0, 'filetype')
                             if not excluded_filetypes_table[ft] then
-                                require("hover").hover()
+                                pretty_hover.hover()
                             end
                         end
                     }
                 )
-                vim.keymap.set("n", "gK", require("hover").hover_select, { desc = "hover.nvim (select)" })
             end
         },
         -- Keep both and lets see which we prefer
