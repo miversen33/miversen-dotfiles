@@ -271,7 +271,7 @@ _;_/_q_/_<Esc>_: Exit Hydra
     body = ";",
     heads = {
         {"s", cmd 'TroubleToggle lsp_definitions', {desc = "Jump to Definition", silent = true}},
-        {"h", require("hover").hover,  {desc = "Show Hover Doc", silent = true}},
+        {"h", require("pretty_hover").hover,  {desc = "Show Hover Doc", silent = true}},
         {"o", cmd 'TroubleToggle lsp_implementations', {desc = "Show Implementations", silent = true}},
         {"j", vim.lsp.buf.signature_help, {desc = "Show Sig Help", silent = true}},
         {"r", cmd 'TroubleToggle lsp_references', {desc = "Show References", silent = true}},
