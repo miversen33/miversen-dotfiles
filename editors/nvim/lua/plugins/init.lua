@@ -1071,8 +1071,9 @@ local function get_plugins()
                 vim.api.nvim_create_autocmd({ 'CursorHold' },
                     {
                         callback = function()
+                            local lsps = vim.lsp.get_active_clients({ bufnr = vim.fn.bufnr() })
                             local ft = vim.api.nvim_buf_get_option(0, 'filetype')
-                            if not excluded_filetypes_table[ft] then
+                            if not excluded_filetypes_table[ft] and #lsps > 0 then
                                 pretty_hover.hover()
                             end
                         end
