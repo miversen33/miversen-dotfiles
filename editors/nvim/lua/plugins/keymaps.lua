@@ -345,7 +345,7 @@ _s_/_q_/_<Esc>_: Exit Hydra
 
 local function do_exit()
     vim.cmd('noh')
-    local success, notify, hover = nil, nil, nil
+    local success, notify, hover, specs = nil, nil, nil, nil
     success, notify = pcall(require, "notify")
     if success then
         notify.dismiss()
@@ -353,6 +353,10 @@ local function do_exit()
     success, hover = pcall(require, "pretty_hover")
     if success then
         hover.close()
+    end
+    success, specs = pcall(require, "specs")
+    if success then
+        specs.show_specs()
     end
     local key = vim.api.nvim_replace_termcodes('<ESC>', true, false, true)
     vim.api.nvim_feedkeys(key, 'n', false)
