@@ -51,6 +51,23 @@ local function vim_settings()
     vim.opt.updatetime    = 2000
     vim.opt.sessionoptions= "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
     for _, group in ipairs(vim.fn.getcompletion("@lsp", "highlight")) do vim.api.nvim_set_hl(0, group, {}) end
+    local _print = _G.print
+    local clean_string = function(...)
+        local args = table.pack(...)
+        local formatted_args = {}
+        for i=1, args.n do
+            local item = select(i, ...)
+            if not item then item = 'nil' end
+            if type(item) == 'table' then
+                item = vim.inspect(item)
+            end
+            table.insert(formatted_args, item)
+        end
+        return table.concat(formatted_args, ' ')
+    end
+    _G.print = function(...)
+        _print(clean_string(...))
+    end
 end
 
 local function setup_basic_keycommands()
