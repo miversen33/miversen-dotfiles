@@ -1042,7 +1042,7 @@ local function get_plugins()
         },
         {
             "nvim-neo-tree/neo-tree.nvim", -- File Explorer
-            branch = "v2.x",
+            branch = "main",
             dependencies = {
                 "nvim-lua/plenary.nvim",
                 "kyazdani42/nvim-web-devicons", -- not strictly required, but recommended
@@ -1050,6 +1050,14 @@ local function get_plugins()
             },
             config = {
                 popup_border_style = 'rounded',
+                source_selector = {
+                    winbar = true,
+                    sources = {
+                        { source = "filesystem" },
+                        { source = "buffers" },
+                        { source = "remote" },
+                    }
+                },
                 default_component_configs = {
                     name = {
                         highlight_opened_files = "all",
