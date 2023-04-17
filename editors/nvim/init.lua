@@ -61,6 +61,8 @@ local function vim_settings()
             local t_item = type(item)
             if t_item == 'table' or t_item == 'function' or t_item == 'userdata' then
                 item = vim.inspect(item)
+            else
+                item = string.format("%s", item)
             end
             table.insert(formatted_args, item)
         end
