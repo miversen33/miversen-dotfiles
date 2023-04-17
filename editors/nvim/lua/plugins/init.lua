@@ -766,14 +766,6 @@ local function get_plugins()
                 }
             end,
         },
-        -- Language Specific
-        {
-            "simrat39/rust-tools.nvim", -- Rust tools specific to neovim
-            config = true,
-        },
-        {
-            'mfussenegger/nvim-jdtls', -- Setup is done in the java filetype loader
-        },
         -- IDE
         {
             "nvim-pack/nvim-spectre", -- Better search and replace?
@@ -790,6 +782,8 @@ local function get_plugins()
                 "SmiteshP/nvim-navic", -- Navigational helper using lspconfig
                 "hrsh7th/cmp-nvim-lsp", -- Neovim LSP feeder for cmp
                 "jbyuki/one-small-step-for-vimkind", -- Neovim Dap
+                "simrat39/rust-tools.nvim", -- Neovim Rust Tools
+                "mfussenegger/nvim-jdtls", -- Neovim java tools
             },
             config = function()
                 require("mason").setup()
@@ -1002,10 +996,6 @@ local function get_plugins()
                         ["<C-Space>"] = cmp.mapping(cmp.mapping.complete(), { "i", "c" }),
                         ["<C-Up>"] = cmp.mapping(cmp.mapping.scroll_docs( -4)),
                         ["<C-Down>"] = cmp.mapping(cmp.mapping.scroll_docs(4)),
-                        ["<Esc>"] = cmp.mapping({
-                            i = cmp.abort(),
-                            c = cmp.close(),
-                        }),
                     },
                     sources = cmp.config.sources({
                         { name = "nvim_lsp" },
