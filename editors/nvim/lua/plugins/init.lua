@@ -352,6 +352,7 @@ local function get_plugins()
         },
         {
             "noib3/nvim-cokeline", -- Neovim Tab/Buffer Bar.
+            enabled = false,
             priority = 999,
             config = function()
                 local cokeline = require("cokeline")
