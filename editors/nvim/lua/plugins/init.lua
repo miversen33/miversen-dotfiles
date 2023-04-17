@@ -576,13 +576,32 @@ local function get_plugins()
             config = true,
         },
         {
-            "lukas-reineke/indent-blankline.nvim", -- Neovim indentation handling
+            'miversen33/hlchunk.nvim',
+            dev = true,
+            event = {"UIEnter"},
+            enabled = true,
             config = {
-                filetype_exclude = excluded_filetypes_array,
-                show_current_context = true,
-                show_current_context_start = true,
-                use_treesitter = true,
-            },
+                indent = {
+                    -- enable = false,
+                    use_treesitter = true
+                },
+                context = {
+                    -- enable = false,
+                    use_treesitter = true
+                },
+                chunk = {
+                    enable = true,
+                    use_treesitter = true
+                },
+                blank = {
+                    -- enable = false,
+                    use_treesitter = true
+                },
+                line_num = {
+                    enable = true,
+                    use_treesitter = true
+                }
+            }
         },
         {
             "kkharji/sqlite.lua", -- Neovim SQlite database
