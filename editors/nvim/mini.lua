@@ -6,12 +6,44 @@
 -- of a plugin
 
 -- Setting some basic vim options
+-- Some junk because I am sick of formatting tables in print
+local _print = _G.print
+local clean_string = function(...)
+    local args = { n = select("#", ...), ... }
+    local formatted_args = {}
+    for i=1, args.n do
+        local item = select(i, ...)
+        if not item then item = 'nil' end
+        local t_type = type(item)
+        if t_type == 'table' or t_type == 'function' or t_type == 'userdata' then
+            item = vim.inspect(item)
+        end
+        table.insert(formatted_args, item)
+    end
+    return table.concat(formatted_args, ' ')
+end
+_G.print = function(...)
+    _print(clean_string(...))
+end
+
 vim.opt.termguicolors = true
+-- If you want to play around with this, you can set the do_clean
+-- variable to false. This will allow changes made to
+-- underlying plugins to persist between sessions, while
+-- still keeping everything in its own directory so
+-- as to not affect your existing neovim installation.
+--
+-- Setting this to true will result in a fresh clone of
+-- all modules
+local do_clean = true
+
+-- Dummy var to make the dummy extension not provide a name
+vim.g.neo_tree_dummy_extension_no_name = true
 
 local sep = vim.loop.os_uname().sysname:lower():match('windows') and '\\' or '/' -- \ for windows, mac and linux both use \
 
 local mod_path = string.format("%s%sclean-test%s", vim.fn.stdpath('cache'), sep, sep)
-if vim.loop.fs_stat(mod_path) then
+if vim.loop.fs_stat(mod_path) and do_clean then
     print("Found previous clean test setup. Cleaning it out")
     -- Clearing out the mods directory and recreating it so 
     -- you have a fresh run everytime
@@ -24,7 +56,8 @@ local modules = {
     {'nvim-lua/plenary.nvim'},
     {'nvim-tree/nvim-web-devicons'},
     {'MunifTanjim/nui.nvim'},
-    {'nvim-neo-tree/neo-tree.nvim', branch = "main", mod = "neo-tree"},
+    {'nvim-neo-tree/neo-tree.nvim', branch='main', mod = 'neo-tree'},
+    {'miversen33/netman.nvim', mod = 'netman'}
 }
 
 for _, module in ipairs(modules) do
@@ -59,15 +92,27 @@ print("Finished installing plugins. Beginning Setup of plugins")
 for _, module in ipairs(modules) do
     if module.mod then
         print(string.format("Loading %s", module.mod))
-        local success, module = pcall(require, module.mod)
+        local success, err = pcall(require, module.mod)
         if not success then
             print(string.format("Failed to load module %s", module.mod))
-            error(module)
+            error(err)
         end
     end
 end
 
 -- --> Do you module setups below this line <-- --
+
+local neo_tree = require("neo-tree")
+
+
+neo_tree.setup({
+    sources = {
+        "filesystem",
+        "buffers",
+        "git_status",
+        "netman.ui.neo-tree"
+    },
+})
 
 -- --> Do your module setups above this line <-- --
 

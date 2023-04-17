@@ -53,12 +53,13 @@ local function vim_settings()
     for _, group in ipairs(vim.fn.getcompletion("@lsp", "highlight")) do vim.api.nvim_set_hl(0, group, {}) end
     local _print = _G.print
     local clean_string = function(...)
-        local args = table.pack(...)
+        local args = { n = select("#", ...), ...}
         local formatted_args = {}
         for i=1, args.n do
             local item = select(i, ...)
             if not item then item = 'nil' end
-            if type(item) == 'table' then
+            local t_item = type(item)
+            if t_item == 'table' or t_item == 'function' or t_item == 'userdata' then
                 item = vim.inspect(item)
             end
             table.insert(formatted_args, item)
