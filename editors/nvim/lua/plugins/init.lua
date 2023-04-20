@@ -1037,45 +1037,52 @@ local function get_plugins()
                 "nvim-lua/plenary.nvim",
                 "kyazdani42/nvim-web-devicons", -- not strictly required, but recommended
                 "MunifTanjim/nui.nvim",
+                "onsails/lspkind-nvim", -- Document Symbols
             },
-            config = {
-                popup_border_style = 'rounded',
-                source_selector = {
-                    winbar = true,
-                    sources = {
-                        { source = "filesystem" },
-                        { source = "buffers" },
-                        { source = "remote" },
-                    }
-                },
-                default_component_configs = {
-                    name = {
-                        highlight_opened_files = "all",
-                    }
-                },
-                sources = {
-                    "filesystem",
-                    "buffers",
-                    "netman.ui.neo-tree",
-                },
-                filesystem = {
-                    filtered_items = {
-                        visible = true,
-                        hide_gitignored = false,
-                        hide_hidden = false,
-                        hide_dotfiles = false,
+            config = function()
+                local lspkind = require("lspkind")
+                local neo_tree = require("neo-tree")
+                local config = {
+                    popup_border_style = 'rounded',
+                    source_selector = {
+                        winbar = true,
+                        sources = {
+                            { source = "filesystem" },
+                            { source = "buffers" },
+                            { source = "document_symbols" },
+                            { source = "remote" },
+                        }
                     },
-                    follow_current_file = true,
-                },
-            },
+                    default_component_configs = {
+                        name = {
+                            highlight_opened_files = "all",
+                        }
+                    },
+                    sources = {
+                        "filesystem",
+                        "buffers",
+                        "document_symbols",
+                        "netman.ui.neo-tree",
+                    },
+                    filesystem = {
+                        filtered_items = {
+                            visible = true,
+                            hide_gitignored = false,
+                            hide_hidden = false,
+                            hide_dotfiles = false,
+                        },
+                        follow_current_file = true,
+                    },
+                }
+                neo_tree.setup(config)
+            end
+            ,
         },
         {
             "miversen33/netman.nvim", -- Remove Resource Browser
             dev = true,
             branch = "v1.15",
-            config = function()
-                require("netman")
-            end,
+            config = true
         },
         {
             "folke/lsp-colors.nvim", -- Neovim create missing lsp color highlight groups
