@@ -1199,7 +1199,15 @@ local function setup_plugins()
             path = "~/git",
             patterns = { "miversen33" },
             fallback = true
-        }
+        },
+        checker = {
+            enabled = true
+        },
+        change_detection = {
+            -- automatically check for config file changes and reload the ui
+            enabled = true,
+            notify = true, -- get a notification when changes are found
+        },
     })
     require("custom_plugins") -- Load local plugins
 end
