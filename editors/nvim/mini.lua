@@ -26,6 +26,7 @@ _G.print = function(...)
     _print(clean_string(...))
 end
 
+vim.opt.mouse = 'a'
 vim.opt.termguicolors = true
 -- If you want to play around with this, you can set the do_clean
 -- variable to false. This will allow changes made to
@@ -36,9 +37,6 @@ vim.opt.termguicolors = true
 -- Setting this to true will result in a fresh clone of
 -- all modules
 local do_clean = true
-
--- Dummy var to make the dummy extension not provide a name
-vim.g.neo_tree_dummy_extension_no_name = true
 
 local sep = vim.loop.os_uname().sysname:lower():match('windows') and '\\' or '/' -- \ for windows, mac and linux both use \
 
