@@ -6,6 +6,7 @@ local function vim_settings()
     vim.opt.undofile      = true
     -- vim.opt.undodir       = undo_dir
     vim.opt.fillchars:append(',eob: ')
+    vim.opt.scrolloff     = 3
     vim.opt.undolevels    = 1000
     vim.opt.undoreload    = 10000
     vim.opt.mouse         = 'a'

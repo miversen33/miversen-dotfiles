@@ -40,6 +40,7 @@ local function get_plugins()
         "neo-tree",
         "ImportManager",
         "aerial",
+        "TelescopePrompt"
     }
     local excluded_filetypes_table = {}
     for _, value in ipairs(excluded_filetypes_array) do
@@ -545,7 +546,7 @@ local function get_plugins()
                         winhl = 'Specs'
                     },
                     ignore_filetypes = excluded_filetypes_array,
-                    ignore_buftypes = { nofile = true },
+                    ignore_buftypes = { nofile = true, prompt=true },
                 })
             end
         },
