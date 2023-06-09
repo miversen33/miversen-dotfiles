@@ -253,7 +253,7 @@ local function get_plugins()
                                         for _, lsp in ipairs(lsps) do
                                             table.insert(names, lsp.name)
                                         end
-                                        return string.format("%s %s", table.concat(names, ", "), icon)
+                                        return string.format("%s %s", table.concat(names, ", "), icon or '')
                                     else
                                         return icon or ""
                                     end
