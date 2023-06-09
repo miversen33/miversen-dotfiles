@@ -774,6 +774,7 @@ local function get_plugins()
         {
             "williamboman/mason.nvim", -- Neovim Language Tools (LSP, Debugger, Formatter, Linter, etc)
             dependencies = {
+                "tikhomirov/vim-glsl",
                 "neovim/nvim-lspconfig", -- Neovim LSP Setup
                 "williamboman/mason-lspconfig.nvim", -- Mason lsp config bindings
                 "rcarriga/nvim-dap-ui", -- UI for Dap
