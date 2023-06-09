@@ -162,40 +162,6 @@ _m?_: Show Man Pages            _l_: Open Location List
     }
 })
 hydra({
-    name = "Navigation Commands",
-    mode = {"n"},
-    config = {
-        color = "red",
-        invoke_on_body = true,
-        hint = {
-            type = "window",
-            position = "top",
-            border = "rounded",
-            show_name = true,
-        }
-    },
-        hint = [[
-                                                 Navigation Commands
-^
-_<Left>_: Resize Window Left     _<Right>_: Resize Window Right     _<Up>_: Resize Window Up     _<Down>_: Resize Window Down
- _u_: Move current tab left      _i_: Move current tab right        _z_: Maximize current pane
-^
-^ ^                                              _q_/_<Esc>_: Exit Hydra
-        ]],
-    body = "<C-Space>",
-    heads = {
-        {"<Left>",  cmd "lua require('smart-splits').resize_left()",  {desc = "Resize Pane/Window Left", silent = true}},
-        {"<Right>", cmd "lua require('smart-splits').resize_right()", {desc = "Resize Pane/Window Right", silent = true}},
-        {"<Up>",    cmd "lua require('smart-splits').resize_up()",    {desc = "Resize Pane/Window Up", silent = true}},
-        {"<Down>",  cmd "lua require('smart-splits').resize_down()",  {desc = "Resize Pane/Window Down", silent = true}},
-        {"u",       "<Plug>(cokeline-switch-prev)", {desc = "Move current tab left", silent = true}},
-        {"i",       "<Plug>(cokeline-switch-next)", {desc = "Move current tab right", silent = true}},
-        {"z",       cmd "lua require('maximize').toggle()", {desc = "Maximize current pane", exit = true, silent = true}},
-        {"q",       nil, {desc = "quit", exit = true, nowait = true}},
-        {"<Esc>",   nil, {desc = "quit", exit = true, nowait = true}}
-    }
-})
-hydra({
     name = "Terminal Commands",
     mode = {"t"},
     config = {
@@ -369,6 +335,7 @@ vim.keymap.set('n', '<C-p>', ':CSplitTerm vertical<CR>', {silent = true})
 vim.keymap.set('t', '<C-p>', '<C-\\><C-n>:CSplitTerm vertical<CR>', {silent = true})
 vim.keymap.set('n', '<C-o>', ':CSplitTerm horizontal<CR>', {silent = true})
 vim.keymap.set('t', '<C-o>', '<C-\\><C-n>:CSplitTerm horizontal<CR>', {silent = true})
+local command_key = vim.loop.os_getenv('TERM'):match('WEZTERM_EXECUTABLE') and "<C_/>" or "<C-_>"
 vim.keymap.set('n', '<C-_>', ':lua require("Comment.api").toggle.linewise()<CR>', {silent = true})
 vim.keymap.set('i', '<C-_>', '<ESC>:lua require("Comment.api").toggle.linewise()<CR>i', {silent = true})
 vim.keymap.set('x', '<C-_>', '<ESC>:lua require("Comment.api").toggle.linewise(vim.fn.visualmode())<CR>', {silent = true})
@@ -390,6 +357,7 @@ vim.keymap.set("v", '<C-Down>', ':MoveBlock(1)<CR>', {silent = true})
 vim.keymap.set("v", '<C-Up>', ':MoveBlock(-1)<CR>', {silent = true})
 vim.keymap.set("v", '<C-Left>', ':MoveHBlock(-1)<CR>', {silent = true})
 vim.keymap.set("v", '<C-Right>', ':MoveHBlock(1)<CR>', {silent = true})
+vim.keymap.set("n", "<C-Enter>", ":TroubleToggle lsp_definitions<CR>", {silent = true})
 -- vim.keymap.set("n", '/',     ':lua require("searchbox").incsearch({modifier = "disabled"})<CR>', {silent = true})
 -- vim.keymap.set("n", 'r',     ':lua require("searchbox").replace({confirm = "menu"})<CR>', {silent = true})
 

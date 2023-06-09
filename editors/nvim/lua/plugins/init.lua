@@ -914,15 +914,25 @@ local function get_plugins()
                     fallback()
                 end
                 local next_option_mapping = function(fallback)
-                    if cmp.visible() then
+                    if cmp.visible() and cmp.get_active_entry() then
                         cmp.select_next_item()
                     else
                         fallback()
                     end
                 end
                 local previous_option_mapping = function(fallback)
-                    if cmp.visible() then
+                    if cmp.visible() and cmp.get_active_entry() then
                         cmp.select_prev_item()
+                    else
+                        fallback()
+                    end
+                end
+                local expand_enter_mapping = function(fallback)
+                    if not cmp.visible() then
+                        cmp.complete()
+                        cmp.select_next_item()
+                    elseif cmp.get_active_entry() then
+                        confirm_mapping()
                     else
                         fallback()
                     end
@@ -940,6 +950,7 @@ local function get_plugins()
                         end,
                     },
                     mapping = {
+                        ["<C-Space>"] = expand_enter_mapping,
                         ["<Enter>"] = confirm_mapping,
                         ["<Tab>"] = cmp.mapping({
                             i = confirm_mapping,
