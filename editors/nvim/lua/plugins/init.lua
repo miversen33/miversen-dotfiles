@@ -948,7 +948,6 @@ local function get_plugins()
                         ["<Down>"] = cmp.mapping(next_option_mapping, { "i" }),
                         ["<Up>"] = cmp.mapping(previous_option_mapping, { "i" }),
                         ["<S-Tab>"] = cmp.mapping(previous_option_mapping, { "c" }),
-                        ["<C-Space>"] = cmp.mapping(cmp.mapping.complete(), { "i", "c" }),
                         ["<C-Up>"] = cmp.mapping(cmp.mapping.scroll_docs( -4)),
                         ["<C-Down>"] = cmp.mapping(cmp.mapping.scroll_docs(4)),
                     },
@@ -960,7 +959,7 @@ local function get_plugins()
 
                         { name = "dictionary",             keyword_length = 2 },
                         { name = "path" },
-                        -- { name = "treesitter" }
+                        { name = "treesitter" }
                     }, {
                         { name = "buffer" },
                     }),
@@ -969,6 +968,7 @@ local function get_plugins()
                 cmp.setup.cmdline("/", {
                     sources = {
                         { name = "buffer" },
+                        { name = "treesitter" }
                     },
                 })
 
