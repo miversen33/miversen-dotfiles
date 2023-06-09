@@ -167,7 +167,6 @@ local function get_plugins()
             "nvim-lualine/lualine.nvim", -- Neovim status line
             dependencies = {
                 "kyazdani42/nvim-web-devicons",
-                "SmiteshP/nvim-navic",
                 "onsails/lspkind-nvim",
                 "f-person/git-blame.nvim"
             },
@@ -176,25 +175,7 @@ local function get_plugins()
             config = function()
                 vim.g.gitblame_display_virtual_text = 0
                 local lualine = require("lualine")
-                local nvim_navic = require("nvim-navic")
                 local git_blame = require("gitblame")
-                nvim_navic.setup({
-                    seperator = "",
-                    highlight = true,
-                })
-                local create_symbol_bar = function()
-                    if not nvim_navic.is_available() then
-                        return ""
-                    end
-                    local details = {}
-                    for _, item in ipairs(nvim_navic.get_data()) do
-                        -- For some reason sumneko adds a random ` ->` to the end of the name *sometimes*
-                        -- This accounts for that I guess...
-                        table.insert(details, item.icon .. item.name:gsub("%s*->%s*", ""))
-                        -- Looks like we have some more weirdness coming from sumneko...
-                    end
-                    return table.concat(details, " > ")
-                end
                 local get_buf_filetype = function()
                     return vim.api.nvim_buf_get_option(0, "filetype")
                 end
@@ -209,9 +190,6 @@ local function get_plugins()
                 lualine.setup({
                     options = {
                         theme = "vscode",
-                        disabled_filetypes = {
-                            winbar = excluded_filetypes_array,
-                        },
                         globalstatus = true,
                     },
                     sections = {
@@ -322,28 +300,6 @@ local function get_plugins()
                                 fmt = format_name,
                             },
                         },
-                        lualine_x = {},
-                        lualine_y = {},
-                        lualine_z = {},
-                    },
-                    winbar = {
-                        lualine_a = {
-                            { "filetype", icon_only = true,    icon = { align = "left" } },
-                            { "filename", file_status = false, path = 0 },
-                        },
-                        lualine_b = {},
-                        lualine_c = { create_symbol_bar },
-                        lualine_x = {},
-                        lualine_y = {},
-                        lualine_z = {},
-                    },
-                    inactive_winbar = {
-                        lualine_a = {
-                            { "filetype", icon_only = true,    icon = { align = "left" } },
-                            { "filename", file_status = false, path = 0 },
-                        },
-                        lualine_b = {},
-                        lualine_c = {},
                         lualine_x = {},
                         lualine_y = {},
                         lualine_z = {},
@@ -781,7 +737,6 @@ local function get_plugins()
                 "mfussenegger/nvim-dap", -- Debugger, setup below
                 "mfussenegger/nvim-lint", -- Neovim linter
                 "mhartington/formatter.nvim", -- Neovim formatter
-                "SmiteshP/nvim-navic", -- Navigational helper using lspconfig
                 "hrsh7th/cmp-nvim-lsp", -- Neovim LSP feeder for cmp
                 "jbyuki/one-small-step-for-vimkind", -- Neovim Dap
                 "simrat39/rust-tools.nvim", -- Neovim Rust Tools
@@ -791,7 +746,6 @@ local function get_plugins()
                 require("mason").setup()
                 local lspconf = require("lspconfig")
                 local mason_lspconfig = require("mason-lspconfig")
-                local nvim_navic = require("nvim-navic")
                 local cmp_nvim_lsp = require("cmp_nvim_lsp")
                 local dap = require("dap")
                 local dapui = require("dapui")
@@ -805,11 +759,6 @@ local function get_plugins()
                         { border = "rounded" }
                     ),
                 }
-                local global_on_attach = function(client, bufnr)
-                    if client.server_capabilities.documentSymbolProvider then
-                        nvim_navic.attach(client, bufnr)
-                    end
-                end
                 vim.fn.sign_define("DiagnosticSignError", {
                     text = "",
                     numhl = "DiagnosticSignError",
@@ -1187,6 +1136,18 @@ local function get_plugins()
             -- Git
             "TimUntersberger/neogit",
             config = true
+        },
+        {
+            "Bekaboo/dropbar.nvim",
+            opts = {
+                icons = {
+                    ui = {
+                        bar = {
+                            separator = "  "
+                        }
+                    }
+                }
+            }
         }
         -- Debugger
     }
