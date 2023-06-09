@@ -534,17 +534,16 @@ local function get_plugins()
             config = true,
         },
         {
-            'miversen33/hlchunk.nvim',
-            dev = true,
+            'shellRaining/hlchunk.nvim',
             event = {"UIEnter"},
             enabled = true,
             config = {
                 indent = {
-                    -- enable = false,
+                    enable = true,
                     use_treesitter = true
                 },
                 context = {
-                    -- enable = false,
+                    enable = true,
                     use_treesitter = true
                 },
                 chunk = {
@@ -552,7 +551,7 @@ local function get_plugins()
                     use_treesitter = true
                 },
                 blank = {
-                    -- enable = false,
+                    enable = true,
                     use_treesitter = true
                 },
                 line_num = {
