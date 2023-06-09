@@ -16,6 +16,7 @@ local function bootstrap_package_manager()
 end
 
 local function get_plugins()
+    -- These are sourced with the start of the lsp server in mason
     local lsp_settings = {}
 
     local excluded_filetypes_array = {
@@ -787,6 +788,10 @@ local function get_plugins()
                         local lsp_setting = lsp_settings[lsp] or {}
                         local _ = lsp_setting.on_attach
                         local lsp_on_attach = function(client, bufnr)
+                            if client.name:match('omnisharp') then
+                                print("Disabling Semantic Tokens on Omnisharp because Microsoft doesn't know how to read their own standards... RE: https://github.com/OmniSharp/omnisharp-roslyn/issues/2483")
+                                client.server_capabilities.semanticTokensProvider = nil
+                            end
                             global_on_attach(client, bufnr)
                             if _ then
                                 _(client, bufnr)
