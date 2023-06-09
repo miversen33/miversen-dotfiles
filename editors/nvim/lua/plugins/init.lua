@@ -1163,9 +1163,6 @@ local function setup_plugins()
             patterns = { "miversen33" },
             fallback = true
         },
-        checker = {
-            enabled = true
-        },
         change_detection = {
             -- automatically check for config file changes and reload the ui
             enabled = true,
