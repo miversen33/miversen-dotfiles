@@ -928,7 +928,7 @@ local function get_plugins()
                     end
                 end
                 local expand_enter_mapping = function(fallback)
-                    if not cmp.visible() then
+                    if not cmp.visible() or not cmp.get_active_entry() then
                         cmp.complete()
                         cmp.select_next_item()
                     elseif cmp.get_active_entry() then
@@ -950,7 +950,7 @@ local function get_plugins()
                         end,
                     },
                     mapping = {
-                        ["<C-Space>"] = expand_enter_mapping,
+                        ["<C-Space>"] = cmp.mapping(expand_enter_mapping, {"i", "c"}),
                         ["<Enter>"] = confirm_mapping,
                         ["<Tab>"] = cmp.mapping({
                             i = confirm_mapping,
