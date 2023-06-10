@@ -539,7 +539,7 @@ local function get_plugins()
             enabled = true,
             config = {
                 indent = {
-                    enable = true,
+                    enable = false,
                     use_treesitter = true
                 },
                 context = {
@@ -551,7 +551,7 @@ local function get_plugins()
                     use_treesitter = true
                 },
                 blank = {
-                    enable = true,
+                    enable = false,
                     use_treesitter = true
                 },
                 line_num = {
