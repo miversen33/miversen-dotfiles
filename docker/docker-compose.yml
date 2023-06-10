@@ -1,0 +1,18 @@
+version: "3.8"
+services:
+  dev_env:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: dev_env
+    volumes:
+      - ./workspace:/workspace:rshared
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /home/miversen/.ssh/id_rsa:/config/id_rsa
+      - /home/miversen/.ssh/id_rsa.pub:/config/id_rsa.pub
+      - /home/miversen/.ssh/config:/config/ssh_config
+      - root:/root/
+    image: ubuntu
+
+volumes:
+  root:
