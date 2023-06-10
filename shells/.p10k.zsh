@@ -189,7 +189,9 @@
   # OS identifier color.
   typeset -g POWERLEVEL9K_OS_ICON_FOREGROUND=255
   # Custom icon.
-  # typeset -g POWERLEVEL9K_OS_ICON_CONTENT_EXPANSION='⭐'
+  DOCKER_ICON=""
+  [ -f /.dockerenv ] && DOCKER_ICON=" "
+  typeset -g POWERLEVEL9K_OS_ICON_CONTENT_EXPANSION='${DOCKER_ICON}${P9K_CONTENT}'
 
   ################################[ prompt_char: prompt symbol ]################################
   # Transparent background.
