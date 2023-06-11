@@ -1164,6 +1164,15 @@ local function get_plugins()
                     }
                 }
             }
+        },
+        {
+            "nvim-treesitter",
+            config = function()
+                local ts_conf = require("nvim-treesitter.configs")
+                ts_conf.setup({
+                    auto_install = true
+                })
+            end
         }
         -- Debugger
     }
