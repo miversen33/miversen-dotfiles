@@ -1,34 +1,42 @@
 local wezterm = require("wezterm")
 
-local OS_SEP = wezterm.target_triple:match('windows') and '\\' or '/'
-
 -- Do some quick hostname checks to see if we are running inside
 -- a dev container
 local DEV_CONTAINER_NAME = "dev_env"
-local dev_env_socket = wezterm.home_dir .. OS_SEP .. ".dev_env_mux.sock"
 
 local domains = {
     default = "localhost socket",
     unix = {
         {name = "localhost socket"},
     },
-    ssh = { default = true }
+    ssh = { default = true },
+    tls = {
+        servers = {},
+        clients = {}
+    }
 }
 
-if dev_env_socket then
+if not wezterm.GLOBAL.precheck then
     local _ = io.open('/.dockerenv', 'r')
     if _ ~= nil then
         _:close()
         if wezterm.hostname() == DEV_CONTAINER_NAME then
-            table.insert(domains.unix, {
-                name = "Dev Environment",
-                socket_path = dev_env_socket,
-                skip_permissions_check = true
-            })
+            wezterm.GLOBAL.is_dev_container = true
         end
     end
+    wezterm.GLOBAL.precheck = true
 end
 
+if wezterm.GLOBAL.is_dev_container then
+    local port = os.getenv('DEV_PORT')
+    if port then
+        table.insert(domains.tls.servers, {
+            name = "Dev Environment",
+            bind_address = string.format("localhost:%s", port),
+            skip_permissions_check = true
+        })
+    end
+end
 
 
 -- Your custom configuration. This will be merged with the default config.
