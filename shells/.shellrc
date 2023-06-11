@@ -165,6 +165,17 @@ profile_rc() {
       tmux -2 a -t default || tmux -2 new -s default;
       exit 0
   fi
+  DOCKER_LOCATION=$()
+  if [ ! -n "${MYVIMRC}" ] && [ "${TERM_PROGRAM}" != "vscode" ] && [[ $- == *i* ]] && [ -x "$(command -v docker)" ]; then
+    if [[ ! $(docker ps --filter "name=dev_env" --format '{{.Names}}') == dev_env ]]; then
+      cur_dir=$(dirname `readlink -f $RC_PATH`)
+      cd "${cur_dir}/"../docker/
+      docker compose up --quiet-pull -d 2>/dev/null
+      cd $cur_dir
+    fi
+  fi
+  # check if docker is available
+  # [ docker container ls --all --format 'table {{.Status}}' --filter dev_env ] || echo "Dev Environment is not running!";
 # if [ -f "$HOME/.profile" ] && source "$HOME/.profile"
 }
 
@@ -325,6 +336,20 @@ bash_rc () {
 
     source $OSH/oh-my-bash.sh
   fi
+}
+
+dev_env(){
+  docker exec -it dev_env /bin/zsh
+}
+
+restart_env(){
+  echo "Restarting Development Environment..."
+  cur_dir=$(dirname `readlink -f $RC_PATH`)
+  cd "${cur_dir}/"../docker/
+  docker compose stop 2>/dev/null
+  docker compose up -d 2>/dev/null
+  cd $cur_dir
+  echo "Development Environment Restarted."
 }
 
 debug_nvim() {
