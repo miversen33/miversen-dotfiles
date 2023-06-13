@@ -34,8 +34,8 @@ check_rc_update(){
   fi
 }
 
-profile_rc() {
-  # export TERM="xterm-256color"
+pre_profile_rc() {
+  [ ! -n "${TERM+set}" ] && export TERM="xterm-256color";
   export LANG=en_US.UTF-8
   export LC_ALL=en_US.UTF-8
 
@@ -167,18 +167,16 @@ profile_rc() {
       tmux -2 a -t default || tmux -2 new -s default;
       exit 0
   fi
+
+post_profile_rc(){
   DOCKER_LOCATION=$()
   if [ ! -n "${MYVIMRC}" ] && [ "${TERM_PROGRAM}" != "vscode" ] && [[ $- == *i* ]] && [ -x "$(command -v docker)" ]; then
     if [[ ! $(docker ps --filter "name=dev_env" --format '{{.Names}}') == dev_env ]]; then
-      cur_dir=$(dirname `readlink -f $RC_PATH`)
       cd "${cur_dir}/"../docker/
       docker compose up --quiet-pull -d 2>/dev/null
       cd $cur_dir
     fi
   fi
-  # check if docker is available
-  # [ docker container ls --all --format 'table {{.Status}}' --filter dev_env ] || echo "Dev Environment is not running!";
-# if [ -f "$HOME/.profile" ] && source "$HOME/.profile"
 }
 
 zsh_rc () {
@@ -376,14 +374,15 @@ cleanup() {
   unset SHELLRC_UPDATE_FILE
   unset SCRIPT_PATH
 
-  unset profile_rc
+  unset pre_profile_rc
+  unset post_profile_rc
   unset zsh_rc
   unset bash_rc
   unset check_rc_update
   unset cleanup
 }
 
-profile_rc
+pre_profile_rc
 
 if [ -n "${ZSH_VERSION+set}" ]; then
   # We are in a zsh shell
@@ -393,6 +392,8 @@ if [ -n "${BASH_VERSION+set}" ]; then
   # We are in a bash shell
   bash_rc
 fi
+
+post_profile_rc
 
 # check_rc_update
 cleanup
