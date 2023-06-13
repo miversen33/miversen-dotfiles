@@ -14,7 +14,7 @@ services:
       - /home/miversen/.ssh/config:/config/ssh_config
       - /home/miversen/.dev_env_mux.sock:/root/.dev_env_mux.sock
       - root:/root/
-    image: ubuntu
+    image: miversen33/dev_env
 
 volumes:
   root:
