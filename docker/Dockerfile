@@ -1,6 +1,8 @@
 # Setup wezterm mux server...
 FROM ubuntu:latest
 RUN \
+    apt-get update -y 2>&1 > /dev/null &&\
+    apt-get install curl -y 2>&1 > /dev/null &&\
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y > /dev/null &&\
     PATH="$PATH:$HOME/.cargo/bin" &&\
     curl -sLo /wezterm-nightly.tar.gz https://github.com/wez/wezterm/releases/download/20230408-112425-69ae8472/wezterm-20230408-112425-69ae8472-src.tar.gz &&\
