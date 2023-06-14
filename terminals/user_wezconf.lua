@@ -55,7 +55,7 @@ function M.generate()
             brightness = 0.2
         },
         opacity = { window = 0.90 },
-        color_scheme = 'MaterialDesignColors',
+        color_scheme = "MaterialOcean",
         colors = {
             tab_bar = {
                 background = 'BLACK',
