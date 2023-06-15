@@ -89,4 +89,6 @@ echo "Setting up Docker out of Docker" &&\
 
 COPY --from=0 /wezterm-mux-server /usr/bin/wezterm-mux-server
 
+WORKDIR /root/
+
 ENTRYPOINT ["/bin/bash", "/usr/bin/entrypoint"]
