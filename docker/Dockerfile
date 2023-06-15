@@ -29,6 +29,7 @@ RUN \
     apt-get upgrade -y 2>&1  > /dev/null &&\
     echo "Installing required packages" &&\
     apt-get install -y \
+        locales \
         apt-utils \
         unzip \
         cron \
@@ -57,6 +58,7 @@ RUN \
         openssh-client \
         tmux \
         2>&1 > /dev/null &&\
+    locale-gen en_US.UTF-8 &&\
     # Setting up the basic editor
     echo "Downloading Neovim Nightly" &&\
     mkdir -p /opt/neovim/ /tmp/setup/ &&\
