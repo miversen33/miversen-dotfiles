@@ -167,6 +167,7 @@ pre_profile_rc() {
       tmux -2 a -t default || tmux -2 new -s default;
       exit 0
   fi
+}
 
 post_profile_rc(){
   DOCKER_LOCATION=$()
