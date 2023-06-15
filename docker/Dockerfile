@@ -29,6 +29,7 @@ RUN \
     apt-get upgrade -y 2>&1  > /dev/null &&\
     echo "Installing required packages" &&\
     apt-get install -y \
+        ripgrep \
         locales \
         apt-utils \
         unzip \
