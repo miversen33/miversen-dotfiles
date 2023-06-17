@@ -21,6 +21,7 @@ ENV NOTMUX=1
 ENV TERM=xterm-256color
 ENV COLORTERM=
 ENV LANG=en_US.UTF-8
+ENV NODE_VERSION=14
 RUN \
     echo "Setting up basic Ubuntu env" &&\
     rm -rf /opt/neovim/ /usr/local/bin/nvim* /tmp/setup /etc/apt/keyrings/docker.gpg /usr/bin/python ~/.ssh ~/.dotfiles ~/.config/nvim ~/.zshrc ~/.p10k.zsh /workspace /usr/local/bin/* &&\
@@ -35,6 +36,7 @@ RUN \
         unzip \
         cron \
         python3-pip \
+        python3-venv \
         postgresql-client \
         mysql-client \
         wget \
@@ -55,11 +57,15 @@ RUN \
         bash \
         rsync \
         git \
-        nodejs \
+        aptitude \
         openssh-client \
         tmux \
+        luarocks \
         2>&1 > /dev/null &&\
     locale-gen en_US.UTF-8 &&\
+    echo "Setting up node and npm" &&\
+    curl -sL https://deb.nodesource.com/setup_$NODE_VERSION.x | bash - 2>&1 1>/dev/null &&\
+    aptitude install -y nodejs npm 2>&1 1>/dev/null &&\
     # Setting up the basic editor
     echo "Downloading Neovim Nightly" &&\
     mkdir -p /opt/neovim/ /tmp/setup/ &&\
@@ -85,7 +91,6 @@ echo "Setting up Docker out of Docker" &&\
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y 2>&1 > /dev/null &&\
     # Setting sane defaults
     ln -s `which python3` /usr/bin/python &&\
-    python3 -m pip -q install virtualenv 2>&1 > /dev/null &&\
     chmod +x /usr/bin/entrypoint &&\
     echo "Cleaning up" &&\
     rm -rf /tmp/setup
