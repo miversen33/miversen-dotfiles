@@ -866,6 +866,7 @@ local function get_plugins()
         },
         {
             "theHamsta/nvim-dap-virtual-text", -- Neovim DAP Virutal Text lol what else do you think this is?'
+            dependencies = {'nvim-treesitter/nvim-treesitter'},
             build = ":TSUpdate",
         },
         {
