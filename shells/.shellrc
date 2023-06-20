@@ -173,9 +173,9 @@ post_profile_rc(){
   DOCKER_LOCATION=$()
   if [ ! -n "${MYVIMRC}" ] && [ "${TERM_PROGRAM}" != "vscode" ] && [[ $- == *i* ]] && [ -x "$(command -v docker)" ]; then
     if [[ ! $(docker ps --filter "name=dev_env" --format '{{.Names}}') == dev_env ]]; then
-      cd "${cur_dir}/"../docker/
-      docker compose up --quiet-pull -d 2>/dev/null
-      cd $cur_dir
+      # cd "${cur_dir}/"../docker/
+      # docker compose up --quiet-pull -d 2>/dev/null
+      # cd $cur_dir
     fi
   fi
 }
