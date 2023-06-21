@@ -16,5 +16,9 @@ services:
       - root:/root/
     image: miversen33/dev_env
 
+    init: true
+    ports:
+      - 1234:1234
+      - 1235:22
 volumes:
   root:

@@ -8,6 +8,10 @@ function do_log() {
     fi
 }
 
+function start_ssh_server(){
+    /etc/init.d/ssh start
+}
+
 function setup(){
     if [ -f /.setup_complete ]; then
         do_log "Setup Complete"
@@ -17,6 +21,7 @@ function setup(){
     # rm -rf ~/* ~/.* 2> /dev/null
     if [ ! -f ~/.zshrc ]; then
         do_log "Prepopulating ZSHRC"
+        touch ~/.zshrc
         echo -n "echo \"ZSH is still setting up, please wait!\";exit 1;" > ~/.zshrc
     fi
 
@@ -26,7 +31,7 @@ function setup(){
         mkdir -p ~/.ssh
         do_log "Found config directory, checking for ssh stuff"
         [ -f /config/id_rsa ] && cp /config/id_rsa ~/.ssh/id_rsa && chown root:root ~/.ssh/id_rsa && chmod 400 ~/.ssh/id_rsa && DOTFILES_PATH="git@github.com:miversen33/miversen-dotfiles.git";
-        [ -f /config/id_rsa.pub ] && cp /config/id_rsa.pub ~/.ssh/id_rsa.pub && chown root:root ~/.ssh/id_rsa && chmod 660 ~/.ssh/id_rsa.pub;
+        [ -f /config/id_rsa.pub ] && cp /config/id_rsa.pub ~/.ssh/id_rsa.pub && chown root:root ~/.ssh/id_rsa.pub && chmod 660 ~/.ssh/id_rsa.pub && cat ~/.ssh/id_rsa.pub > ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys;
         [ -f /config/ssh_config ] && cp /config/ssh_config ~/.ssh/config && chown root:root ~/.ssh/config && chmod 600 ~/.ssh/config;
     fi
     if [ -f ~/.ssh/config ]; then
@@ -87,6 +92,20 @@ function setup(){
         rm -rf ~/workspace
         ln -s /workspace ~/workspace
     fi
+    
+    do_log "Setting up ssh configuration"
+    if ! grep -qE 'AcceptEnv.*TERM' /etc/ssh/sshd_config; then
+        accept_env_var=$(grep -E 'AcceptEnv.*' /etc/ssh/sshd_config)
+        if [ ! -n "${accept_env_var}" ]; then
+            accept_env_var="AcceptEnv"
+        fi
+        accept_env_var="${accept_env_var} *TERM*";
+        sed -i 's/\(AcceptEnv.*\)/\1 TERM/' /etc/ssh/sshd_config
+    fi
+    if ! grep -Ei 'PubkeyAuthentication\s+yes' /etc/ssh/sshd_config; then
+        sed -i 's/^.*PubkeyAuthentication.*$/PubkeyAuthentication yes/' /etc/ssh/sshd_config
+    fi
+    sed -i 's/#PubkeyAuthentication/PubkeyAuthentication/' /etc/ssh/sshd_config
 
     do_log "Setting default shell to /bin/.zsh"
     chsh --shell /bin/zsh
@@ -102,11 +121,22 @@ function startup(){
         wezterm-mux-server --daemonize > /dev/null
     fi
     echo "Starting Cron"
-    [ ! `pidof cron` ] || /etc/init.d/cron start > /dev/null
+    [ `pidof cron` ] || /etc/init.d/cron start > /dev/null
+    echo "Starting SSH Server"
+    [ `pidof sshd` ] || /etc/init.d/ssh start > /dev/null
+}
 
 }
 
 setup
 startup
-tail -f /dev/null
 
+for i in "$@"
+do
+    case $i in
+        -t|--tail)
+            tail -f /dev/null;;
+        *)
+            zsh -l;;
+    esac
+done

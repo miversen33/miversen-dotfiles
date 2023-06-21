@@ -20,7 +20,6 @@ COPY ./entrypoint.sh /usr/bin/entrypoint
 ENV NOTMUX=1
 ENV TERM=xterm-256color
 ENV COLORTERM=
-ENV LANG=en_US.UTF-8
 ENV NODE_VERSION=14
 RUN \
     echo "Setting up basic Ubuntu env" &&\
@@ -32,6 +31,8 @@ RUN \
     apt-get install -y \
         ripgrep \
         locales \
+        iproute2 \
+        netcat-openbsd \
         apt-utils \
         unzip \
         cron \
@@ -60,6 +61,7 @@ RUN \
         aptitude \
         openssh-client \
         tmux \
+        openssh-server \
         luarocks \
         2>&1 > /dev/null &&\
     locale-gen en_US.UTF-8 &&\
@@ -99,4 +101,4 @@ COPY --from=0 /wezterm-mux-server /usr/bin/wezterm-mux-server
 
 WORKDIR /root/
 
-ENTRYPOINT ["/bin/bash", "/usr/bin/entrypoint"]
+ENTRYPOINT ["/bin/bash", "/usr/bin/entrypoint", "-t"]
