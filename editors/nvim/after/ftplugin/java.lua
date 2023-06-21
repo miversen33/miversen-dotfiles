@@ -1,7 +1,6 @@
 -- Have this auto setup JDTLS if it doesn't already exist...?
 -- A helper lsp function would be wise
-local home = vim.loop.os_homedir()
-local lsp_dir = home .. "/.local/share/nvim/lsps/jdtls"
+local lsp_dir = vim.fn.stdpath('data') .. "/mason/packages/jdtls/"
 
 import('jdtls', function(jdtls)
     local project_root = require('jdtls.setup').find_root({'.git', 'mvnw', 'gradlew'})
