@@ -126,8 +126,6 @@ function startup(){
     [ `pidof sshd` ] || /etc/init.d/ssh start > /dev/null
 }
 
-}
-
 setup
 startup
 
