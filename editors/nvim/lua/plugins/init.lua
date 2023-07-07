@@ -1174,6 +1174,10 @@ local function get_plugins()
                     auto_install = true
                 })
             end
+        },
+        {
+            "lewis6991/gitsigns.nvim",
+            config = true
         }
         -- Debugger
     }
