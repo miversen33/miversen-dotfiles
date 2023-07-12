@@ -17,7 +17,11 @@ end
 
 local function get_plugins()
     -- These are sourced with the start of the lsp server in mason
-    local lsp_settings = {}
+    local lsp_settings = {
+        svelte = {
+            filetypes = {"svelte", "html"}
+        }
+    }
 
     local excluded_filetypes_array = {
         "lsp-installer",
@@ -480,6 +484,12 @@ local function get_plugins()
                 }
                 cokeline.setup(setup)
             end,
+        },
+        {
+            "leafOfTree/vim-svelte-plugin",
+            config = function()
+                vim.g.vim_svelte_plugin_load_full_syntax = 1
+            end
         },
         {
             'edluffy/specs.nvim',
