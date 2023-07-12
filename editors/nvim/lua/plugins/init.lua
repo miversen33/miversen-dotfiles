@@ -1019,6 +1019,7 @@ local function get_plugins()
             },
             config = function()
                 local lspkind = require("lspkind")
+                vim.api.nvim_set_hl(0, "NeoTreeCursorLine", {bold=true, underline=true})
                 local neo_tree = require("neo-tree")
                 local config = {
                     popup_border_style = 'rounded',
