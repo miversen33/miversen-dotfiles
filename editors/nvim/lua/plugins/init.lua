@@ -1256,6 +1256,11 @@ local function get_plugins()
         }
     },
     {
+        "j-hui/fidget.nvim",
+        tag = "legacy",
+        event = "LspAttach",
+        opts = {}
+    },
         "lewis6991/gitsigns.nvim",
         config = true
     }
