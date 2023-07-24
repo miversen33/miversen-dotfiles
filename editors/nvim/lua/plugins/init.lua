@@ -1261,6 +1261,22 @@ local function get_plugins()
         event = "LspAttach",
         opts = {}
     },
+    -- Scrollbars
+    {
+        "gorbit99/codewindow.nvim",
+        config = true,
+        opts = {
+            auto_enable = true,
+            exclude_filetypes = excluded_filetypes_array,
+            minimap_width = 10,
+            width_multiplier = 4,
+            use_lsp = true,
+            use_treesitter = true,
+            use_git = true
+            -- screen_bounds = 'background'
+        }
+    },
+    {
         "lewis6991/gitsigns.nvim",
         config = true
     }
