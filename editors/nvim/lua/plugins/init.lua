@@ -45,7 +45,8 @@ local function get_plugins()
         "neo-tree",
         "ImportManager",
         "aerial",
-        "TelescopePrompt"
+        "TelescopePrompt",
+        ""
     }
     local excluded_filetypes_table = {}
     for _, value in ipairs(excluded_filetypes_array) do
