@@ -1009,9 +1009,8 @@ local function get_plugins()
         },
         {
             "nvim-neo-tree/neo-tree.nvim", -- File Explorer
-            dev = false,
-            branch = "v2.x",
-            dependencies = {
+        branch = "main",
+        dependencies = {
                 "nvim-lua/plenary.nvim",
                 "kyazdani42/nvim-web-devicons", -- not strictly required, but recommended
                 "MunifTanjim/nui.nvim",
