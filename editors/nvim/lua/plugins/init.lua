@@ -1263,12 +1263,29 @@ local function get_plugins()
             },
         },
     },
-            "lewis6991/gitsigns.nvim",
-            config = true
+    {
+        "dnlhc/glance.nvim",
+        config = true,
+        opts = {
+            height = 25,
+            border = {
+                enable = true
+            },
+            list = {
+                position = "left"
+            },
+            theme = {
+                mode = "darken"
+            }
         }
-        -- Debugger
+    },
+    {
+        "lewis6991/gitsigns.nvim",
+        config = true
     }
-    return plugins
+    -- Debugger
+}
+return plugins
 end
 
 local function setup_plugins()
