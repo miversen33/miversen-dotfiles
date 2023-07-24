@@ -1161,11 +1161,6 @@ local function get_plugins()
             }
         },
         {
-            -- Git
-            "TimUntersberger/neogit",
-            config = true
-        },
-        {
             "Bekaboo/dropbar.nvim",
             opts = {
                 icons = {
