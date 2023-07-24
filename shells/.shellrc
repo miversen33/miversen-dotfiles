@@ -344,6 +344,27 @@ bash_rc () {
 }
 
 dev_env(){
+  if [[ ! $(docker ps --filter "name=dev_env" --format '{{.Names}}') == dev_env ]]; then
+    echo -n "Dev Environment is not running. Start now? [y/N] "
+    read do_start
+    do_start="$(echo $do_start | tr '[:lower:]' '[:upper:]')"
+    if [ "$do_start" != "Y" ] && [ "$do_start" != "YES" ]; then
+      return 0;
+    fi
+    cur_dir=$PWD
+    dev_env_dir="$(dirname `readlink -f $RC_PATH`)/../docker/"
+    if [ ! -d ${dev_env_dir} ]; then
+      return
+    fi;
+    cd $dev_env_dir
+    echo "Starting container"
+    docker compose up --quiet-pull -d 2>/dev/null
+    echo "Waiting for container to come online"
+    while [ "`docker inspect -f {{.State.Health.Status}} dev_env`" != "healthy" ]; do sleep 5; done
+    cd $cur_dir
+    clear
+  fi
+  echo "Connecting to container"
   docker exec -it dev_env /bin/zsh
 }
 
