@@ -220,7 +220,7 @@ Common Actions
 - _h_: Show Hover Doc
 - _f_: Format Buffer
 - _a_: Code Actions
-- _s_: Jump to Definition
+- _s_: Show Definitions
 - _d_: Show Diagnostics
 - _w_: Show Workspace Diagnostics
 - _n_: Rename
@@ -236,17 +236,17 @@ _;_/_q_/_<Esc>_: Exit Hydra
 ]],
     body = ";",
     heads = {
-        {"s", cmd 'TroubleToggle lsp_definitions', {desc = "Jump to Definition", silent = true}},
+        {"s", cmd 'Glance definitions', {desc = "Show Definition", silent = true}},
         {"h", require("pretty_hover").hover,  {desc = "Show Hover Doc", silent = true}},
-        {"o", cmd 'TroubleToggle lsp_implementations', {desc = "Show Implementations", silent = true}},
+        {"o", cmd 'Glance implementations', {desc = "Show Implementations", silent = true}},
         {"j", vim.lsp.buf.signature_help, {desc = "Show Sig Help", silent = true}},
-        {"r", cmd 'TroubleToggle lsp_references', {desc = "Show References", silent = true}},
+        {"r", cmd 'Glance references', {desc = "Show References", silent = true}},
         {"n", vim.lsp.buf.rename, {desc = "Rename Object Under Cursor", silent = true}},
         {"f", function() vim.lsp.buf.format({ async = true }) end, {desc = "Format Buffer", silent = true}},
         {"a", vim.lsp.buf.code_action, {desc = "Show Code Actions", silent = true}},
         {"d", cmd 'TroubleToggle document_diagnostics', {desc = "Show Diagnostics", silent = true}},
         {"w", cmd 'TroubleToggle workspace_diagnostics', {desc = "Show Workspace Diagnostics", silent = true}},
-        {"D", cmd 'TroubleToggle lsp_definitions', {desc = "Show Type Definition", silent = true}},
+        {"D", cmd 'Glance type_definitions', {desc = "Show Type Definition", silent = true}},
         {"e", vim.lsp.buf.decleration, {desc = "Show Declerations", silent = true}},
         {";",       nil, {desc = "quit", exit = true, nowait = true}},
         {"q",       nil, {desc = "quit", exit = true, nowait = true}},
