@@ -1023,15 +1023,6 @@ local function get_plugins()
                 local neo_tree = require("neo-tree")
                 local config = {
                     popup_border_style = 'rounded',
-                    source_selector = {
-                        winbar = true,
-                        sources = {
-                            { source = "filesystem" },
-                            { source = "buffers" },
-                            { source = "document_symbols" },
-                            { source = "remote" },
-                        }
-                    },
                     default_component_configs = {
                         name = {
                             highlight_opened_files = "all",
