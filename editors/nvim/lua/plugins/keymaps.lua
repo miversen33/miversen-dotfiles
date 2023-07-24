@@ -268,6 +268,7 @@ hydra({
     },
     hint = [[
       DAP
+_t_: Toggle UI
 ^
 _d_: Toggle Breakpoint
 _D_: Set Conditional Breakpoint
@@ -285,6 +286,7 @@ _s_/_q_/_<Esc>_: Exit Hydra
 ]],
     body = "s",
     heads = {
+        {"t", cmd "lua require('dapui').toggle()", {desc = "Toggles the Dap UI", silent = true}},
         {"d", cmd "lua require('dap').toggle_breakpoint()", {desc = "Set Breakpoint", silent = true}},
         {"D", cmd "lua require('dap').set_breakpoint(vim.fn.input('Condition: '))", {desc = "Set conditional Breakpoint", silent = true}},
         {"c", cmd "lua require('dap').continue()", {desc = "Continue on break", silent = true}},
