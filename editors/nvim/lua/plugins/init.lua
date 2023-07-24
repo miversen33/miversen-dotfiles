@@ -1217,15 +1217,6 @@ local function get_plugins()
                     open = "Neotree position=top buffers",
                 },
                 {
-                    title = "Git",
-                    ft = "neo-tree",
-                    filter = function(buf)
-                        return vim.b[buf].neo_tree_source == "git"
-                    end,
-                    pinned = true,
-                    open = "Neotree position=top buffers",
-                },
-                {
                     title = "Symbols",
                     ft = "neo-tree",
                     filter = function(buf)
