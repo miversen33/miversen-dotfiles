@@ -178,7 +178,7 @@ post_profile_rc(){
         return
       fi;
       cd $dev_env_dir
-      docker compose up --quiet-pull -d 2>/dev/null
+      (docker compose up --quiet-pull -d &)
       cd $cur_dir
     fi
   fi
