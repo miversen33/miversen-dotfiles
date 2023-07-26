@@ -1261,10 +1261,11 @@ local function get_plugins()
         event = "LspAttach",
         opts = {}
     },
-    -- Scrollbars
+    -- -- Scrollbars
     {
         "gorbit99/codewindow.nvim",
         config = true,
+        enabled = false, -- This doesn't quite work as I would like. Keep an eye on it
         opts = {
             auto_enable = true,
             exclude_filetypes = excluded_filetypes_array,
