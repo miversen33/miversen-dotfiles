@@ -73,6 +73,8 @@ function M.generate()
         domains = domains,
         raw = {
             window_close_confirmation = 'NeverPrompt',
+            -- Stop telling me glyphs are missing
+            warn_about_missing_glyphs = false
         }
     }
 
