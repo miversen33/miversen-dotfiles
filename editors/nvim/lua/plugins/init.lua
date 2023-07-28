@@ -1288,6 +1288,12 @@ local function get_plugins()
         }
     },
     {
+        "ggandor/leap.nvim",
+        config = function()
+            require("leap").add_default_mappings()
+        end
+    },
+    {
         "lewis6991/gitsigns.nvim",
         config = true
     }
