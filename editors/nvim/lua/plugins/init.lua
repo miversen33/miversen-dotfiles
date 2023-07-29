@@ -105,32 +105,6 @@ local function get_plugins()
             end
         },
         {
-            "nvim-neorg/neorg",
-            build = ":Neorg sync-parsers",
-            opts = {
-                load = {
-                    ["core.defaults"] = {}, -- Loads default behaviour
-                    ["core.concealer"] = {}, -- Adds pretty icons to your documents
-                    ["core.dirman"] = { -- Manages Neorg workspaces
-                    config = {
-                        workspaces = {
-                            notes = "~/.local/share/nvim/neorg/notes",
-                            ideas = "~/.local/share/nvim/neorg/ideas",
-                            presentations = "~/.local/share/nvim/neorg/presentations",
-                            scratch = "~/.local/share/nvim/neorg/scratch",
-                            work    = "~/.local/share/nvim/neorg/work"
-                        },
-                        default_workspace = "scratch"
-                    },
-                },
-            }
-        },
-        dependencies = {
-            "nvim-lua/plenary.nvim",
-            "nvim-treesitter/nvim-treesitter"
-        },
-        config = true
-    },
     -- Themes
     {
         "Mofiqul/vscode.nvim", -- Vscode type theme
