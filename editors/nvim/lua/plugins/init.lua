@@ -756,7 +756,6 @@ local function get_plugins()
                             print("Disabling Semantic Tokens on Omnisharp because Microsoft doesn't know how to read their own standards... RE: https://github.com/OmniSharp/omnisharp-roslyn/issues/2483")
                             client.server_capabilities.semanticTokensProvider = nil
                         end
-                        global_on_attach(client, bufnr)
                         if _ then
                             _(client, bufnr)
                         end
