@@ -314,126 +314,92 @@ local function get_plugins()
         end,
     },
     {
-        "noib3/nvim-cokeline", -- Neovim Tab/Buffer Bar.
-        enabled = false,
-        priority = 999,
-        config = function()
-            local cokeline = require("cokeline")
+        "willothy/nvim-cokeline", -- Neovim Tab/Buffer Bar.
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            "kyazdani42/nvim-web-devicons",
+            "Mofiqul/vscode.nvim"
+        },
+        config = true,
+        opts = function(cokeline)
+            local get_hex = require('cokeline/utils').get_hex
             local colors = require("vscode.colors").get_colors()
-            local get_hex = require("cokeline.utils").get_hex
-            local active_bg_color = active_bg
-            local inactive_bg_color = colors.vscContext
-            local bg_color = get_hex("ColorColumn", "bg")
-            local no_error_color = "#3DEB63"
-            local error_color = "#C95157"
-            local warn_color = "#e1c400"
+            local line_background = 'NONE'
+            -- Needs light mode color
+            local active_bg_color = colors["vscViolet"]
+            local inactive_bg_color = colors["vscBlack"]
+            local warn_color = colors["vscGitStageModified"]
+            local error_color = colors["vscGitConflicting"]
+            local max_error_limit = 9
             local setup = {
-                show_if_buffers_are_at_least = 1,
-                buffers = {
-                    filter_valid = function(buffer)
-                        if excluded_filetypes_table[buffer.type] or excluded_filetypes_table[buffer.filetype] then
-                            return false
-                        end
-                        return true
-                    end,
-                },
                 mappings = {
-                    cycle_prev_next = true,
+                    cycle_prev_next = true
                 },
+                fill_hl = "BufferLineFill",
                 default_hl = {
+                    -- fg = function(buffer)
+                    --     return buffer.is_focused
+                    --     and get_hex('ColorColumn', 'bg')
+                    --     or get_hex('Normal', 'fg')
+                    -- end,
                     bg = function(buffer)
-                        if buffer.is_focused then
-                            return active_bg_color
-                        else
-                            return inactive_bg_color
-                        end
+                        return
+                        buffer.is_focused and active_bg_color
+                        or inactive_bg_color
                     end,
                 },
                 components = {
                     {
                         text = function(buffer)
-                            local _text = ""
-                            if buffer.index > 1 then
-                                _text = " "
-                            end
-                            if buffer.is_focused or buffer.is_first then
-                                _text = _text .. ""
-                            end
-                            return _text
+                            return
+                                buffer.is_focused and "" or " "
                         end,
-                        fg = function(buffer)
-                            if buffer.is_focused then
-                                return active_bg_color
-                            elseif buffer.is_first then
-                                return inactive_bg_color
-                            end
-                        end,
+                        fg = inactive_bg_color, -- line_background, -- This should be line_background but due to a bug, we cant
                         bg = function(buffer)
-                            if buffer.is_focused then
-                                if buffer.is_first then
-                                    return bg_color
-                                else
-                                    return inactive_bg_color
-                                end
-                            elseif buffer.is_first then
-                                return bg_color
-                            end
-                        end,
-                    },
-                    {
-                        text = function(buffer)
-                            local status = ""
-                            if buffer.is_readonly then
-                                status = " ➖"
-                            elseif buffer.is_modified then
-                                status = " "
-                            end
-                            return status
-                        end,
-                        fg = function(buffer)
-                            if buffer.is_focused and (buffer.is_readonly or buffer.is_modified) then
-                                return warn_color
-                            end
-                        end,
-                    },
-                    {
-                        text = function(buffer)
-                            return " " .. buffer.devicon.icon
-                        end,
-                        fg = function(buffer)
-                            if buffer.is_focused then
-                                return buffer.devicon.color
-                            end
-                        end,
-                    },
-                    {
-                        text = function(buffer)
-                            return buffer.unique_prefix .. buffer.filename .. " "
-                        end,
-                        fg = function(buffer)
-                            if buffer.diagnostics.errors > 0 then
-                                return error_color
-                            end
+                            return
+                                buffer.is_focused and active_bg_color
+                                or inactive_bg_color
                         end,
                         style = function(buffer)
-                            local text_style = "NONE"
-                            if buffer.is_focused then
-                                text_style = "bold"
-                            end
-                            if buffer.diagnostics.errors > 0 then
-                                if text_style ~= "NONE" then
-                                    text_style = text_style .. ",underline"
-                                else
-                                    text_style = "underline"
-                                end
-                            end
-                            return text_style
+                            return
+                                buffer.is_hovered and "undercurl"
+                        end
+                    },
+                    {
+                        text = function(buffer)
+                            return
+                                buffer.is_readonly and " "
+                                or buffer.is_modified and " "
+                                or " "
                         end,
+                        fg = function(buffer)
+                            return
+                                buffer.is_focused and (buffer.is_readonly or buffer.is_modified) and warn_color
+                        end,
+                    },
+                    {
+                        text = function(buffer) return buffer.devicon.icon end,
+                        fg = function(buffer) return buffer.devicon.color end,
+                    },
+                    {
+                        text = function(buffer) return buffer.unique_prefix end,
+                        fg = get_hex('Comment', 'fg'),
+                        style = 'italic',
+                    },
+                    {
+                        text = function(buffer) return buffer.filename .. ' ' end,
+                        style = function(buffer)
+                            if buffer.is_hovered and not buffer.is_focused then
+                                return 'underline'
+                            end
+                        end
                     },
                     {
                         text = function(buffer)
                             local errors = buffer.diagnostics.errors
-                            if errors <= 9 then
+                            if errors == 0 then
+                                errors = ""
+                            elseif errors <= max_error_limit then
                                 errors = ""
                             else
                                 errors = "🙃"
@@ -441,50 +407,37 @@ local function get_plugins()
                             return errors .. " "
                         end,
                         fg = function(buffer)
-                            if buffer.diagnostics.errors == 0 then
-                                return no_error_color
-                            elseif buffer.diagnostics.errors <= 9 then
-                                return error_color
-                            end
-                        end,
+                            return
+                                buffer.diagnostics.errors > 0 and buffer.diagnostics.errors <= max_error_limit and error_color
+                        end
                     },
                     {
-                        text = " ",
-                        delete_buffer_on_left_click = true,
+                        text = '',
+                        on_click = function(_, _, _, _, buffer)
+                            buffer:delete()
+                        end
                     },
                     {
                         text = function(buffer)
-                            if buffer.is_focused or buffer.is_last then
-                                return ""
-                            else
-                                return " "
-                            end
-                        end,
-                        fg = function(buffer)
-                            if buffer.is_focused then
-                                return active_bg_color
-                            elseif buffer.is_last then
-                                return inactive_bg_color
-                            else
-                                return bg_color
-                            end
+                            return
+                                buffer.is_focused and ""
+                                or ""
                         end,
                         bg = function(buffer)
-                            if buffer.is_focused then
-                                if buffer.is_last then
-                                    return bg_color
-                                else
-                                    return inactive_bg_color
-                                end
-                            elseif buffer.is_last then
-                                return bg_color
-                            end
+                            return
+                                buffer.is_focused and line_background
+                                or get_hex('ColorColumn', 'bg')
                         end,
-                    },
-                },
+                        fg = function(buffer)
+                            return
+                                buffer.is_focused and active_bg_color
+                                or inactive_bg_color
+                        end,
+                    }
+                }
             }
-            cokeline.setup(setup)
-        end,
+            return setup
+        end
     },
     {
         "leafOfTree/vim-svelte-plugin",
