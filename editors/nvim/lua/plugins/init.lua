@@ -1127,21 +1127,6 @@ local function get_plugins()
         },
         -- -- Scrollbars
         {
-            "gorbit99/codewindow.nvim",
-            config = true,
-            enabled = false, -- This doesn't quite work as I would like. Keep an eye on it
-            opts = {
-                auto_enable = true,
-                exclude_filetypes = excluded_filetypes_array,
-                minimap_width = 10,
-                width_multiplier = 4,
-                use_lsp = true,
-                use_treesitter = true,
-                use_git = true
-                -- screen_bounds = 'background'
-            }
-        },
-        {
             "ggandor/leap.nvim",
             config = function()
                 require("leap").add_default_mappings()
