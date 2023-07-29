@@ -578,6 +578,7 @@ local function get_plugins()
         {
             "anuvyklack/hydra.nvim", -- Keymaps
             config = function()
+                vim.api.nvim_set_hl(0, "NormalFloat", {fg="NONE", bg="NONE"})
                 require("plugins.keymaps")
             end,
         },
