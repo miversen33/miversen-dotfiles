@@ -299,7 +299,8 @@ local function get_plugins()
                 local colors = require("vscode.colors").get_colors()
                 local line_background = 'NONE'
                 -- Needs light mode color
-                local active_bg_color = colors["vscViolet"]
+                active_bg = colors["vscViolet"]
+                local active_bg_color = active_bg
                 local inactive_bg_color = colors["vscBlack"]
                 local warn_color = colors["vscGitStageModified"]
                 local error_color = colors["vscGitConflicting"]
