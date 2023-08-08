@@ -48,7 +48,7 @@ pre_profile_rc() {
   if ! [ -d $SCREENDIR ]; then
     mkdir -p $SCREENDIR
   fi
-  
+  source /etc/profile
   # User configuration
 
   # export MANPATH="/usr/local/man:$MANPATH"
