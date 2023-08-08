@@ -1,5 +1,4 @@
 #!/usr/bin/bash
-
 function setup(){
     if [ ! -d /home/miversen/.ssh ]; then
         echo "Setting up ssh!"
