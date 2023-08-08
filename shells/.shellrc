@@ -49,7 +49,7 @@ pre_profile_rc() {
     mkdir -p $SCREENDIR
   fi
   
-  [ -f /etc/source ] && source /etc/profile
+  [ -f /etc/profile ] && source /etc/profile
   # User configuration
 
   # export MANPATH="/usr/local/man:$MANPATH"
