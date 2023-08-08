@@ -27,10 +27,10 @@ function setup(){
     su miversen -c '/usr/bin/ssh-keygen -F github.com || /usr/bin/ssh-keyscan github.com >> /home/miversen/.ssh/known_hosts' 2> /dev/null 1> /dev/null
     if [ ! -d /home/miversen/.dotfiles ]; then
         echo "Downloading Dotfiles"
-        mkdir -p /home/miversen/.dotfiles /home/miversen/.config/{nvim,wezterm}
-        git clone -q $DOTFILES_PATH /home/miversen/.dotfiles
+        mkdir -p /home/miversen/.config/{nvim,wezterm}
+        su miversen -c "/usr/bin/git clone -q $DOTFILES_PATH /home/miversen/.dotfiles" 2>&1 > /dev/null
         cd /home/miversen/.dotfiles
-        git submodule update -q --init --recursive 2>&1 > /dev/null
+        su miversen -c "/usr/bin/git submodule update -q --init --recursive" 2>&1 > /dev/null
         ln -s /home/miversen/.dotfiles/editors/nvim/* /home/miversen/.config/nvim/
         ln -s /home/miversen/.dotfiles/terminals/wezterm/* /home/miversen/.config/wezterm/
         ln -s /home/miversen/.dotfiles/terminals/user_wezconf.lua /home/miversen/.config/wezterm/
