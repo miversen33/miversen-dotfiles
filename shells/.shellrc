@@ -355,7 +355,7 @@ dev_env(){
   fi
   mount_arg="--mount type=volume,source=dev_env_home,destination=/home/miversen --mount type=bind,source=/var/run/docker.sock,destination=/var/run/docker.sock $mount_arg"
   [ ! -z ${port_arg} ] && echo "Exposing $port_opt on container"
-  cmd="docker run --label dev_env --rm -it $port_arg $mount_arg --entrypoint /bin/zsh miversen33/dev_env:latest"
+  cmd="docker run --label dev_env --rm -it $port_arg $mount_arg miversen33/dev_env:latest"
   bash -c $cmd
 }
 
