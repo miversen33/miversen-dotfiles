@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Dev Env Image Creator
 
 on:
   workflow_dispatch:
