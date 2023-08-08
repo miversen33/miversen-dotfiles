@@ -143,18 +143,7 @@ pre_profile_rc() {
 }
 
 post_profile_rc(){
-  if [ ! -n "${MYVIMRC}" ] && [ "${TERM_PROGRAM}" != "vscode" ] && [[ $- == *i* ]] && [ -x "$(command -v docker)" ]; then
-    if [[ ! $(docker ps --filter "name=dev_env" --format '{{.Names}}') == dev_env ]]; then
-      cur_dir=$PWD
-      dev_env_dir="$(dirname `readlink -f $RC_PATH`)/../docker/"
-      if [ ! -d ${dev_env_dir} ]; then
-        return
-      fi;
-      cd $dev_env_dir
-      (docker compose up --quiet-pull -d &)
-      cd $cur_dir
-    fi
-  fi
+  true
 }
 
 zsh_rc () {
