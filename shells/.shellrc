@@ -1,3 +1,4 @@
+#!/bin/bash
 # miversen33 shellrc. This can be used in place of either a ~/.zshrc or ~/.bashrc as it is shell agnostic. To use, simply link this file in place of the existing .zshrc or .bashrc. Fold in your rc into the relevant "rc" function (zsh_rc or bash_rc) and it will be ran as it was before. Additionally this has a profile_rc function that is run regardless of shell, use this for shell agnostic commands (such as aliasing/environment variable setting, etc) 
 
 #TODO(Mike):
