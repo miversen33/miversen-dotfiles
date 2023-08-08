@@ -124,6 +124,9 @@ RUN \
     sed -i 's/#PubkeyAuthentication/PubkeyAuthentication/' /etc/ssh/sshd_config;\
     echo "Creating miversen User" ;\
     useradd -mG docker -s /bin/zsh miversen 2>&1 > /dev/null &&\
+    echo "Setting basic git information" &&\
+    su miversen -c "/usr/bin/git config --global user.email \"miversen33@gmail.com\"" &&\
+    su miversen -c "/usr/bin/git config --global user.name \"Mike Iversen\"" &&\
     touch /home/miversen/.notmux &&\
     chown miversen:miversen -R /home/miversen &&\
     ln -s /workspace /home/miversen/workspace &&\
