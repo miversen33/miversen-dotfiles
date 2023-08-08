@@ -24,12 +24,7 @@ function setup(){
         fi
     fi
     DOTFILES_PATH="https://github.com/miversen33/miversen-dotfiles.git"
-    # Only do this if it isn't already in our known_hosts
-    if [ -f /home/miversen/.ssh/id_rsa ]; then
-        DOTFILES_PATH="git@github.com:miversen33/miversen-dotfiles.git";
-        GITHUB_KEY=`ssh-keyscan github.com 2> /dev/null`
-        echo $GITHUB_KEY >> /home/miversen/.ssh/known_hosts
-    fi
+    su miversen -c '/usr/bin/ssh-keygen -F github.com || /usr/bin/ssh-keyscan github.com >> /home/miversen/.ssh/known_hosts' 2> /dev/null 1> /dev/null
     if [ ! -d /home/miversen/.dotfiles ]; then
         echo "Downloading Dotfiles"
         mkdir -p /home/miversen/.dotfiles /home/miversen/.config/{nvim,wezterm}
