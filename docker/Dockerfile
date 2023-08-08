@@ -67,7 +67,10 @@ RUN \
         openssh-server \
         xxd \
         luarocks \
-        2>&1 > /dev/null &&\
+        2>&1 > /dev/null
+
+RUN \
+    echo "Installing 3rd party stuffs" &&\
     locale-gen en_US.UTF-8 &&\
     echo "Setting up node and npm" &&\
     curl -sL https://deb.nodesource.com/setup_$NODE_VERSION.x | bash - 2>&1 1>/dev/null &&\
@@ -99,8 +102,9 @@ RUN \
     LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*') &&\
     curl -Lo /tmp/lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz" 2>&1 > /dev/null &&\
     tar xf /tmp/lazygit.tar.gz -C /tmp/ &&\
-    install /tmp/lazygit /usr/local/bin 2>&1 1>/dev/null &&\
-    # Setting sane defaults
+    install /tmp/lazygit /usr/local/bin 2>&1 1>/dev/null
+
+RUN \
     echo "Setting Sane Defaults" &&\
     mkdir /workspace &&\
     ln -s `which python3` /usr/bin/python &&\
@@ -132,9 +136,6 @@ RUN \
     echo "Cleaning up" &&\
     rm -rf /tmp/{setup,install.sh}
 
-# VOLUME [ "/var/mnt/miversen", "/var/mnt/opt", "/var/mnt/usr/", "/var/mnt/etc" ]
-
-
 # # COPY --from=wezterm /wezterm-mux-server /usr/bin/wezterm-mux-server
 # # COPY --from=wezterm /wezterm /usr/bin/wezterm
 
@@ -142,6 +143,6 @@ WORKDIR /home/miversen/
 
 VOLUME [ "/home/miversen/" ]
 
-# HEALTHCHECK --interval=10s --timeout=30s --start-period=5s --retries=10 CMD [ "test", "-f", "/.setup_complete" ]
+HEALTHCHECK --interval=10s --timeout=30s --start-period=5s --retries=10 CMD [ "test", "-f", "/.setup_complete" ]
 
 ENTRYPOINT ["/bin/bash", "/usr/bin/entrypoint", "-t"]
