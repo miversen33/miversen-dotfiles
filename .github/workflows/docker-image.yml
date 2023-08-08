@@ -14,4 +14,4 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build docker --file Dockerfile --tag miversen33/dev_env:$(date +%s) --tag miversen33/dev_env:latest
+      run: docker build docker --file docker/Dockerfile --tag miversen33/dev_env:$(date +%s) --tag miversen33/dev_env:latest
