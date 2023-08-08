@@ -307,6 +307,10 @@ bash_rc () {
 }
 
 dev_env(){
+  if [ ! -z $DEV_ENV ]; then
+    echo "You are already in a dev environment ya square!"
+    return 0;
+  fi
   mount_opt=$1
   port_opt=$2
   if [ ! -z "$1" ] && [ "$1" =~ ",|:" ]; then
@@ -328,10 +332,6 @@ dev_env(){
     [ -f $build_file ] && build_link=$build_file
     docker build -t miversen33/dev_env:latest $build_link
   fi
-  volumes=(dev_env_etc dev_env_opt dev_env_usr dev_env_miversen)
-  for volume in ${volumes[@]}; do
-    [ ! `docker volume ls --filter "name=$volume" --format "{{.Name}}"` ] && docker volume create $volume 2>&1 > /dev/null
-  done
   port_arg=""
   if [ ! -z ${port_opt} ]; then
     # Check to see if port_opt is a list of ports or a range
