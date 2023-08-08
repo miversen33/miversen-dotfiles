@@ -48,6 +48,12 @@ function setup(){
 
 function start(){
     [ ! -f /.setup_complete ] && setup
+    if [ -S /var/run/docker.sock ]; then
+        docker_gid=`getent group docker`
+        new_docker_gid=`stat -c %g /var/run/docker.sock`
+        groupmod -g $new_docker_gid docker
+        find / -gid $docker_gid ! -type l -exec chgrp -h $new_docker_gid {} \+ 2>/dev/null
+    fi
     su -l miversen
 }
 
