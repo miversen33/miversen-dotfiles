@@ -4,7 +4,7 @@ function setup(){
     if [ ! -d /home/miversen/.ssh ]; then
         echo "Setting up ssh!"
         mkdir -p /home/miversen/.ssh
-        chmod 664 /home/miversen/.ssh
+        chmod 774 /home/miversen/.ssh
         touch /home/miversen/.ssh/authorized_keys
         chmod 600 /home/miversen/.ssh/authorized_keys
         touch /home/miversen/.ssh/known_hosts
