@@ -334,10 +334,16 @@ dev_env(){
       return 0;
     fi
     build_url=https://raw.githubusercontent.com/miversen33/miversen-dotfiles/master/docker/Dockerfile
-    build_file=$(dirname $RC_PATH)/../docker/
-    build_link=$build_url
-    [ -f $build_file ] && build_link=$build_file
+    build_dir=$(dirname $RC_PATH)/../docker/
+    build_link=$build_dir
+    do_popd=0
+    if [ -d $build_dir ]; then
+      build_link=$build_dir
+      pushd $build_dir 2>&1 > /dev/null;
+      do_popd=1
+    fi
     docker build -t miversen33/dev_env:latest $build_link
+    [ $do_popd == 1 ] && popd 2>&1 > /dev/null
   fi
   port_arg=""
   if [ ! -z ${port_opt} ]; then
