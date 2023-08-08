@@ -334,7 +334,7 @@ dev_env(){
       return 0;
     fi
     build_url=https://raw.githubusercontent.com/miversen33/miversen-dotfiles/master/docker/Dockerfile
-    build_file=$(dirname `readlink -f $RC_PATH`)/../docker/Dockerfile
+    build_file=$(dirname $RC_PATH)/../docker/
     build_link=$build_url
     [ -f $build_file ] && build_link=$build_file
     docker build -t miversen33/dev_env:latest $build_link
