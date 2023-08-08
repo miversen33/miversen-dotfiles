@@ -306,28 +306,50 @@ bash_rc () {
 }
 
 dev_env(){
-  if [[ ! $(docker ps --filter "name=dev_env" --format '{{.Names}}') == dev_env ]]; then
-    echo -n "Dev Environment is not running. Start now? [y/N] "
-    read do_start
-    do_start="$(echo $do_start | tr '[:lower:]' '[:upper:]')"
-    if [ "$do_start" != "Y" ] && [ "$do_start" != "YES" ]; then
+  mount_opt=$1
+  port_opt=$2
+  if [ ! -z "$1" ] && [ "$1" =~ ",|:" ]; then
+    # There is no mount point provided, and just ports. Why? Idk but whatever
+    port_opt=$1
+    unset mount_opt
+  fi
+  if [ ! `docker image ls --filter 'reference=miversen33/dev_env' --format '{{.Repository}}'` ]; then
+    # There is no image available for the development environment. Ask if they want us to create it
+    echo -n "dev_env image not found. Would you like me to create it? [y/N] "
+    read do_build
+    do_build="$(echo $do_build | tr '[:lower:]' '[:upper:]')"
+    if [ "$do_build" != "Y" ] && [ "$do_build" != "YES" ]; then
       return 0;
     fi
-    cur_dir=$PWD
-    dev_env_dir="$(dirname `readlink -f $RC_PATH`)/../docker/"
-    if [ ! -d ${dev_env_dir} ]; then
-      return
-    fi;
-    cd $dev_env_dir
-    echo "Starting container"
-    docker compose up --quiet-pull -d 2>/dev/null
-    echo "Waiting for container to come online"
-    while [ "`docker inspect -f {{.State.Health.Status}} dev_env`" != "healthy" ]; do sleep 5; done
-    cd $cur_dir
-    clear
+    build_url=https://raw.githubusercontent.com/miversen33/miversen-dotfiles/master/docker/Dockerfile
+    build_file=$(dirname `readlink -f $RC_PATH`)/../docker/Dockerfile
+    build_link=$build_url
+    [ -f $build_file ] && build_link=$build_file
+    docker build -t miversen33/dev_env:latest $build_link
   fi
-  echo "Connecting to container"
-  docker exec -it dev_env /bin/zsh
+  volumes=(dev_env_etc dev_env_opt dev_env_usr dev_env_miversen)
+  for volume in ${volumes[@]}; do
+    [ ! `docker volume ls --filter "name=$volume" --format "{{.Name}}"` ] && docker volume create $volume 2>&1 > /dev/null
+  done
+  port_arg=""
+  if [ ! -z ${port_opt} ]; then
+    # Check to see if port_opt is a list of ports or a range
+    [ $port_opt =~ ":" ] && port_arg="--expose $port_opt"
+    [ $port_opt =~ "," ] && port_arg=`echo $port_opt | sed --expression 's/\([0-9]\+\),\?/--expose \1 /g'`
+    port_arg="$port_arg --publish-all=true"
+  fi
+  mount_arg=""
+  if [ ! -z ${mount_opt} ]; then
+    _source=`readlink -f $mount_opt`
+    _destination=/workspace
+    [ -f $_source ] && _destination=/workspace/`basename $mount_opt`
+    mount_arg="--mount type=bind,source=$_source,destination=$_destination"
+  fi
+  [ ! -z ${port_arg} ] && echo "Exposing $port_opt on container"
+  # mount_arg="--mount type=volume,source=dev_env_etc,destination=/etc --mount type=volume,source=dev_env_opt,destination=/opt --mount type=volume,source=dev_env_usr,destination=/usr --mount type=volume,source=dev_env_miversen,destination=/home/miversen $mount_arg"
+  cmd="docker run --rm -it $port_arg $mount_arg --entrypoint /bin/zsh miversen33/dev_env:latest"
+  echo $cmd
+  bash -c $cmd
 }
 
 restart_env(){
