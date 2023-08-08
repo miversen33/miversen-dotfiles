@@ -18,12 +18,7 @@ FROM ubuntu:latest
 # # Basic Setup commands
 #
 COPY ./entrypoint.sh /usr/bin/entrypoint
-#
 
-ENV NOTMUX=1
-ENV TERM=xterm-256color
-ENV COLORTERM=
-ENV DEV_ENV=1
 ENV NODE_VERSION=14
 RUN \
     echo "Setting up basic Ubuntu env" &&\
