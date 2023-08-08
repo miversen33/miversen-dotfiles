@@ -353,10 +353,9 @@ dev_env(){
     [ -f $_source ] && _destination=/workspace/`basename $mount_opt`
     mount_arg="--mount type=bind,source=$_source,destination=$_destination"
   fi
+  mount_arg="--mount type=volume,source=dev_env_home,destination=/home/miversen --mount type=bind,source=/var/run/docker.sock,destination=/var/run/docker.sock $mount_arg"
   [ ! -z ${port_arg} ] && echo "Exposing $port_opt on container"
-  # mount_arg="--mount type=volume,source=dev_env_etc,destination=/etc --mount type=volume,source=dev_env_opt,destination=/opt --mount type=volume,source=dev_env_usr,destination=/usr --mount type=volume,source=dev_env_miversen,destination=/home/miversen $mount_arg"
-  cmd="docker run --rm -it $port_arg $mount_arg --entrypoint /bin/zsh miversen33/dev_env:latest"
-  echo $cmd
+  cmd="docker run --label dev_env --rm -it $port_arg $mount_arg --entrypoint /bin/zsh miversen33/dev_env:latest"
   bash -c $cmd
 }
 
