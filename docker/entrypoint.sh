@@ -92,8 +92,10 @@ function start(){
             find / -gid $docker_gid ! -type l -exec chgrp -h $new_docker_gid {} \+ 2>/dev/null
         fi
     [ -S /var/run/docker.sock ] && fix_docker
+    if [ ! -f /run/entered ]; then
+        touch /run/entered
+        su -l miversen
     fi
-    su -l miversen
 }
 
 start
