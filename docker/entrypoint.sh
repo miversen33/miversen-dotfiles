@@ -79,18 +79,6 @@ function add_nameserver(){
 
 function start(){
     [ ! -f /.setup_complete ] && setup
-    if [ -S /var/run/docker.sock ]; then
-        docker_gid=`getent group docker`
-        new_docker_gid=`stat -c %g /var/run/docker.sock`
-        owning_group=$(grep -E ":$new_docker_gid:" /etc/group | cut -d ':' -f 1)
-        if [ ! -z $owning_group ]; then
-            # The group that owns this socket already exists. Likely its root,
-            # just add miversen to that group and call it a day
-            usermod -aG $owning_group miversen
-        else
-            groupmod -g $new_docker_gid docker
-            find / -gid $docker_gid ! -type l -exec chgrp -h $new_docker_gid {} \+ 2>/dev/null
-        fi
     [ -S /var/run/docker.sock ] && fix_docker
     if [ ! -f /run/entered ]; then
         touch /run/entered
