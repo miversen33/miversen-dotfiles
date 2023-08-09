@@ -86,4 +86,33 @@ function start(){
     fi
 }
 
+options=$(getopt -l "nameserver:,domain:" -o "n:d:" -a -- "$@")
+eval set -- "$options"
+
+nameservers=()
+searchdomains=()
+
+while true; do
+    case "$1" in
+        --nameserver)
+            nameservers+=("$2")
+            shift;;
+        --domain)
+            searchdomains+=("$2")
+            shift;;
+        --)
+            shift
+            break;;
+    esac
+    shift
+done
+
+for nameserver in "${nameservers[@]}"; do
+    add_nameserver $nameserver
+done
+
+for searchdomain in "${searchdomains[@]}"; do
+    add_searchdomain $searchdomain
+done
+
 start
