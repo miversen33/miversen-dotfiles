@@ -348,7 +348,8 @@ dev_env(){
   port_arg=""
   if [ ! -z ${port_opt} ]; then
     # Check to see if port_opt is a list of ports or a range
-    [ $port_opt =~ "[0-9:]" ] && port_arg="--expose $port_opt"
+    [ $port_opt =~ "^[0-9]+$" ] && port_arg="--expose $port_opt"
+    [ $port_opt =~ ":" ] && port_arg=`echo $port_opt | sed --expression s'/\([0-9:]\+\)/--publish \1/g'`
     [ $port_opt =~ "," ] && port_arg=`echo $port_opt | sed --expression 's/\([0-9]\+\),\?/--expose \1 /g'`
     port_arg="$port_arg --publish-all=true"
   fi
