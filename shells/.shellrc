@@ -366,16 +366,6 @@ dev_env(){
   bash -c $cmd
 }
 
-restart_env(){
-  echo "Restarting Development Environment..."
-  cur_dir=$(dirname `readlink -f $RC_PATH`)
-  cd "${cur_dir}/"../docker/
-  docker compose stop 2>/dev/null
-  docker compose up -d 2>/dev/null
-  cd $cur_dir
-  echo "Development Environment Restarted."
-}
-
 debug_nvim() {
   if [ -n "${DEBUG_NEOVIM_CONFIG+set}" ]; then
     echo "Disabling Debug Neovim Flag"
