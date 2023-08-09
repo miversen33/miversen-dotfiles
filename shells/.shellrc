@@ -140,8 +140,10 @@ pre_profile_rc() {
 post_profile_rc(){
   if [ ! -z $DEV_ENV ]; then
     exposed_ports=$(docker ps --filter "id=$(hostname)" --format="{{.Ports}}" | sed --expression 's/,/\n/g' | sed --expression 's/.*:\([0-9]\+\)\s*->\s*\([0-9]\+\).*/\1 -> \2/g' | uniq)
-    echo "--> Exposed ports for this development environment are <--"
-    echo "$exposed_ports"
+    if [[ ! $exposed_ports =~ "^\s*$" ]]; then
+      echo "--> Exposed ports for this development environment are <--"
+      echo "$exposed_ports"
+    fi
   fi
 }
 
@@ -318,7 +320,7 @@ dev_env(){
   fi
   mount_opt=$1
   port_opt=$2
-  if [ ! -z "$1" ] && [ "$1" =~ ",|:" ]; then
+  if [ ! -z "$1" ] && [ "$1" =~ "[0-9,:]" ]; then
     # There is no mount point provided, and just ports. Why? Idk but whatever
     port_opt=$1
     unset mount_opt
