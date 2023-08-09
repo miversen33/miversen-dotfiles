@@ -50,6 +50,7 @@ function start(){
     if [ -S /var/run/docker.sock ]; then
         docker_gid=`getent group docker`
         new_docker_gid=`stat -c %g /var/run/docker.sock`
+        owning_group=$(grep -E ":$new_docker_gid:" /etc/group | cut -d ':' -f 1)
         if [ ! -z $owning_group ]; then
             # The group that owns this socket already exists. Likely its root,
             # just add miversen to that group and call it a day
