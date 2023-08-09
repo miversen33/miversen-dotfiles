@@ -45,6 +45,38 @@ function setup(){
     touch /.setup_complete
 }
 
+function fix_docker(){
+    docker_gid=`getent group docker`
+    new_docker_gid=`stat -c %g /var/run/docker.sock`
+    owning_group=$(grep -E ":$new_docker_gid:" /etc/group | cut -d ':' -f 1)
+    if [ ! -z $owning_group ]; then
+        # The group that owns this socket already exists. Likely its root,
+        # just add miversen to that group and call it a day
+        usermod -aG $owning_group miversen
+    else
+        groupmod -g $new_docker_gid docker
+        find / -gid $docker_gid ! -type l -exec chgrp -h $new_docker_gid {} \+ 2>/dev/null
+    fi
+}
+
+function add_searchdomain(){
+    searchdomain="$1"
+    existing_searchdomains=$(grep 'search' /etc/resolv.conf 2>/dev/null)
+    if [[ ! $existing_searchdomains =~ $searchdomain ]]; then
+        tmp_resolv=$(sed --expression "s/\<$existing_searchdomains\>/$existing_searchdomains $searchdomain/g" /etc/resolv.conf)
+        echo "$tmp_resolv" > /etc/resolv.conf
+    fi
+}
+
+function add_nameserver(){
+    nameserver="$1"
+    existing_nameservers=$(grep 'nameserver' /etc/resolv.conf 2>/dev/null)
+    if [[ ! $existing_nameservers =~ $nameserver ]]; then
+        tmp_resolv=$(sed --expression "s/\<$existing_nameservers\>/$existing_nameservers $nameserver/g" /etc/resolv.conf)
+        echo "$tmp_resolv" > /etc/resolv.conf
+    fi
+}
+
 function start(){
     [ ! -f /.setup_complete ] && setup
     if [ -S /var/run/docker.sock ]; then
@@ -59,6 +91,7 @@ function start(){
             groupmod -g $new_docker_gid docker
             find / -gid $docker_gid ! -type l -exec chgrp -h $new_docker_gid {} \+ 2>/dev/null
         fi
+    [ -S /var/run/docker.sock ] && fix_docker
     fi
     su -l miversen
 }
