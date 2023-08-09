@@ -74,19 +74,19 @@ pre_profile_rc() {
   # These are adding duplicates to path for each time its ran. Das no good....
   setopt +o nomatch
   for dir in /opt/*/bin; do
-    [ -d "$dir" ] && [[ "$PATH" != *"$dir"* ]] && PATH="${PATH:+$PATH:}$dir"
+    [ -d "$dir" ] && [[ "$PATH" != *"$dir"* ]] && PATH="$dir:$PATH"
   done
 
   for dir in /opt/*/current/bin; do
-    [ -d "$dir" ] && [[ "$PATH" != *"$dir"* ]] && PATH="${PATH:+$PATH:}$dir"
+    [ -d "$dir" ] && [[ "$PATH" != *"$dir"* ]] && PATH="$dir:$PATH"
   done
 
   if [ -d "/snap/" ]; then
     for dir in /snap/*; do
-      [ -d "$dir" ] && [[ "$PATH" != *"$dir"* ]] && PATH="${PATH:+$PATH:}$dir"
+      [ -d "$dir" ] && [[ "$PATH" != *"$dir"* ]] && PATH="$dir:$PATH"
     done
     for dir in /snap/*/current; do
-      [ -d "$dir" ] && [[ "$PATH" != *"$dir"* ]] && PATH="${PATH:+$PATH:}$dir"
+      [ -d "$dir" ] && [[ "$PATH" != *"$dir"* ]] && PATH="$dir:$PATH"
     done
   fi
   
@@ -96,12 +96,11 @@ pre_profile_rc() {
   # done
 
   for dir in $HOME/.local/*/bin; do
-    [ -d "$dir" ] && [[ "$PATH" != *"$dir"* ]] && PATH="${PATH:+$PATH:}$dir"
+    [ -d "$dir" ] && [[ "$PATH" != *"$dir"* ]] && PATH="$dir:$PATH"
   done
   # fi
 
-  [ -d "$HOME/.local/bin" ] && [[ "$PATH" != *"$HOME/.local/bin"* ]] && PATH="$PATH:$HOME/.local/bin"
-  [ -d "$HOME/.cargo/bin" ] && [[ "$PATH" != *"$HOME/.cargo/bin"* ]] && PATH="$PATH:$HOME/.cargo/bin"
+  [ -d "$HOME/.cargo/bin" ] && [[ "$PATH" != *"$HOME/.cargo/bin"* ]] && PATH="$HOME/.cargo/bin:$PATH"
   if [ -d "$HOME/perl5" ]; then #The perl shits
     export PATH="$PATH:$HOME/perl5/bin"; # Adds perl5 (perlbrew) to path if it exists
     export PERL5LIB="$HOME/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}";
@@ -123,8 +122,7 @@ pre_profile_rc() {
   fi
   if [ -d "$HOME/.luarocks" ] && [[ "$PATH" != *"$HOME/.luarocks"* ]]; then #Add luarocks because god hates me
     export PATH=$PATH:"$HOME/.luarocks/bin"
-  fi
-    
+  fi   
   if [ -x "$(command -v nvim)" ]; then
     export EDITOR="nvim"
     alias vim="nvim" # Sets nvim as alias to vim
