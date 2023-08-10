@@ -8,7 +8,7 @@ function setup(){
         chmod 600 /home/miversen/.ssh/authorized_keys
         touch /home/miversen/.ssh/known_hosts
         chmod 640 /home/miversen/.ssh/known_hosts
-        [ -f /tmp/ssh_config ] && cp /tmp/ssh_config /home/miversen/.ssh/
+        [ -f /tmp/ssh_config ] && cp /tmp/ssh_config /home/miversen/.ssh/config
         [ -f /tmp/id_rsa.pub ] && cp /tmp/id_rsa.pub /home/miversen/.ssh/
         [ -f /tmp/id_rsa ] && cp /tmp/id_rsa /home/miversen/.ssh/
         [ -f /home/miversen/.ssh/id_rsa ] && chmod 600 /home/miversen/.ssh/id_rsa
