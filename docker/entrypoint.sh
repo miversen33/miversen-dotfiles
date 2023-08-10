@@ -62,7 +62,10 @@ function fix_docker(){
 function add_searchdomain(){
     searchdomain="$1"
     existing_searchdomains=$(grep 'search' /etc/resolv.conf 2>/dev/null)
-    if [[ ! $existing_searchdomains =~ $searchdomain ]]; then
+    if [ -z $existing_searchdomains ]; then
+        tmp_resolv="$(cat /etc/resolv.conf)\nsearch $searchdomain"
+        echo -e "$tmp_resolv" > /etc/resolv.conf
+    elif [[ ! $existing_searchdomains =~ $searchdomain ]]; then
         tmp_resolv=$(sed --expression "s/\<$existing_searchdomains\>/$existing_searchdomains $searchdomain/g" /etc/resolv.conf)
         echo "$tmp_resolv" > /etc/resolv.conf
     fi
@@ -71,7 +74,10 @@ function add_searchdomain(){
 function add_nameserver(){
     nameserver="$1"
     existing_nameservers=$(grep 'nameserver' /etc/resolv.conf 2>/dev/null)
-    if [[ ! $existing_nameservers =~ $nameserver ]]; then
+    if [ -z $existing_nameservers]; then
+        tmp_resolv="$(cat /etc/resolv.conf)\nnameserver $nameserver"
+        echo -e "$tmp_resolv" > /etc/resolv.conf
+    elif [[ ! $existing_nameservers =~ $nameserver ]]; then
         tmp_resolv=$(sed --expression "s/\<$existing_nameservers\>/$existing_nameservers $nameserver/g" /etc/resolv.conf)
         echo "$tmp_resolv" > /etc/resolv.conf
     fi
