@@ -143,4 +143,4 @@ VOLUME [ "/home/miversen/" ]
 
 HEALTHCHECK --interval=10s --timeout=30s --start-period=5s --retries=10 CMD [ "test", "-f", "/.setup_complete" ]
 
-ENTRYPOINT ["/bin/bash", "/usr/bin/entrypoint", "-t"]
+ENTRYPOINT [ "/usr/bin/entrypoint" ]
