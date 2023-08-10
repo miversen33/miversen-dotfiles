@@ -102,6 +102,7 @@ function Dev-Env
     if ( $nameservers_opt -ne $null ){
         $nameservers_opt_arg = "--nameservers " + ($nameservers_opt -join ",")
     }
-    $cmd = "docker run --label dev_env --rm -it $port_arg $mount_arg miversen33/dev_env:latest $domains_opt_arg $nameservers_opt_arg"
-    Invoke-Expression $cmd
+
+    $run_args = "run --label dev_env --rm -it $port_arg $mount_arg miversen33/dev_env:latest $domains_opt_arg $nameservers_opt_arg"
+    Start-Process -Wait -NoNewWindow -FilePath "docker.exe" -ArgumentList $run_args
 }
