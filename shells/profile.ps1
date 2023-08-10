@@ -79,7 +79,7 @@ function Dev-Env
             $destination = "/workspace/$base_name$extension"
         }
         $source = $source.FullName
-        $mount_arg = "--mount type=bind,source=$source,destination=$destination"
+        $mount_arg = '--mount type=bind,source="' + $source + '",destination="' + $destination + '"'
     }
     $mount_arg = "$mount_arg --mount type=volume,source=dev_env_home,destination=/home/miversen -v //var/run/docker.sock:/var/run/docker.sock"
     if ( Test-Path "$HOME\.ssh\id_rsa.pub" ){
