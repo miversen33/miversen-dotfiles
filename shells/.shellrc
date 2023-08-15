@@ -144,6 +144,12 @@ post_profile_rc(){
       echo "--> Exposed ports for this development environment are <--"
       echo "$exposed_ports"
     fi
+    export NPM_PACKAGES="$HOME/.npm-packages"
+    [ -d "$NPM_PACKAGES" ] || mkdir -p "$NPM_PACKAGES"
+    PATH="$NPM_PACKAGES/bin:$PATH"
+    unset MANPATH
+    export MANPATH="$NPM_PACKAGES/share/man:$(manpath)"
+    export NODE_PATH="$NPM_PACKAGES/lib/node_modules:$NODE_PATH"
   fi
 }
 
