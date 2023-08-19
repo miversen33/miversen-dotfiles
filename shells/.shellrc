@@ -150,6 +150,7 @@ post_profile_rc(){
     unset MANPATH
     export MANPATH="$NPM_PACKAGES/share/man:$(manpath)"
     export NODE_PATH="$NPM_PACKAGES/lib/node_modules:$NODE_PATH"
+    alias sudo="do_as_root"
   fi
 }
 
@@ -317,6 +318,16 @@ bash_rc () {
 
     source $OSH/oh-my-bash.sh
   fi
+}
+
+do_as_root(){
+  if [ -z $DEV_ENV ]; then
+    echo "You are not running in a development environment!"
+    return 1;
+  fi
+  args="$@"
+  [ "$args" == "su" ] && args="su -l"
+  docker exec -it $(hostname) -u root /bin/sh -c "$args"
 }
 
 dev_env(){
