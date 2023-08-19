@@ -361,6 +361,8 @@ vim.keymap.set("v", '<C-Up>', ':MoveBlock(-1)<CR>', {silent = true})
 vim.keymap.set("v", '<C-Left>', ':MoveHBlock(-1)<CR>', {silent = true})
 vim.keymap.set("v", '<C-Right>', ':MoveHBlock(1)<CR>', {silent = true})
 vim.keymap.set("n", "<C-Enter>", ":Glance definitions<CR>", {silent = true})
+vim.keymap.set("t", "<S-space>", "<space>", {silent = true})
+vim.keymap.set("t", "<S-BS>", "<BS>", {silent = true})
 -- vim.keymap.set("n", '/',     ':lua require("searchbox").incsearch({modifier = "disabled"})<CR>', {silent = true})
 -- vim.keymap.set("n", 'r',     ':lua require("searchbox").replace({confirm = "menu"})<CR>', {silent = true})
 
