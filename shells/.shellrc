@@ -327,7 +327,7 @@ do_as_root(){
   fi
   args="$@"
   [ "$args" == "su" ] && args="su -l"
-  docker exec -it $(hostname) -u root /bin/sh -c "$args"
+  docker exec -it -u root $(hostname) /bin/sh -c "$args"
 }
 
 dev_env(){
