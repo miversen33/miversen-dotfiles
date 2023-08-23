@@ -1013,7 +1013,7 @@ local function get_plugins()
         {
             "haringsrob/nvim_context_vt",
             config = {
-                highlight = "FloatTitle",
+                highlight = "LspInlayHint",
             },
         },
         {
