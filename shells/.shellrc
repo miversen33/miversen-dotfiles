@@ -152,6 +152,12 @@ post_profile_rc(){
     export NODE_PATH="$NPM_PACKAGES/lib/node_modules:$NODE_PATH"
     alias sudo="do_as_root"
   fi
+  if [ ! -z "${RC_PATH}" ]; then
+    env_path=$(dirname $RC_PATH)/env
+    if [ -f $env_path ]; then
+      source $env_path
+    fi
+  fi
 }
 
 zsh_rc () {
