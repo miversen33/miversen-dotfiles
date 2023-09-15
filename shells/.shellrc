@@ -389,6 +389,33 @@ dev_env(){
   bash -c $cmd
 }
 
+notify() {
+  eval "$@"
+  job="$@"
+  exit_code=$?
+  if [ -z "${LONG_JOB_NOTIFICATION_TOKEN}" ]; then
+    return $exit_code;
+  fi
+  priority="default"
+  emoji="✔️"
+  job_status="Successfully"
+  if [ ! $exit_code ]; then
+    priority="urgent"
+    emoji="🔥"
+    job_status="Unsuccessfully"
+  fi
+  notify_url="https://notify.iserver.me/${LONG_JOB_NOTIFICATION_QUEUE}"
+  notify_token="Authorization: Bearer ${LONG_JOB_NOTIFICATION_TOKEN}"
+  curl -X POST \
+    --location "${notify_url}" \
+    -H "${notify_token}" \
+    -H "Icon: https://raw.githubusercontent.com/miversen33/miversen-dotfiles/master/resources/job-100.png" \
+    -H "Title: Long Job Completed ${job_status}" \
+    -H "Tags: ${emoji}" \
+    -H "Priority: ${priority}" \
+    -d "\"${job}\" completed" 2>/dev/null 1>/dev/null
+}
+
 debug_nvim() {
   if [ -n "${DEBUG_NEOVIM_CONFIG+set}" ]; then
     echo "Disabling Debug Neovim Flag"
