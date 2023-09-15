@@ -56,6 +56,9 @@ function M.generate()
         },
         opacity = { window = 0.90 },
         color_scheme = "MaterialOcean",
+        default_shell = {
+            windows = 'pwsh'
+        },
         colors = {
             tab_bar = {
                 background = 'BLACK',
