@@ -1027,6 +1027,7 @@ local function get_plugins()
                     log = {
                         level = "debug",
                     },
+                    close_if_last_window = true
                 }
                 neo_tree.setup(config)
             end,
