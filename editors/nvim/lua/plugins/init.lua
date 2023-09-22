@@ -22,23 +22,25 @@ local function get_plugins()
     -- These are sourced with the start of the lsp server in mason
     local lsp_settings = {
         svelte = {
-            filetypes = {"svelte", "html", "js"}
+            filetypes = { "svelte", "html", "js" },
         },
         ruff_lsp = {
             settings = {
-                organizeImports = false
+                organizeImports = false,
             },
-            on_attach = function(client) client.server_capabilities.hoverProvider = false end
-        }
+            on_attach = function(client)
+                client.server_capabilities.hoverProvider = false
+            end,
+        },
     }
 
     local required_mason_modules = {
-        'pyright',
-        'ruff-lsp',
-        'debugpy',
-        'black',
-        'isort',
-        'taplo'
+        "pyright",
+        "ruff-lsp",
+        "debugpy",
+        "black",
+        "isort",
+        "taplo",
     }
 
     local excluded_filetypes_array = {
@@ -66,13 +68,13 @@ local function get_plugins()
         "TelescopePrompt",
         "NetmanLogs",
         "neo-tree-popup",
-        ""
+        "",
     }
     local excluded_filetypes_table = {}
     for _, value in ipairs(excluded_filetypes_array) do
         excluded_filetypes_table[value] = 1
     end
-    local active_bg = '#A066E8'
+    local active_bg = "#A066E8"
     local plugins = {
         -- Local import function
         {
@@ -87,7 +89,7 @@ local function get_plugins()
         -- General Utilities
         {
             "folke/trouble.nvim",
-            config = true
+            config = true,
         },
         {
             "kevinhwang91/nvim-hlslens",
@@ -99,30 +101,30 @@ local function get_plugins()
                         local indicator, text, chunks
                         local absRelIdx = math.abs(relIdx)
                         if absRelIdx > 1 then
-                            indicator = ('%d%s'):format(absRelIdx, sfw ~= (relIdx > 1) and '▲' or '▼')
+                            indicator = ("%d%s"):format(absRelIdx, sfw ~= (relIdx > 1) and "▲" or "▼")
                         elseif absRelIdx == 1 then
-                            indicator = sfw ~= (relIdx == 1) and '▲' or '▼'
+                            indicator = sfw ~= (relIdx == 1) and "▲" or "▼"
                         else
-                            indicator = ''
+                            indicator = ""
                         end
 
                         local lnum, col = unpack(posList[idx])
                         if nearest then
                             local cnt = #posList
-                            if indicator ~= '' then
-                                text = ('[%s %d/%d]'):format(indicator, idx, cnt)
+                            if indicator ~= "" then
+                                text = ("[%s %d/%d]"):format(indicator, idx, cnt)
                             else
-                                text = ('[%d/%d]'):format(idx, cnt)
+                                text = ("[%d/%d]"):format(idx, cnt)
                             end
-                            chunks = { { ' ', 'Ignore' }, { text, 'HlSearchLensNear' } }
+                            chunks = { { " ", "Ignore" }, { text, "HlSearchLensNear" } }
                         else
-                            text = ('[%s %d]'):format(indicator, idx)
-                            chunks = { { ' ', 'Ignore' }, { text, 'HlSearchLens' } }
+                            text = ("[%s %d]"):format(indicator, idx)
+                            chunks = { { " ", "Ignore" }, { text, "HlSearchLens" } }
                         end
                         render.setVirt(0, lnum - 1, col - 1, chunks, nearest)
-                    end
+                    end,
                 })
-            end
+            end,
         },
         -- Themes
         {
@@ -138,36 +140,40 @@ local function get_plugins()
                     -- Enable italic comment
                     italic_comments = true,
                     group_overrides = {
-                        CursorLine = { underline = true }
-                    }
+                        CursorLine = { underline = true },
+                    },
                 })
                 vscode.load()
                 local colors = require("vscode.colors")
-                vim.api.nvim_set_hl(0, 'NeoTreeFileNameOpened', { bg = colors.vscSelection, fg = colors.vscBack, bold = true, underline = true, italic = true })
-            end
+                vim.api.nvim_set_hl(
+                    0,
+                    "NeoTreeFileNameOpened",
+                    { bg = colors.vscSelection, fg = colors.vscBack, bold = true, underline = true, italic = true }
+                )
+            end,
         },
         {
-            'nvim-zh/colorful-winsep.nvim',
+            "nvim-zh/colorful-winsep.nvim",
             config = function()
                 local winsep = require("colorful-winsep")
                 local bg = require("vscode.colors").get_colors().vscBack
                 winsep.setup({
                     highlight = {
                         fg = active_bg,
-                        bg = bg
+                        bg = bg,
                     },
                     no_exec_files = excluded_filetypes_array,
                     -- Rounded corners gud
                     symbols = { "─", "│", "╭", "╮", "╰", "╯" },
                 })
-            end
+            end,
         },
         {
             "nvim-lualine/lualine.nvim", -- Neovim status line
             dependencies = {
                 "kyazdani42/nvim-web-devicons",
                 "onsails/lspkind-nvim",
-                "f-person/git-blame.nvim"
+                "f-person/git-blame.nvim",
             },
             lazy = false,
             priority = 999,
@@ -210,8 +216,8 @@ local function get_plugins()
                                     end
                                     if output:len() >= max then
                                         return output:sub(1, (max / 2) - 1)
-                                        .. "..."
-                                        .. output:sub( -1 * ((max / 2) - 1), -1)
+                                            .. "..."
+                                            .. output:sub(-1 * ((max / 2) - 1), -1)
                                     end
                                     return output
                                 end,
@@ -233,8 +239,8 @@ local function get_plugins()
                             {
                                 git_blame.get_current_blame_text,
                                 cond = git_blame.is_blame_text_available,
-                                color = { fg = '#ABABAB', gui='italic'}
-                            }
+                                color = { fg = "#ABABAB", gui = "italic" },
+                            },
                         },
                         lualine_x = {
                             "import",
@@ -245,14 +251,14 @@ local function get_plugins()
                                 function()
                                     local lsps = vim.lsp.get_active_clients({ bufnr = vim.fn.bufnr() })
                                     local icon = require("nvim-web-devicons").get_icon_by_filetype(
-                                    vim.api.nvim_buf_get_option(0, "filetype")
+                                        vim.api.nvim_buf_get_option(0, "filetype")
                                     )
                                     if lsps and #lsps > 0 then
                                         local names = {}
                                         for _, lsp in ipairs(lsps) do
                                             table.insert(names, lsp.name)
                                         end
-                                        return string.format("%s %s", table.concat(names, ", "), icon or '')
+                                        return string.format("%s %s", table.concat(names, ", "), icon or "")
                                     else
                                         return icon or ""
                                     end
@@ -262,7 +268,7 @@ local function get_plugins()
                                 end,
                                 color = function()
                                     local _, color = require("nvim-web-devicons").get_icon_cterm_color_by_filetype(
-                                    vim.api.nvim_buf_get_option(0, "filetype")
+                                        vim.api.nvim_buf_get_option(0, "filetype")
                                     )
                                     return { fg = color }
                                 end,
@@ -311,13 +317,13 @@ local function get_plugins()
             dependencies = {
                 "nvim-lua/plenary.nvim",
                 "kyazdani42/nvim-web-devicons",
-                "Mofiqul/vscode.nvim"
+                "Mofiqul/vscode.nvim",
             },
             config = true,
             opts = function(cokeline)
-                local get_hex = require('cokeline/utils').get_hex
+                local get_hex = require("cokeline/utils").get_hex
                 local colors = require("vscode.colors").get_colors()
-                local line_background = 'NONE'
+                local line_background = "NONE"
                 -- Needs light mode color
                 active_bg = colors["vscViolet"]
                 local active_bg_color = active_bg
@@ -327,7 +333,7 @@ local function get_plugins()
                 local max_error_limit = 9
                 local setup = {
                     mappings = {
-                        cycle_prev_next = true
+                        cycle_prev_next = true,
                     },
                     fill_hl = "BufferLineFill",
                     default_hl = {
@@ -337,56 +343,54 @@ local function get_plugins()
                         --     or get_hex('Normal', 'fg')
                         -- end,
                         bg = function(buffer)
-                            return
-                            buffer.is_focused and active_bg_color
-                            or inactive_bg_color
+                            return buffer.is_focused and active_bg_color or inactive_bg_color
                         end,
                     },
                     components = {
                         {
                             text = function(buffer)
-                                return
-                                buffer.is_focused and "" or " "
+                                return buffer.is_focused and "" or " "
                             end,
                             fg = inactive_bg_color, -- line_background, -- This should be line_background but due to a bug, we cant
                             bg = function(buffer)
-                                return
-                                buffer.is_focused and active_bg_color
-                                or inactive_bg_color
+                                return buffer.is_focused and active_bg_color or inactive_bg_color
                             end,
                             style = function(buffer)
-                                return
-                                buffer.is_hovered and "undercurl"
-                            end
+                                return buffer.is_hovered and "undercurl"
+                            end,
                         },
                         {
                             text = function(buffer)
-                                return
-                                buffer.is_readonly and " "
-                                or buffer.is_modified and " "
-                                or " "
+                                return buffer.is_readonly and " " or buffer.is_modified and " " or " "
                             end,
                             fg = function(buffer)
-                                return
-                                buffer.is_focused and (buffer.is_readonly or buffer.is_modified) and warn_color
+                                return buffer.is_focused and (buffer.is_readonly or buffer.is_modified) and warn_color
                             end,
                         },
                         {
-                            text = function(buffer) return buffer.devicon.icon end,
-                            fg = function(buffer) return buffer.devicon.color end,
+                            text = function(buffer)
+                                return buffer.devicon.icon
+                            end,
+                            fg = function(buffer)
+                                return buffer.devicon.color
+                            end,
                         },
                         {
-                            text = function(buffer) return buffer.unique_prefix end,
-                            fg = get_hex('Comment', 'fg'),
-                            style = 'italic',
+                            text = function(buffer)
+                                return buffer.unique_prefix
+                            end,
+                            fg = get_hex("Comment", "fg"),
+                            style = "italic",
                         },
                         {
-                            text = function(buffer) return buffer.filename .. ' ' end,
+                            text = function(buffer)
+                                return buffer.filename .. " "
+                            end,
                             style = function(buffer)
                                 if buffer.is_hovered and not buffer.is_focused then
-                                    return 'underline'
+                                    return "underline"
                                 end
-                            end
+                            end,
                         },
                         {
                             text = function(buffer)
@@ -401,52 +405,47 @@ local function get_plugins()
                                 return errors .. " "
                             end,
                             fg = function(buffer)
-                                return
-                                buffer.diagnostics.errors > 0 and buffer.diagnostics.errors <= max_error_limit and error_color
-                            end
+                                return buffer.diagnostics.errors > 0
+                                    and buffer.diagnostics.errors <= max_error_limit
+                                    and error_color
+                            end,
                         },
                         {
-                            text = '',
+                            text = "",
                             on_click = function(_, _, _, _, buffer)
                                 buffer:delete()
-                            end
+                            end,
                         },
                         {
                             text = function(buffer)
-                                return
-                                buffer.is_focused and ""
-                                or ""
+                                return buffer.is_focused and "" or ""
                             end,
                             bg = function(buffer)
-                                return
-                                buffer.is_focused and line_background
-                                or get_hex('ColorColumn', 'bg')
+                                return buffer.is_focused and line_background or get_hex("ColorColumn", "bg")
                             end,
                             fg = function(buffer)
-                                return
-                                buffer.is_focused and active_bg_color
-                                or inactive_bg_color
+                                return buffer.is_focused and active_bg_color or inactive_bg_color
                             end,
-                        }
-                    }
+                        },
+                    },
                 }
                 return setup
-            end
+            end,
         },
         {
             "leafOfTree/vim-svelte-plugin",
             config = function()
                 vim.g.vim_svelte_plugin_load_full_syntax = 1
-            end
+            end,
         },
         {
             -- TODO: Mike, fork this and make it stable maybe?
-            'edluffy/specs.nvim',
+            "edluffy/specs.nvim",
             config = function()
-                local success, colors = pcall(require, 'vscode.colors')
-                local bg = colors and colors.Violet or '#646695'
-                local fg = colors and colors.Gray or '#808080'
-                vim.api.nvim_set_hl(0, 'Specs', {
+                local success, colors = pcall(require, "vscode.colors")
+                local bg = colors and colors.Violet or "#646695"
+                local fg = colors and colors.Gray or "#808080"
+                vim.api.nvim_set_hl(0, "Specs", {
                     fg = fg,
                     bg = bg,
                 })
@@ -459,12 +458,12 @@ local function get_plugins()
                         width = 20,
                         fader = specs.pulse_fader,
                         resizer = specs.slide_resizer,
-                        winhl = 'Specs'
+                        winhl = "Specs",
                     },
                     ignore_filetypes = excluded_filetypes_array,
-                    ignore_buftypes = { nofile = true, prompt=true },
+                    ignore_buftypes = { nofile = true, prompt = true },
                 })
-            end
+            end,
         },
         -- Utilities
         {
@@ -472,45 +471,50 @@ local function get_plugins()
             config = function()
                 require("illuminate").configure()
                 vim.api.nvim_set_keymap(
-                "n",
-                "<C-n>",
-                ':lua require("illuminate").goto_next_reference()<CR>',
-                { silent = true, noremap = true }
+                    "n",
+                    "<C-n>",
+                    ':lua require("illuminate").goto_next_reference()<CR>',
+                    { silent = true, noremap = true }
                 )
                 vim.api.nvim_set_keymap(
-                "n",
-                "<C-N>",
-                ':lua require("illuminate").goto_prev_reference()<CR>',
-                { silent = true, noremap = true }
+                    "n",
+                    "<C-N>",
+                    ':lua require("illuminate").goto_prev_reference()<CR>',
+                    { silent = true, noremap = true }
                 )
             end,
         },
         {
-            'shellRaining/hlchunk.nvim',
-            event = {"UIEnter"},
+            "shellRaining/hlchunk.nvim",
+            event = { "UIEnter" },
             enabled = true,
             config = {
                 indent = {
+                    -- exclude_filetypes = excluded_filetypes_array,
                     enable = false,
-                    use_treesitter = true
+                    use_treesitter = true,
                 },
                 context = {
+                    -- exclude_filetypes = excluded_filetypes_array,
                     enable = true,
-                    use_treesitter = true
+                    use_treesitter = true,
                 },
                 chunk = {
+                    -- exclude_filetypes = excluded_filetypes_array,
                     enable = true,
-                    use_treesitter = true
+                    use_treesitter = true,
                 },
                 blank = {
+                    -- exclude_filetypes = excluded_filetypes_array,
                     enable = false,
-                    use_treesitter = true
+                    use_treesitter = true,
                 },
                 line_num = {
+                    -- exclude_filetypes = excluded_filetypes_array,
                     enable = true,
-                    use_treesitter = true
-                }
-            }
+                    use_treesitter = true,
+                },
+            },
         },
         {
             "kkharji/sqlite.lua", -- Neovim SQlite database
@@ -519,7 +523,7 @@ local function get_plugins()
         {
             "nvim-treesitter/nvim-treesitter", -- Neovim treesitter
             dependencies = {
-                'nvim-treesitter/playground'
+                "nvim-treesitter/playground",
             },
             build = ":TSUpdate|TSInstall query",
             config = function()
@@ -533,22 +537,22 @@ local function get_plugins()
                         updatetime = 25, -- Debounced time for highlighting nodes in the playground from source code
                         persist_queries = false, -- Whether the query persists across vim sessions
                         keybindings = {
-                            toggle_query_editor = 'o',
-                            toggle_hl_groups = 'i',
-                            toggle_injected_languages = 't',
-                            toggle_anonymous_nodes = 'a',
-                            toggle_language_display = 'I',
-                            focus_language = 'f',
-                            unfocus_language = 'F',
-                            update = 'R',
-                            goto_node = '<cr>',
-                            show_help = '?',
+                            toggle_query_editor = "o",
+                            toggle_hl_groups = "i",
+                            toggle_injected_languages = "t",
+                            toggle_anonymous_nodes = "a",
+                            toggle_language_display = "I",
+                            focus_language = "f",
+                            unfocus_language = "F",
+                            update = "R",
+                            goto_node = "<cr>",
+                            show_help = "?",
                         },
                     },
                     query_linter = {
                         enable = true,
                         use_virtual_text = true,
-                        lint_events = {"BufWrite", "CursorHold"},
+                        lint_events = { "BufWrite", "CursorHold" },
                     },
                 })
             end,
@@ -565,7 +569,7 @@ local function get_plugins()
                 local notify = require("notify")
                 vim.notify = notify
                 notify.setup({
-                    background_colour = '#1e1e1e'
+                    background_colour = "#1e1e1e",
                 })
             end,
         },
@@ -591,7 +595,7 @@ local function get_plugins()
         {
             "anuvyklack/hydra.nvim", -- Keymaps
             config = function()
-                vim.api.nvim_set_hl(0, "NormalFloat", {fg="NONE", bg="NONE"})
+                vim.api.nvim_set_hl(0, "NormalFloat", { fg = "NONE", bg = "NONE" })
                 require("plugins.keymaps")
             end,
         },
@@ -685,9 +689,10 @@ local function get_plugins()
             event = "BufWritePre",
             opts = {
                 formatters_by_ft = {
-                    python = { 'isort', 'black' },
-                    lua = { 'stylua' },
-                    markdown = { 'markdownlint' },
+                    python = { "isort", "black" },
+                    lua = { "stylua" },
+                    markdown = { "markdownlint" },
+                },
                 -- format_on_save = {
                 --     lsp_fallback = true,
                 -- },
@@ -750,7 +755,7 @@ local function get_plugins()
             config = function()
                 require("mason").setup({
                     ensure_installed = required_mason_modules,
-                    automatic_installation = true
+                    automatic_installation = true,
                 })
                 local lspconf = require("lspconfig")
                 local mason_lspconfig = require("mason-lspconfig")
@@ -763,8 +768,8 @@ local function get_plugins()
                 local lsp_handlers = {
                     ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" }),
                     ["textDocument/signatureHelp"] = vim.lsp.with(
-                    vim.lsp.handlers.signature_help,
-                    { border = "rounded" }
+                        vim.lsp.handlers.signature_help,
+                        { border = "rounded" }
                     ),
                 }
                 vim.fn.sign_define("DiagnosticSignError", {
@@ -795,8 +800,10 @@ local function get_plugins()
                         local lsp_setting = lsp_settings[lsp] or {}
                         local _ = lsp_setting.on_attach
                         local lsp_on_attach = function(client, bufnr)
-                            if client.name:match('omnisharp') then
-                                print("Disabling Semantic Tokens on Omnisharp because Microsoft doesn't know how to read their own standards... RE: https://github.com/OmniSharp/omnisharp-roslyn/issues/2483")
+                            if client.name:match("omnisharp") then
+                                print(
+                                    "Disabling Semantic Tokens on Omnisharp because Microsoft doesn't know how to read their own standards... RE: https://github.com/OmniSharp/omnisharp-roslyn/issues/2483"
+                                )
                                 client.server_capabilities.semanticTokensProvider = nil
                             end
                             if _ then
@@ -813,43 +820,45 @@ local function get_plugins()
                     end,
                 })
                 local python_dap = require("dap-python")
-                local debugpy_path = vim.fn.stdpath('data') .. '/mason/packages/debugpy/venv/bin/python3'
+                local debugpy_path = vim.fn.stdpath("data") .. "/mason/packages/debugpy/venv/bin/python3"
                 python_dap.setup(debugpy_path, {})
-                vim.fn.sign_define('DapBreakpoint', { text = '🔴', texthl = '', linehl = '', numhl = '' })
-                vim.fn.sign_define('DapBreakpointCondition', { text = '🔵', texthl = '', linehl = '', numhl = '' })
-                require('dap.ext.vscode').load_launchjs()
+                vim.fn.sign_define("DapBreakpoint", { text = "🔴", texthl = "", linehl = "", numhl = "" })
+                vim.fn.sign_define("DapBreakpointCondition", { text = "🔵", texthl = "", linehl = "", numhl = "" })
+                require("dap.ext.vscode").load_launchjs()
                 dapui.setup()
-                dap.listeners.after.event_initialized['dapui_config'] = function()
+                dap.listeners.after.event_initialized["dapui_config"] = function()
                     dapui.open()
                 end
-                dap.listeners.before.event_terminated['dapui_config'] = function()
+                dap.listeners.before.event_terminated["dapui_config"] = function()
                     dapui.close()
                 end
-                dap.listeners.after.event_exited['dapui_config'] = function()
+                dap.listeners.after.event_exited["dapui_config"] = function()
                     dapui.close()
                 end
                 local osv_port = 8086
-                if not dap.launch_server then dap.launch_server = {} end
+                if not dap.launch_server then
+                    dap.launch_server = {}
+                end
                 dap.configurations.lua = {
                     {
-                        type = 'nlua',
-                        request = 'attach',
+                        type = "nlua",
+                        request = "attach",
                         name = "Attach to running Neovim instance",
-                    }
+                    },
                 }
-                dap.configurations[''] = dap.configurations.lua
+                dap.configurations[""] = dap.configurations.lua
                 dap.adapters.nlua = function(callback, config)
-                    callback({ type = 'server', host = config.host or "127.0.0.1", port = config.port or osv_port })
+                    callback({ type = "server", host = config.host or "127.0.0.1", port = config.port or osv_port })
                 end
-                dap.launch_server['nil'] = function()
+                dap.launch_server["nil"] = function()
                     print("Starting OSV DAP Server")
-                    osv.launch({port = osv_port})
+                    osv.launch({ port = osv_port })
                 end
             end,
         },
         {
             "theHamsta/nvim-dap-virtual-text", -- Neovim DAP Virutal Text lol what else do you think this is?'
-            dependencies = {'nvim-treesitter/nvim-treesitter'},
+            dependencies = { "nvim-treesitter/nvim-treesitter" },
             build = ":TSUpdate",
         },
         {
@@ -934,12 +943,12 @@ local function get_plugins()
                     sources = cmp.config.sources({
                         { name = "nvim_lsp" },
                         { name = "plugins" },
-                        { name = "luasnip",                option = { show_autosnippets = true } }, -- For luasnip users.
+                        { name = "luasnip", option = { show_autosnippets = true } }, -- For luasnip users.
                         { name = "nvim_lsp_signature_help" },
 
-                        { name = "dictionary",             keyword_length = 2 },
+                        { name = "dictionary", keyword_length = 2 },
                         { name = "path" },
-                        { name = "treesitter" }
+                        { name = "treesitter" },
                     }, {
                         { name = "buffer" },
                     }),
@@ -948,7 +957,7 @@ local function get_plugins()
                 cmp.setup.cmdline("/", {
                     sources = {
                         { name = "buffer" },
-                        { name = "treesitter" }
+                        { name = "treesitter" },
                     },
                 })
 
@@ -977,10 +986,10 @@ local function get_plugins()
             },
             config = function()
                 local lspkind = require("lspkind")
-                vim.api.nvim_set_hl(0, "NeoTreeCursorLine", {bold=true, underline=true})
+                vim.api.nvim_set_hl(0, "NeoTreeCursorLine", { bold = true, underline = true })
                 local neo_tree = require("neo-tree")
                 local config = {
-                    popup_border_style = 'rounded',
+                    popup_border_style = "rounded",
                     source_selector = {
                         winbar = true,
                         sources = {
@@ -988,12 +997,12 @@ local function get_plugins()
                             { source = "buffers" },
                             { source = "document_symbols" },
                             { source = "remote" },
-                        }
+                        },
                     },
                     default_component_configs = {
                         name = {
                             highlight_opened_files = "all",
-                        }
+                        },
                     },
                     sources = {
                         "filesystem",
@@ -1012,27 +1021,26 @@ local function get_plugins()
                             hide_dotfiles = false,
                         },
                         follow_current_file = {
-                            enabled = true
+                            enabled = true,
                         },
                     },
                     log = {
                         level = "debug",
-                    }
+                    },
                 }
                 neo_tree.setup(config)
-            end
-            ,
+            end,
         },
         {
             "miversen33/netman.nvim", -- Remove Resource Browser
             dev = true,
             branch = "v1.15",
-            config = true
+            config = true,
         },
         {
             "chrisgrieser/nvim-puppeteer",
             dependencies = "nvim-treesitter/nvim-treesitter",
-            ft = "python"
+            ft = "python",
         },
         { "Vimjas/vim-python-pep8-indent" },
         -- select virtual environments
@@ -1113,7 +1121,7 @@ local function get_plugins()
         {
             "ellisonleao/glow.nvim",
             config = true,
-            cmd = "Glow"
+            cmd = "Glow",
         },
         {
             "toppair/peek.nvim",
@@ -1121,17 +1129,17 @@ local function get_plugins()
             config = true,
         },
         {
-            'nmac427/guess-indent.nvim',
-            config = true
+            "nmac427/guess-indent.nvim",
+            config = true,
         },
         {
-            'fedepujol/move.nvim',
+            "fedepujol/move.nvim",
             cmd = {
-                'MoveLine',
-                'MoveHChar',
-                'MoveBlock',
-                'MoveHBlock'
-            }
+                "MoveLine",
+                "MoveHChar",
+                "MoveBlock",
+                "MoveHBlock",
+            },
         },
         {
             "Bekaboo/dropbar.nvim",
@@ -1139,18 +1147,18 @@ local function get_plugins()
                 icons = {
                     ui = {
                         bar = {
-                            separator = "  "
-                        }
-                    }
-                }
-            }
+                            separator = "  ",
+                        },
+                    },
+                },
+            },
         },
         {
             "nvim-treesitter",
             main = "nvim-treesitter.configs",
             opts = {
                 highlight = {
-                    enable = true
+                    enable = true,
                 },
                 auto_install = true,
                 ensure_installed = {
@@ -1192,9 +1200,9 @@ local function get_plugins()
                     "vue",
                     "vim",
                     "vimdoc",
-                    "xml"
-                }
-            }
+                    "xml",
+                },
+            },
         },
         {
             "dnlhc/glance.nvim",
@@ -1202,33 +1210,33 @@ local function get_plugins()
             opts = {
                 height = 25,
                 border = {
-                    enable = true
+                    enable = true,
                 },
                 list = {
-                    position = "left"
+                    position = "left",
                 },
                 theme = {
-                    mode = "darken"
-                }
-            }
+                    mode = "darken",
+                },
+            },
         },
         {
             "j-hui/fidget.nvim",
             tag = "legacy",
             event = "LspAttach",
-            opts = {}
+            opts = {},
         },
         -- -- Scrollbars
         {
             "ggandor/leap.nvim",
             config = function()
                 require("leap").add_default_mappings()
-            end
+            end,
         },
         {
             "lewis6991/gitsigns.nvim",
-            config = true
-        }
+            config = true,
+        },
         -- Debugger
     }
     return plugins
@@ -1241,7 +1249,7 @@ local function setup_plugins()
         dev = {
             path = "~/git",
             patterns = { "miversen33" },
-            fallback = true
+            fallback = true,
         },
         change_detection = {
             -- automatically check for config file changes and reload the ui
