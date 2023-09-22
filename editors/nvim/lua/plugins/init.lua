@@ -486,13 +486,6 @@ local function get_plugins()
             end,
         },
         {
-            "phaazon/mind.nvim", -- Mind mapping/note taking
-            dependencies = {
-                "nvim-lua/plenary.nvim",
-            },
-            config = true,
-        },
-        {
             'shellRaining/hlchunk.nvim',
             event = {"UIEnter"},
             enabled = true,
