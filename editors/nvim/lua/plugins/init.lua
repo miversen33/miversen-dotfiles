@@ -1125,6 +1125,7 @@ local function get_plugins()
         },
         {
             "nvim-treesitter",
+            main = "nvim-treesitter.configs",
         },
         {
             "dnlhc/glance.nvim",
