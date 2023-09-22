@@ -688,6 +688,20 @@ local function get_plugins()
                     python = { 'isort', 'black' },
                     lua = { 'stylua' },
                     markdown = { 'markdownlint' },
+                formatters = {
+                    stylua = {
+                        command = "stylua",
+                        args = {
+                            "--indent-type",
+                            "Spaces",
+                            "--search-parent-directories",
+                            "--stdin-filepath",
+                            "$FILENAME",
+                            "--",
+                            "-",
+                        },
+                        stdin = true,
+                    },
                 },
                 format_on_save = {
                     lsp_fallback = true
