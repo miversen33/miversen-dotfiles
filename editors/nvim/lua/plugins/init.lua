@@ -703,10 +703,30 @@ local function get_plugins()
                         stdin = true,
                     },
                 },
-                format_on_save = {
-                    lsp_fallback = true
-                }
             },
+            init = function()
+                vim.api.nvim_create_user_command("ConformDisable", function(args)
+                    if args.bang then
+                        vim.b.disable_autoformat = true
+                        vim.notify("conform manually disabled for this buffer", "info", { title = "conform.nvim" })
+                    else
+                        vim.notify("conform manually disabled globally", "info", { title = "conform.nvim" })
+                        vim.g.disable_autoformat = true
+                    end
+                end, {
+                    desc = "Disable conform autoformat on save",
+                    bang = true,
+                })
+
+                vim.api.nvim_create_user_command("ConformEnable", function(args)
+                    vim.notify("Conform enabled", "info", { title = "conform.nvim" })
+                    vim.g.disable_autoformat = false
+                    vim.g.disable_autoformat = false
+                end, {
+                    desc = "Enable conform autoformat on save",
+                    bang = true,
+                })
+            end,
         },
         {
             "williamboman/mason.nvim", -- Neovim Language Tools (LSP, Debugger, Formatter, Linter, etc)
