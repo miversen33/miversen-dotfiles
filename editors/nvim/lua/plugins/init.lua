@@ -1126,6 +1126,53 @@ local function get_plugins()
         {
             "nvim-treesitter",
             main = "nvim-treesitter.configs",
+            opts = {
+                highlight = {
+                    enable = true
+                },
+                auto_install = true,
+                ensure_installed = {
+                    "python",
+                    "toml",
+                    "yaml",
+                    "markdown",
+                    "javascript",
+                    "java",
+                    "rust",
+                    "cpp",
+                    "lua",
+                    "c",
+                    "bash",
+                    "sql",
+                    "css",
+                    "html",
+                    "glsl",
+                    "zig",
+                    "php",
+                    "perl",
+                    "nix",
+                    "cmake",
+                    "make",
+                    "dockerfile",
+                    "diff",
+                    "embedded_template",
+                    "haskell",
+                    "json",
+                    "jsdoc",
+                    "kotlin",
+                    "luadoc",
+                    "latex",
+                    "ninja",
+                    "regex",
+                    "typescript",
+                    "tsv",
+                    "csv",
+                    "vue",
+                    "vim",
+                    "vimdoc",
+                    "xml"
+                }
+            }
         },
         {
             "dnlhc/glance.nvim",
