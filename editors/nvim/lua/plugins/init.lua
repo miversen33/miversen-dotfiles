@@ -1057,7 +1057,7 @@ local function get_plugins()
             opts = {
                 dap_enabled = true, -- makes the debugger work with venv
             },
-            ft = "python"
+            ft = "python",
         },
         {
             "folke/lsp-colors.nvim", -- Neovim create missing lsp color highlight groups
