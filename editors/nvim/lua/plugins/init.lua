@@ -688,6 +688,9 @@ local function get_plugins()
                     python = { 'isort', 'black' },
                     lua = { 'stylua' },
                     markdown = { 'markdownlint' },
+                -- format_on_save = {
+                --     lsp_fallback = true,
+                -- },
                 formatters = {
                     stylua = {
                         command = "stylua",
