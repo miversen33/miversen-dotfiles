@@ -22,7 +22,7 @@ local function get_plugins()
     -- These are sourced with the start of the lsp server in mason
     local lsp_settings = {
         svelte = {
-            filetypes = {"svelte", "html"}
+            filetypes = {"svelte", "html", "js"}
         },
         ruff_lsp = {
             settings = {
