@@ -1,3 +1,6 @@
+-- Credits
+-- https://github.com/chrisgrieser/nvim-kickstart-python/blob/main/kickstart-python.lua
+
 local function bootstrap_package_manager()
     -- Testing out lazy.nvim though this same logic can
     -- be used to pull down packer if we revert to that
@@ -20,7 +23,22 @@ local function get_plugins()
     local lsp_settings = {
         svelte = {
             filetypes = {"svelte", "html"}
+        },
+        ruff_lsp = {
+            settings = {
+                organizeImports = false
+            },
+            on_attach = function(client) client.server_capabilities.hoverProvider = false end
         }
+    }
+
+    local required_mason_modules = {
+        'pyright',
+        'ruff-lsp',
+        'debugpy',
+        'black',
+        'isort',
+        'taplo'
     }
 
     local excluded_filetypes_array = {
@@ -668,6 +686,20 @@ local function get_plugins()
             "nvim-pack/nvim-spectre", -- Better search and replace?
         },
         {
+            "stevearc/conform.nvim",
+            event = "BufWritePre",
+            opts = {
+                formatters_by_ft = {
+                    python = { 'isort', 'black' },
+                    lua = { 'stylua' },
+                    markdown = { 'markdownlint' },
+                },
+                format_on_save = {
+                    lsp_fallback = true
+                }
+            },
+        },
+        {
             "williamboman/mason.nvim", -- Neovim Language Tools (LSP, Debugger, Formatter, Linter, etc)
             dependencies = {
                 "tikhomirov/vim-glsl",
@@ -679,11 +711,15 @@ local function get_plugins()
                 "mhartington/formatter.nvim", -- Neovim formatter
                 "hrsh7th/cmp-nvim-lsp", -- Neovim LSP feeder for cmp
                 "jbyuki/one-small-step-for-vimkind", -- Neovim Dap
+                "mfussenegger/nvim-dap-python", -- Python Dap
                 "simrat39/rust-tools.nvim", -- Neovim Rust Tools
                 "mfussenegger/nvim-jdtls", -- Neovim java tools
             },
             config = function()
-                require("mason").setup()
+                require("mason").setup({
+                    ensure_installed = required_mason_modules,
+                    automatic_installation = true
+                })
                 local lspconf = require("lspconfig")
                 local mason_lspconfig = require("mason-lspconfig")
                 local cmp_nvim_lsp = require("cmp_nvim_lsp")
@@ -744,34 +780,9 @@ local function get_plugins()
                         require("rust-tools").setup()
                     end,
                 })
-                require("formatter").setup({
-                    filetype = {
-                        ['*'] = {
-                            require("formatter.filetypes.any"),
-                        },
-                        lua = {
-                            -- You can also define your own configuration
-                            function()
-                                local util = require("formatter.util")
-                                -- Full specification of configurations is down below and in Vim help
-                                -- files
-                                return {
-                                    exe = "stylua",
-                                    args = {
-                                        "--indent-type",
-                                        "Spaces",
-                                        "--search-parent-directories",
-                                        "--stdin-filepath",
-                                        util.escape_path(util.get_current_buffer_file_path()),
-                                        "--",
-                                        "-",
-                                    },
-                                    stdin = true,
-                                }
-                            end,
-                        },
-                    },
-                })
+                local python_dap = require("dap-python")
+                local debugpy_path = vim.fn.stdpath('data') .. '/mason/packages/debugpy/venv/bin/python3'
+                python_dap.setup(debugpy_path, {})
                 vim.fn.sign_define('DapBreakpoint', { text = '🔴', texthl = '', linehl = '', numhl = '' })
                 vim.fn.sign_define('DapBreakpointCondition', { text = '🔵', texthl = '', linehl = '', numhl = '' })
                 require('dap.ext.vscode').load_launchjs()
@@ -1002,6 +1013,27 @@ local function get_plugins()
             config = true
         },
         {
+            "chrisgrieser/nvim-puppeteer",
+            dependencies = "nvim-treesitter/nvim-treesitter",
+            ft = "python"
+        },
+        { "Vimjas/vim-python-pep8-indent" },
+        -- select virtual environments
+        -- - makes pyright and debugpy aware of the selected virtual environment
+        -- - Select a virtual environment with `:VenvSelect`
+        {
+            "linux-cultist/venv-selector.nvim",
+            dependencies = {
+                "neovim/nvim-lspconfig",
+                "nvim-telescope/telescope.nvim",
+                "mfussenegger/nvim-dap-python",
+            },
+            opts = {
+                dap_enabled = true, -- makes the debugger work with venv
+            },
+            ft = "python"
+        },
+        {
             "folke/lsp-colors.nvim", -- Neovim create missing lsp color highlight groups
             config = true,
         },
@@ -1098,12 +1130,6 @@ local function get_plugins()
         },
         {
             "nvim-treesitter",
-            config = function()
-                local ts_conf = require("nvim-treesitter.configs")
-                ts_conf.setup({
-                    auto_install = true
-                })
-            end
         },
         {
             "dnlhc/glance.nvim",
