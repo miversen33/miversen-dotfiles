@@ -64,6 +64,8 @@ local function get_plugins()
         "ImportManager",
         "aerial",
         "TelescopePrompt",
+        "NetmanLogs",
+        "neo-tree-popup",
         ""
     }
     local excluded_filetypes_table = {}
