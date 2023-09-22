@@ -847,19 +847,6 @@ local function get_plugins()
                 cmp_plugins.setup({ files = { ".*\\.lua" } })
                 luasnip.config.set_config({ history = true, update_events = "TextChanged,TextChangedI" })
                 require("luasnip.loaders.from_vscode").lazy_load()
-                local confirm_mapping = function(fallback)
-                    if luasnip.expandable() then
-                        return luasnip.expand()
-                    end
-                    if cmp and cmp.visible() and cmp.get_active_entry() then
-                        cmp.confirm({
-                            behavior = cmp.ConfirmBehavior.Replace,
-                            select = false,
-                        })
-                        return
-                    end
-                    fallback()
-                end
                 local next_option_mapping = function(fallback)
                     if cmp.visible() and cmp.get_active_entry() then
                         cmp.select_next_item()
@@ -870,16 +857,6 @@ local function get_plugins()
                 local previous_option_mapping = function(fallback)
                     if cmp.visible() and cmp.get_active_entry() then
                         cmp.select_prev_item()
-                    else
-                        fallback()
-                    end
-                end
-                local expand_enter_mapping = function(fallback)
-                    if not cmp.visible() or not cmp.get_active_entry() then
-                        cmp.complete()
-                        cmp.select_next_item()
-                    elseif cmp.get_active_entry() then
-                        confirm_mapping()
                     else
                         fallback()
                     end
@@ -897,16 +874,24 @@ local function get_plugins()
                         end,
                     },
                     mapping = {
-                        ["<C-Space>"] = cmp.mapping(expand_enter_mapping, {"i", "c"}),
-                        ["<Enter>"] = confirm_mapping,
-                        ["<Tab>"] = cmp.mapping({
-                            i = confirm_mapping,
-                            c = next_option_mapping,
-                        }),
+                        ["<CR>"] = cmp.mapping.confirm({ select = true }),
+                        ["<Tab>"] = cmp.mapping(function(fallback)
+                            if cmp.visible() then
+                                cmp.select_next_item()
+                            else
+                                fallback()
+                            end
+                        end, { "i", "s", "c" }),
                         ["<Down>"] = cmp.mapping(next_option_mapping, { "i" }),
                         ["<Up>"] = cmp.mapping(previous_option_mapping, { "i" }),
-                        ["<S-Tab>"] = cmp.mapping(previous_option_mapping, { "c" }),
-                        ["<C-Up>"] = cmp.mapping(cmp.mapping.scroll_docs( -4)),
+                        ["<S-Tab>"] = cmp.mapping(function(fallback)
+                            if cmp.visible() then
+                                cmp.select_prev_item()
+                            else
+                                fallback()
+                            end
+                        end, { "i", "s", "c" }),
+                        ["<C-Up>"] = cmp.mapping(cmp.mapping.scroll_docs(-4)),
                         ["<C-Down>"] = cmp.mapping(cmp.mapping.scroll_docs(4)),
                     },
                     sources = cmp.config.sources({
