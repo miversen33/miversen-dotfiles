@@ -57,13 +57,7 @@ _<C-e>_: Exit Hydra
     heads = {
         {"<C-g>",
             function()
-                local filetype = vim.api.nvim_buf_get_option(0, 'filetype')
-                local bufhandle = vim.api.nvim_get_current_buf()
-                local winhandle = vim.api.nvim_get_current_win()
-                vim.api.nvim_command(string.format("CResetTerms %s", filetype))
-                vim.api.nvim_command('CRepl')
-                vim.api.nvim_set_current_win(winhandle)
-                vim.api.nvim_set_current_buf(bufhandle)
+                require("sniprun").reset()
             end,
             {
                 desc = "Restarts Repl",
@@ -72,33 +66,8 @@ _<C-e>_: Exit Hydra
         },
         {"<C-s>",
             function()
-                local mode = vim.api.nvim_get_mode().mode
-                if mode == 'v' then
-                    -- Get selection
-                    vim.api.nvim_command("CReplSendLines")
-                else
-                    local filetype = vim.api.nvim_buf_get_option(0, 'filetype')
-                    -- vim.api.nvim_command(string.format("CResetTerms %s", filetype))
-                    local sep = vim.loop.os_uname().sysname:lower():match('windows') and '\\' or '/'
-                    local filename = vim.fn.getcwd() .. sep .. vim.fn.bufname()
-                    local bufhandle = vim.api.nvim_get_current_buf()
-                    local winhandle = vim.api.nvim_get_current_win()
-                    vim.api.nvim_command(string.format("CRepl %s %s", filetype, filename))
-                    vim.api.nvim_set_current_win(winhandle)
-                    vim.api.nvim_set_current_buf(bufhandle)
-
-                end
-                -- if we are in visual mode, we should pull the selected lines instead of sending the whole file?
-                local filetype = vim.api.nvim_buf_get_option(0, 'filetype')
-                if not filetype or filetype:len() == 0 then
-                    filetype = 'lua'
-                end
-                if vim.api.nvim_buf_get_name(0):len() > 0 then
-                    -- Save the file
-                    vim.api.nvim_command('write')
-                end
-                require("iron.core").send_file(filetype)
-                end,
+                vim.cmd('%SnipRun')
+            end,
             {
                 desc = "Writes current file to repl",
                 silent = true
