@@ -879,6 +879,7 @@ local function get_plugins()
                 "windwp/nvim-autopairs", -- Auto pairs
                 "theHamsta/nvim-dap-virtual-text", -- Neovim DAP Virutal Text lol what else do you think this is?
                 "ray-x/cmp-treesitter", -- Neovim snippet for treesitter (Maybe replace the buffer completion?)
+                "Saecki/crates.nvim", -- Neovim crates snippet/completion engine
             },
             config = function()
                 local cmp = require("cmp")
@@ -889,9 +890,18 @@ local function get_plugins()
                 local nvim_autopairs = require("nvim-autopairs")
                 local ndvt = require("nvim-dap-virtual-text")
                 local cmp_autopairs = require("nvim-autopairs.completion.cmp")
+                local crates = require("crates")
                 ndvt.setup()
                 nvim_autopairs.setup({
                     disabled_filetypes = excluded_filetypes_array,
+                })
+                crates.setup()
+                vim.api.nvim_create_autocmd("BufRead", {
+                    group = vim.api.nvim_create_augroup("CmpSourceCargo", { clear = true }),
+                    pattern = "Cargo.toml",
+                    callback = function()
+                        cmp.setup.buffer({ sources = { { name = "crates" } } })
+                    end,
                 })
                 cmp_plugins.setup({ files = { ".*\\.lua" } })
                 luasnip.config.set_config({ history = true, update_events = "TextChanged,TextChangedI" })
