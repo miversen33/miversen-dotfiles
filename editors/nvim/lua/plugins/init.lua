@@ -1104,27 +1104,12 @@ local function get_plugins()
             config = true,
         },
         {
-            "hkupty/iron.nvim",
-            config = function()
-                require("iron.core").setup({
-                    config = {
-                        scratch_repl = true,
-                        repl_definition = {
-                            sh = {
-                                command = { "zsh" },
-                            },
-                            lua = {
-                                command = { "croissant" },
-                            },
-                        },
-                        repl_open_cmd = require("iron.view").split.vertical("42%"),
-                    },
-                    highlight = {
-                        italic = true,
-                    },
-                    ignore_blank_lines = true,
-                })
-            end,
+            "michaelb/sniprun",
+            build = "sh install.sh",
+            config = true,
+            opts = {
+                display = { "VirtualTextOk", "TerminalWithCodeErr" }
+            }
         },
         {
             "Fildo7525/pretty_hover",
