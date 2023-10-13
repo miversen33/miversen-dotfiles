@@ -55,19 +55,6 @@ _<C-e>_: Exit Hydra
     },
     body = "<C-e>",
     heads = {
-        {"<C-z>",
-            function()
-                local bufhandle = vim.api.nvim_get_current_buf()
-                local winhandle = vim.api.nvim_get_current_win()
-                vim.api.nvim_command('CRepl')
-                vim.api.nvim_set_current_win(winhandle)
-                vim.api.nvim_set_current_buf(bufhandle)
-            end,
-            {
-                desc = "Language Shell",
-                silent = true
-            }
-        },
         {"<C-g>",
             function()
                 local filetype = vim.api.nvim_buf_get_option(0, 'filetype')
