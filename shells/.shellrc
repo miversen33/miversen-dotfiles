@@ -41,10 +41,11 @@ pre_profile_rc() {
   export LC_ALL=en_US.UTF-8
 
   export SCREENDIR=$HOME/.cache/screen
-  export whatsmyip() {
+  function whatsmyip() {
     local_ip=$(dig @resolver4.opendns.com myip.opendns.com +short)
     echo $local_ip
   }
+  export whatsmyip
   if ! [ -d $SCREENDIR ]; then
     mkdir -p $SCREENDIR
   fi
@@ -123,7 +124,7 @@ pre_profile_rc() {
     export EDITOR="nvim"
     alias vim="nvim" # Sets nvim as alias to vim
     export VIMRC="$HOME/.config/nvim/init.lua"
-  else;
+  else
     export EDITOR="vim"
     unalias vim 2>/dev/null
     export VIMRC="$HOME/.vimrc"
@@ -389,7 +390,7 @@ dev_env(){
   bash -c $cmd
 }
 
-notify() {
+function notify(){
   eval "$@"
   job="$@"
   exit_code=$?
@@ -420,7 +421,7 @@ debug_nvim() {
   if [ -n "${DEBUG_NEOVIM_CONFIG+set}" ]; then
     echo "Disabling Debug Neovim Flag"
     unset DEBUG_NEOVIM_CONFIG
-  else;
+  else
     echo "Setting Debug Neovim Flag"
     export DEBUG_NEOVIM_CONFIG=1
   fi
