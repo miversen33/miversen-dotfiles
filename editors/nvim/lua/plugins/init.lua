@@ -818,6 +818,9 @@ local function get_plugins()
                     ["rust_analyzer"] = function()
                         require("rust-tools").setup()
                     end,
+                    ["jdtls"] = function()
+                        
+                    end
                 })
                 local python_dap = require("dap-python")
                 local debugpy_path = vim.fn.stdpath("data") .. "/mason/packages/debugpy/venv/bin/python3"
