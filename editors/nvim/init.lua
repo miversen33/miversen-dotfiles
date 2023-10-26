@@ -108,6 +108,10 @@ local function setup_basic_keycommands()
 end
 
 local function setup_advanced_keycommands()
+    if vim.g.__debug_config then
+        vim.notify("Avoiding Advanced Keycommands as we are in debug mode")
+        return
+    end
     local success, hydra = pcall(require, "hydra")
     if not success then
         print("Unable to locate hydra!")
