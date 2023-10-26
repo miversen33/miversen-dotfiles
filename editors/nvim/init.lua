@@ -2,7 +2,6 @@
 local function vim_settings()
     -- local undo_dir = vim.fn.stdpath('cache') .. "/undo/"
     -- vim.fn.mkdir(undo_dir, 'p')
-    -- vim.opt.sessionoptions="blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal"
     vim.opt.undofile      = true
     vim.opt.splitkeep     = 'screen'
     -- vim.opt.undodir       = undo_dir
