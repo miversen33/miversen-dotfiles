@@ -511,7 +511,7 @@ local function setup_plugins()
             fallback = true
         },
         change_detection = {
-            enabled = true,
+            enabled = false,
             notify = true
         },
         ui = {
