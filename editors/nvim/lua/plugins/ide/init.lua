@@ -23,6 +23,7 @@ local ide = {
     require(current_path .. "smartsplits"),
     require(current_path .. "treesitter"),
     require(current_path .. "hex"),
+    require(current_path .. 'muren'),
     --- Langauage Specific Stuff
     require(current_path .. "python"),
     require(current_path .. "rust"),
