@@ -69,7 +69,6 @@ local function mason_config()
             local lsp_setting = lsp_settings[lsp] or {}
             local _ = lsp_setting.on_attach
             local lsp_on_attach = function(client, bufnr)
-                end
                 if _ then
                     _(client, bufnr)
                 end
