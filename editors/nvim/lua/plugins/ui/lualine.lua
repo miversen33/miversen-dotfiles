@@ -20,7 +20,12 @@ local function lualine_config()
         },
         sections = {
             lualine_a = {
-                "mode",
+                {
+                    "mode",
+                    fmt = function(output)
+                        return output:len() > 0 and output:sub(1,1):upper() or ""
+                    end
+                },
                 {
                     "branch",
                     fmt = function(output)
