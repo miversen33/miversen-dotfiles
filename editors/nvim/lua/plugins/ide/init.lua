@@ -23,6 +23,7 @@ local ide = {
     require(current_path .. "smartsplits"),
     require(current_path .. "treesitter"),
     require(current_path .. "hex"),
+    require(current_path .. "persisted"),
     require(current_path .. "trouble"),
     require(current_path .. 'muren'),
     require(current_path .. "hlslens"),
