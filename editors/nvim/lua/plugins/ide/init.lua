@@ -25,6 +25,7 @@ local ide = {
     require(current_path .. "hex"),
     require(current_path .. "trouble"),
     require(current_path .. 'muren'),
+    require(current_path .. "vim-visual-multi"),
     --- Langauage Specific Stuff
     require(current_path .. "python"),
     require(current_path .. "rust"),
