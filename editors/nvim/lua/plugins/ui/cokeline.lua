@@ -6,21 +6,32 @@ local cokeline_dependencies = {
 
 local function cokeline_opts(cokeline)
     local get_color = require("cokeline.hlgroups").get_hl_attr
-    -- local get_hex = require("cokeline/utils").get_hex
     local colors = require("vscode.colors").get_colors()
-    local line_background = "NONE"
-    -- Needs light mode color
-    active_bg = colors["vscViolet"]
-    local active_bg_color = active_bg
-    local inactive_bg_color = colors["vscBlack"]
+    local inactive_bg_color = "#262626"
+    vim.api.nvim_set_hl(0, 'Cokeline_bufferline', {
+        bg = inactive_bg_color,
+    })
     local warn_color = colors["vscGitStageModified"]
     local error_color = colors["vscGitConflicting"]
     local max_error_limit = 9
+    local get_active_color = function(mode)
+        if mode == 'n' then
+            return '#0a7aca'
+        elseif mode == 'i' then
+            return '#4EC9B0'
+        elseif mode == 'v' then
+            return '#ffaf00'
+        elseif mode == 'r' then
+            return '#f44747'
+        else
+            return colors.vscViolet
+        end
+    end
     local setup = {
         mappings = {
             cycle_prev_next = true,
         },
-        fill_hl = "BufferLineFill",
+        fill_hl = "Cokeline_bufferline",
         default_hl = {
             fg = function(buffer)
                 return buffer.is_focused
@@ -28,17 +39,31 @@ local function cokeline_opts(cokeline)
                 or get_color('Normal', 'fg')
             end,
             bg = function(buffer)
-                return buffer.is_focused and active_bg_color or inactive_bg_color
+                return buffer.is_focused and get_active_color(vim.api.nvim_get_mode().mode) or inactive_bg_color
             end,
         },
+        -- We should really figure out how to do tab stuff
+        -- tabs = {
+        --     placement = "left",
+        --     components = {
+        --         {
+        --             text = function(tabpage)
+        --                 if not is_dead then
+        --                     print(tabpage)
+        --                 end
+        --             end
+        --             -- text = "Hello?"
+        --         }
+        --     }
+        -- },
         components = {
             {
                 text = function(buffer)
-                    return buffer.is_focused and "" or " "
+                    return buffer.is_focused and "" or " "
                 end,
                 fg = inactive_bg_color, -- line_background, -- This should be line_background but due to a bug, we cant
                 bg = function(buffer)
-                    return buffer.is_focused and active_bg_color or inactive_bg_color
+                    return buffer.is_focused and get_active_color(vim.api.nvim_get_mode().mode) or inactive_bg_color
                 end,
                 style = function(buffer)
                     return buffer.is_hovered and "undercurl"
@@ -102,14 +127,17 @@ local function cokeline_opts(cokeline)
                 end,
             },
             {
+                text = " "
+            },
+            {
                 text = function(buffer)
-                    return buffer.is_focused and "" or ""
+                    return buffer.is_focused and "" or ""
+                end,
+                fg = function()
+                    return inactive_bg_color
                 end,
                 bg = function(buffer)
-                    return buffer.is_focused and line_background or get_color('ColorColumn', 'bg')
-                end,
-                fg = function(buffer)
-                    return buffer.is_focused and active_bg_color or inactive_bg_color
+                    return buffer.is_focused and get_active_color(vim.api.nvim_get_mode().mode) or inactive_bg_color
                 end,
             },
         },
