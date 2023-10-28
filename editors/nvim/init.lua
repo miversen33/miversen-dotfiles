@@ -53,7 +53,6 @@ local function vim_settings()
     vim.opt.updatetime    = 2000
     vim.opt.sessionoptions= "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
     for _, group in ipairs(vim.fn.getcompletion("@lsp", "highlight")) do vim.api.nvim_set_hl(0, group, {}) end
-    vim.api.nvim_set_hl(0, "NormalFloat", { fg = "NONE", bg = "NONE" })
 
     local _print = _G.print
     local clean_string = function(...)
@@ -77,6 +76,7 @@ local function vim_settings()
     end
     local uv = vim.uv or vim.loop
     _G.os_sep = uv.os_uname().sysname:lower():match('windows') and '\\' or '/' -- \ for windows, mac and linux both use \
+    _G.__miversen_border_color = "#806d9c"
 end
 
 local function setup_basic_keycommands()
@@ -519,6 +519,11 @@ local function setup_plugins()
         }
     }
     lazy.setup("plugins", lazy_opts)
+        -- Setting up some basic highlight groups
+    vim.api.nvim_set_hl(0, "PmenuSel", { bg = "#004b72", fg = "NONE" })
+    vim.api.nvim_set_hl(0, "Pmenu", { fg = "#C5CDD9", bg = "NONE" })
+    vim.api.nvim_set_hl(0, "FloatBorder", { fg = _G.__miversen_border_color})
+    vim.api.nvim_set_hl(0, "NormalFloat", {fg="NONE", bg="NONE"})
 end
 
 vim_settings()
