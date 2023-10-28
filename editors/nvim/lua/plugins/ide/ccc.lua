@@ -1,6 +1,7 @@
 local ccc_config = {
     highlighter = {
         auto_enable = true,
+        filetypes = {},
         excludes = _G.__miversen_config_excluded_filetypes_array
     },
     recognize = {
