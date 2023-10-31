@@ -18,6 +18,7 @@ local ui = {
     require(ui_path .. "vt_context"),
     require(ui_path .. "lspcolors"),
     require(ui_path .. "sunglasses"),
+    require(ui_path .. "marks"),
 }
 
 return ui
