@@ -27,44 +27,45 @@ local function config()
     -- Thanks hrsh7th, very cool
     -- https://github.com/hrsh7th/nvim-cmp/wiki/Menu-Appearance#how-to-get-types-on-the-left-and-offset-the-menu
     -- Customization for Pmenu
-    vim.api.nvim_set_hl(0, "CmpFloatBoarder", { fg = "#806d9c"})
-    vim.api.nvim_set_hl(0, "CmpItemAbbrDeprecated", { fg = "#7E8294", bg = "NONE", strikethrough = true })
-    vim.api.nvim_set_hl(0, "CmpItemAbbrMatch", { fg = "#82AAFF", bg = "NONE", bold = true })
-    vim.api.nvim_set_hl(0, "CmpItemAbbrMatchFuzzy", { fg = "#82AAFF", bg = "NONE", bold = true })
-    vim.api.nvim_set_hl(0, "CmpItemMenu", { fg = "#C792EA", bg = "NONE", italic = true })
+    -- Weird side-effect of this is dropbar looks kinda fucky now
+    vim.api.nvim_set_hl(0, "Custom_CmpFloatBoarder", { fg = "#806d9c"})
+    vim.api.nvim_set_hl(0, "Custom_CmpItemAbbrDeprecated", { fg = "#7E8294", bg = "NONE", strikethrough = true })
+    vim.api.nvim_set_hl(0, "Custom_CmpItemAbbrMatch", { fg = "#82AAFF", bg = "NONE", bold = true })
+    vim.api.nvim_set_hl(0, "Custom_CmpItemAbbrMatchFuzzy", { fg = "#82AAFF", bg = "NONE", bold = true })
+    vim.api.nvim_set_hl(0, "Custom_CmpItemMenu", { fg = "#C792EA", bg = "NONE", italic = true })
 
-    vim.api.nvim_set_hl(0, "CmpItemKindField", { fg = "#EED8DA", bg = "#B5585F" })
-    vim.api.nvim_set_hl(0, "CmpItemKindProperty", { fg = "#EED8DA", bg = "#B5585F" })
-    vim.api.nvim_set_hl(0, "CmpItemKindEvent", { fg = "#EED8DA", bg = "#B5585F" })
+    vim.api.nvim_set_hl(0, "Custom_CmpItemKindField", { fg = "#EED8DA", bg = "#B5585F" })
+    vim.api.nvim_set_hl(0, "Custom_CmpItemKindProperty", { fg = "#EED8DA", bg = "#B5585F" })
+    vim.api.nvim_set_hl(0, "Custom_CmpItemKindEvent", { fg = "#EED8DA", bg = "#B5585F" })
 
-    vim.api.nvim_set_hl(0, "CmpItemKindText", { fg = "#C3E88D", bg = "#9FBD73" })
-    vim.api.nvim_set_hl(0, "CmpItemKindEnum", { fg = "#C3E88D", bg = "#9FBD73" })
-    vim.api.nvim_set_hl(0, "CmpItemKindKeyword", { fg = "#C3E88D", bg = "#9FBD73" })
+    vim.api.nvim_set_hl(0, "Custom_CmpItemKindText", { fg = "#C3E88D", bg = "#9FBD73" })
+    vim.api.nvim_set_hl(0, "Custom_CmpItemKindEnum", { fg = "#C3E88D", bg = "#9FBD73" })
+    vim.api.nvim_set_hl(0, "Custom_CmpItemKindKeyword", { fg = "#C3E88D", bg = "#9FBD73" })
 
-    vim.api.nvim_set_hl(0, "CmpItemKindConstant", { fg = "#FFE082", bg = "#D4BB6C" })
-    vim.api.nvim_set_hl(0, "CmpItemKindConstructor", { fg = "#FFE082", bg = "#D4BB6C" })
-    vim.api.nvim_set_hl(0, "CmpItemKindReference", { fg = "#FFE082", bg = "#D4BB6C" })
+    vim.api.nvim_set_hl(0, "Custom_CmpItemKindConstant", { fg = "#FFE082", bg = "#D4BB6C" })
+    vim.api.nvim_set_hl(0, "Custom_CmpItemKindConstructor", { fg = "#FFE082", bg = "#D4BB6C" })
+    vim.api.nvim_set_hl(0, "Custom_CmpItemKindReference", { fg = "#FFE082", bg = "#D4BB6C" })
 
-    vim.api.nvim_set_hl(0, "CmpItemKindFunction", { fg = "#EADFF0", bg = "#A377BF" })
-    vim.api.nvim_set_hl(0, "CmpItemKindStruct", { fg = "#EADFF0", bg = "#A377BF" })
-    vim.api.nvim_set_hl(0, "CmpItemKindClass", { fg = "#EADFF0", bg = "#A377BF" })
-    vim.api.nvim_set_hl(0, "CmpItemKindModule", { fg = "#EADFF0", bg = "#A377BF" })
-    vim.api.nvim_set_hl(0, "CmpItemKindOperator", { fg = "#EADFF0", bg = "#A377BF" })
+    vim.api.nvim_set_hl(0, "Custom_CmpItemKindFunction", { fg = "#EADFF0", bg = "#A377BF" })
+    vim.api.nvim_set_hl(0, "Custom_CmpItemKindStruct", { fg = "#EADFF0", bg = "#A377BF" })
+    vim.api.nvim_set_hl(0, "Custom_CmpItemKindClass", { fg = "#EADFF0", bg = "#A377BF" })
+    vim.api.nvim_set_hl(0, "Custom_CmpItemKindModule", { fg = "#EADFF0", bg = "#A377BF" })
+    vim.api.nvim_set_hl(0, "Custom_CmpItemKindOperator", { fg = "#EADFF0", bg = "#A377BF" })
 
-    vim.api.nvim_set_hl(0, "CmpItemKindVariable", { fg = "#C5CDD9", bg = "#7E8294" })
-    vim.api.nvim_set_hl(0, "CmpItemKindFile", { fg = "#C5CDD9", bg = "#7E8294" })
+    vim.api.nvim_set_hl(0, "Custom_CmpItemKindVariable", { fg = "#C5CDD9", bg = "#7E8294" })
+    vim.api.nvim_set_hl(0, "Custom_CmpItemKindFile", { fg = "#C5CDD9", bg = "#7E8294" })
 
-    vim.api.nvim_set_hl(0, "CmpItemKindUnit", { fg = "#F5EBD9", bg = "#D4A959" })
-    vim.api.nvim_set_hl(0, "CmpItemKindSnippet", { fg = "#F5EBD9", bg = "#D4A959" })
-    vim.api.nvim_set_hl(0, "CmpItemKindFolder", { fg = "#F5EBD9", bg = "#D4A959" })
+    vim.api.nvim_set_hl(0, "Custom_CmpItemKindUnit", { fg = "#F5EBD9", bg = "#D4A959" })
+    vim.api.nvim_set_hl(0, "Custom_CmpItemKindSnippet", { fg = "#F5EBD9", bg = "#D4A959" })
+    vim.api.nvim_set_hl(0, "Custom_CmpItemKindFolder", { fg = "#F5EBD9", bg = "#D4A959" })
 
-    vim.api.nvim_set_hl(0, "CmpItemKindMethod", { fg = "#DDE5F5", bg = "#6C8ED4" })
-    vim.api.nvim_set_hl(0, "CmpItemKindValue", { fg = "#DDE5F5", bg = "#6C8ED4" })
-    vim.api.nvim_set_hl(0, "CmpItemKindEnumMember", { fg = "#DDE5F5", bg = "#6C8ED4" })
+    vim.api.nvim_set_hl(0, "Custom_CmpItemKindMethod", { fg = "#DDE5F5", bg = "#6C8ED4" })
+    vim.api.nvim_set_hl(0, "Custom_CmpItemKindValue", { fg = "#DDE5F5", bg = "#6C8ED4" })
+    vim.api.nvim_set_hl(0, "Custom_CmpItemKindEnumMember", { fg = "#DDE5F5", bg = "#6C8ED4" })
 
-    vim.api.nvim_set_hl(0, "CmpItemKindInterface", { fg = "#D8EEEB", bg = "#58B5A8" })
-    vim.api.nvim_set_hl(0, "CmpItemKindColor", { fg = "#D8EEEB", bg = "#58B5A8" })
-    vim.api.nvim_set_hl(0, "CmpItemKindTypeParameter", { fg = "#D8EEEB", bg = "#58B5A8" })
+    vim.api.nvim_set_hl(0, "Custom_CmpItemKindInterface", { fg = "#D8EEEB", bg = "#58B5A8" })
+    vim.api.nvim_set_hl(0, "Custom_CmpItemKindColor", { fg = "#D8EEEB", bg = "#58B5A8" })
+    vim.api.nvim_set_hl(0, "Custom_CmpItemKindTypeParameter", { fg = "#D8EEEB", bg = "#58B5A8" })
 
 
     luasnip.config.set_config({ history = true, update_events = "TextChanged,TextChangedI" })
@@ -117,7 +118,7 @@ local function config()
         },
         window = {
             completion = {
-                winhighlight = "Normal:Pmenu,FloatBorder:CmpFloatBoarder,Search:NONE,CursorLine:PmenuSel",
+                winhighlight = "Normal:Pmenu,FloatBorder:CmpFloatBoarder,Search:NONE,CursorLine:PmenuSel,CmpFloatBoarder:Custom_CmpFloatBoarder,CmpItemAbbrDeprecated:Custom_CmpItemAbbrDeprecated,CmpItemAbbrMatch:Custom_CmpItemAbbrMatch,CmpItemAbbrMatchFuzzy:Custom_CmpItemAbbrMatchFuzzy,CmpItemMenu:Custom_CmpItemMenu,CmpItemKindField:Custom_CmpItemKindField,CmpItemKindProperty:Custom_CmpItemKindProperty,CmpItemKindEvent:Custom_CmpItemKindEvent,CmpItemKindText:Custom_CmpItemKindText,CmpItemKindEnum:Custom_CmpItemKindEnum,CmpItemKindKeyword:Custom_CmpItemKindKeyword,CmpItemKindConstant:Custom_CmpItemKindConstant,CmpItemKindConstructor:Custom_CmpItemKindConstructor,CmpItemKindReference:Custom_CmpItemKindReference,CmpItemKindFunction:Custom_CmpItemKindFunction,CmpItemKindStruct:Custom_CmpItemKindStruct,CmpItemKindClass:Custom_CmpItemKindClass,CmpItemKindModule:Custom_CmpItemKindModule,CmpItemKindOperator:Custom_CmpItemKindOperator,CmpItemKindVariable:Custom_CmpItemKindVariable,CmpItemKindFile:Custom_CmpItemKindFile,CmpItemKindUnit:Custom_CmpItemKindUnit,CmpItemKindSnippet:Custom_CmpItemKindSnippet,CmpItemKindFolder:Custom_CmpItemKindFolder,CmpItemKindMethod:Custom_CmpItemKindMethod,CmpItemKindValue:Custom_CmpItemKindValue,CmpItemKindEnumMember:Custom_CmpItemKindEnumMember,CmpItemKindInterface:Custom_CmpItemKindInterface,CmpItemKindColor:Custom_CmpItemKindColor,CmpItemKindTypeParameter:Custom_CmpItemKindTypeParameter",
                 col_offset = -3,
                 side_padding = 0,
                 border = "rounded"
