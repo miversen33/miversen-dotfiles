@@ -1,3 +1,4 @@
+vim.g.neo_tree_remove_legacy_commands = 1
 -- Setting Basic Vim Settings
 local function vim_settings()
     -- local undo_dir = vim.fn.stdpath('cache') .. "/undo/"
@@ -594,6 +595,7 @@ local function setup_plugins()
     vim.api.nvim_set_hl(0, "Pmenu", { fg = "#C5CDD9", bg = "NONE" })
     vim.api.nvim_set_hl(0, "FloatBorder", { fg = _G.__miversen_border_color})
     vim.api.nvim_set_hl(0, "NormalFloat", {fg="NONE", bg="NONE"})
+    -- vim.api.nvim_set_hl(0, "ColorColumn", {fg = "#97E004"})
 end
 
 vim_settings()
