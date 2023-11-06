@@ -88,10 +88,11 @@ pre_profile_rc() {
     done
   fi
 
-  for dir in $HOME/.local/*/bin; do
-    [ -d "$dir" ] && [[ "$PATH" != *"$dir"* ]] && PATH="$dir:$PATH"
-  done
-  # fi
+  if [ -d $HOME/.local ]; then
+    for dir in $HOME/.local/*/bin; do
+      [ -d "$dir" ] && [[ "$PATH" != *"$dir"* ]] && PATH="$dir:$PATH"
+    done
+  fi
 
   [ -d "$HOME/.cargo/bin" ] && [[ "$PATH" != *"$HOME/.cargo/bin"* ]] && PATH="$HOME/.cargo/bin:$PATH"
   if [ -d "$HOME/perl5" ]; then #The perl shits
