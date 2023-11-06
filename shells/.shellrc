@@ -159,6 +159,9 @@ post_profile_rc(){
       source $env_path
     fi
   fi
+  if [ -f $HOME/.env ]; then
+    source $HOME/.env
+  fi
 }
 
 zsh_rc () {
