@@ -73,24 +73,20 @@ pre_profile_rc() {
   #source /etc/profile.d/apps-bin-path.sh
 
   # These are adding duplicates to path for each time its ran. Das no good....
-  setopt +o nomatch
-  for dir in /opt/*/bin; do
-    [ -d "$dir" ] && [[ "$PATH" != *"$dir"* ]] && PATH="$dir:$PATH"
-  done
-
-  for dir in /opt/*/current/bin; do
-    [ -d "$dir" ] && [[ "$PATH" != *"$dir"* ]] && PATH="$dir:$PATH"
-  done
+  # setopt +o nomatch
+  if [ -d "/opt/" ]; then
+    for dir in /opt/*; do
+      [ -d "$dir/bin" ] && [[ "$PATH" != *"$dir/bin"* ]] && PATH="$dir/bin:$PATH"
+      [ -d "$dir/current" ] && [ -d "$dir/current/bin" ] && [[ "$PATH" != *"$dir/current/bin"* ]] && PATH="$dir/current/bin:$PATH"
+    done
+  fi
 
   if [ -d "/snap/" ]; then
     for dir in /snap/*; do
       [ -d "$dir" ] && [[ "$PATH" != *"$dir"* ]] && PATH="$dir:$PATH"
-    done
-    for dir in /snap/*/current; do
-      [ -d "$dir" ] && [[ "$PATH" != *"$dir"* ]] && PATH="$dir:$PATH"
+      [ -d "$dir/current" ] && [[ "$PATH" != *"$dir/current"* ]] && PATH="$dir/current:$PATH"
     done
   fi
-  
 
   for dir in $HOME/.local/*/bin; do
     [ -d "$dir" ] && [[ "$PATH" != *"$dir"* ]] && PATH="$dir:$PATH"
@@ -250,7 +246,7 @@ bash_rc () {
   export SHELL_RC="$HOME/.bashrc"
   RC_PATH=$(readlink -f "$BASH_SOURCE")
   cur_dir=$(dirname `readlink -f $RC_PATH`)
-  for auto in `ls $cur_dir/auto/*.bash`; do
+  for auto in $(ls $cur_dir/auto/*.bash 2>/dev/null); do
     . $auto
   done
   # Path to your oh-my-bash installation.
