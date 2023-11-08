@@ -74,13 +74,6 @@ pre_profile_rc() {
 
   # These are adding duplicates to path for each time its ran. Das no good....
   setopt +o nomatch
-  for dir in /opt/*/bin; do
-    [ -d "$dir" ] && [[ "$PATH" != *"$dir"* ]] && PATH="$dir:$PATH"
-  done
-
-  for dir in /opt/*/current/bin; do
-    [ -d "$dir" ] && [[ "$PATH" != *"$dir"* ]] && PATH="$dir:$PATH"
-  done
 
   if [ -d "/snap/" ]; then
     for dir in /snap/*; do
