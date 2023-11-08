@@ -390,6 +390,10 @@ dev_env(){
   bash -c $cmd
 }
 
+tmux_rejoin(){
+  tmux -2 a -t default || tmux -2 new -s default
+}
+
 function notify(){
   eval "$@"
   job="$@"
