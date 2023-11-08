@@ -84,9 +84,7 @@ pre_profile_rc() {
   if [ -d "/snap/" ]; then
     for dir in /snap/*; do
       [ -d "$dir" ] && [[ "$PATH" != *"$dir"* ]] && PATH="$dir:$PATH"
-    done
-    for dir in /snap/*/current; do
-      [ -d "$dir" ] && [[ "$PATH" != *"$dir"* ]] && PATH="$dir:$PATH"
+      [ -d "$dir/current" ] && [[ "$PATH" != *"$dir/current"* ]] && PATH="$dir/current:$PATH"
     done
   fi
   
