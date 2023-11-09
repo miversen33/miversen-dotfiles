@@ -1,6 +1,14 @@
 -- Have this auto setup JDTLS if it doesn't already exist...?
 -- A helper lsp function would be wise
-local lsp_dir = vim.fn.stdpath('data') .. "/mason/packages/jdtls/"
+local lsp_dir = vim.fn.stdpath('data') .. "/mason/packages/jdtls"
+local sysname = vim.loop.os_uname().sysname:lower()
+if sysname == 'windows' then
+    sysname = 'win'
+elseif sysname == 'darwin' then
+    sysname = 'mac'
+else
+    sysname = 'linux'
+end
 
 local _, jdtls = pcall(require, "jdtls")
 if _ == nil then
