@@ -89,8 +89,8 @@ pre_profile_rc() {
   fi
 
   if [ -d $HOME/.local ]; then
-    for dir in $HOME/.local/*/bin; do
-      [ -d "$dir" ] && [[ "$PATH" != *"$dir"* ]] && PATH="$dir:$PATH"
+    for dir in $HOME/.local/*; do
+      [ -d "$dir" ] && [ -d "$dir/bin" ] && [[ "$PATH" != *"$dir/bin"* ]] && PATH="$dir/bin:$PATH"
     done
   fi
 
