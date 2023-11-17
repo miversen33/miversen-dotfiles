@@ -4,9 +4,7 @@ local persisted_config = {
     should_autosave = true,
     autoload = true,
     ignored_dirs = {
-      vim.uv and vim.uv.os_homedir() or vim.loop.os_homedir(),
       "/tmp",
-      "/",
     }
 }
 
