@@ -578,7 +578,7 @@ local function setup_plugins()
     local lazy_opts = {
         dev = {
             path = "~/git",
-            patterns = { "miversen33" },
+            patterns = { "miversen33", "nvim-island" },
             fallback = true
         },
         change_detection = {
