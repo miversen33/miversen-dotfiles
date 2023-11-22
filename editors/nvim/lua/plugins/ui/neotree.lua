@@ -46,6 +46,11 @@ local neo_tree = {
                 follow_current_file = {
                     enabled = true,
                 },
+                window = {
+                    mappings = {
+                        ["/"] = "noop"
+                    }
+                }
             },
             log = {
                 level = "debug",

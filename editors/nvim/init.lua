@@ -228,7 +228,7 @@ local function setup_advanced_keycommands()
         },
         body = "t",
         heads = {
-            { "f",     cmd 'Neotree filesystem reveal right',                           { desc =
+            { "f",     cmd 'Neotree filesystem reveal',                           { desc =
             "Opens Neotree File Explorer", silent = true } },
             { "h?",    cmd "Telescope help_tags",                                       { desc = "Open Help Tags",
                 silent = true } },
