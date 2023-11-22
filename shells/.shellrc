@@ -422,6 +422,8 @@ function notify(){
     -d "\"${job}\" completed" 2>/dev/null 1>/dev/null
 }
 
+alias nvim_repro="pushd /tmp 2>&1 1>/dev/null; nvim --clean -u ~/.dotfiles/editors/nvim/repro.lua; popd 2>&1 1>/dev/null"
+
 debug_nvim() {
   if [ -n "${DEBUG_NEOVIM_CONFIG+set}" ]; then
     echo "Disabling Debug Neovim Flag"
