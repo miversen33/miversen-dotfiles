@@ -11,8 +11,11 @@ local function lualine_config()
         return vim.api.nvim_buf_get_option(0, "filetype")
     end
     local format_name = function(output)
-        if _G.__miversen_config_excluded_filetypes_array[get_buf_filetype()] then
-            return ""
+        for _, excluded_filetype in ipairs(_G.__miversen_config_excluded_filetypes_array) do
+            if excluded_filetype == get_buf_filetype() then
+                output = ""
+                break
+            end
         end
         return output
     end
