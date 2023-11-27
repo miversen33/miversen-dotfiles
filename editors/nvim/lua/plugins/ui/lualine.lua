@@ -69,8 +69,6 @@ local function lualine_config()
                 },
             },
             lualine_x = {
-                "import",
-            },
             -- Combine x and y
             lualine_y = {
                 {
