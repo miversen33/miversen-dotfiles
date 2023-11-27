@@ -88,6 +88,8 @@ local function setup_basic_keycommands()
         vim.notify(string.format("Saving %s", filename))
         vim.api.nvim_command(':w')
     end
+    local jump_to_next_word_pattern = [[\v['"({[< ]@<=(\w)|^(\w)|([]'"\>)}]\.)@<=(\w)|(['"])@<=([][(){}.,;])(['"])]]
+
     -- Keymappings
     vim.keymap.set('n', '<Space>', '<Nop>', { silent = true })
     vim.g.mapleader = ' '
@@ -113,6 +115,13 @@ local function setup_basic_keycommands()
     vim.keymap.set('i', '<C-s>', save, { silent = true })
     vim.keymap.set('n', 'zz', 'zc', { silent = true })     -- Fold
     vim.keymap.set('n', 'zZ', 'zo', { silent = true })     -- Unfold
+    vim.keymap.set({'n', 'v'}, 'e', function()
+        vim.fn.search(jump_to_next_word_pattern)
+    end)
+    vim.keymap.set({'n', 'v'}, 'E', function()
+    --(word) backwards
+      vim.fn.search(jump_to_next_word_pattern, 'b')
+    end)
 end
 
 local function setup_advanced_keycommands()
