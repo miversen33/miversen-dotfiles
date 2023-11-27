@@ -332,7 +332,7 @@ local function setup_advanced_keycommands()
         }
     })
     hydra({
-        name = "LSP Mode",
+        name = "Helper Mode",
         mode = { "n" },
         config = {
             color = "pink",
@@ -347,96 +347,80 @@ local function setup_advanced_keycommands()
         hint = [[
     LSP
     ^
-    Common Actions
-    - _h_: Show Hover Doc
-    - _f_: Format Buffer
-    - _a_: Code Actions
-    - _s_: Show Definitions
-    - _d_: Show Diagnostics
-    - _w_: Show Workspace Diagnostics
-    - _n_: Rename
+    - _lf_: Format Buffer
+    - _la_: Code Actions
+    - _ls_: Show Definitions
+    - _ld_: Show Diagnostics
+    - _lw_: Show Workspace Diagnostics
+    - _ln_: Rename
     ^
     Help
-    - _e_: Show Declerations
-    - _D_: Show Type Definition
-    - _j_: Show Sig Help
-    - _o_: Show Implementation
-    - _r_: Show References
+    - _hh_: Show Hover Doc
+    - _he_: Show Declerations
+    - _hD_: Show Type Definition
+    - _hj_: Show Sig Help
+    - _ho_: Show Implementation
+    - _hr_: Show References
+    ^
+    DAP
+    ^
+    _dt_: Toggle UI
+    ^
+    _dd_: Toggle Breakpoint
+    _dD_: Set Conditional Breakpoint
+    _dc_: Continue on Break
+    _dS_: Stop Debugger
+    ^
+    _dj_: Step out of code block
+    _dk_: Step over code block
+    _dl_: Step into code block
+    _dL_: Launches DAP Server
+    _dr_: Open DAP REPL
+    ^
+    Unit Tests
+    _tt_: Toggle Unit Test Window
+    _tr_: Run unit tests for file
+    _ta_: Run all unit tests for project
+    _tl_: Re-run last unit test
+    _ts_: Stop all unit tests
+    _td_: Run unit tests in DAP mode
     ^
     _;_/_q_/_<Esc>_: Exit Hydra
     ]],
         body = ";",
         heads = {
-            { "s",     cmd 'Glance definitions',                            { desc = "Show Definition", silent = true } },
-            { "h",     function() require("pretty_hover").hover() end,      { desc = "Show Hover Doc", silent = true } },
-            { "o",     cmd 'Glance implementations',                        { desc = "Show Implementations",
+            { "ls",     cmd 'Glance definitions',                            { desc = "Show Definition", silent = true } },
+            { "hh",     function() require("pretty_hover").hover() end,      { desc = "Show Hover Doc", silent = true } },
+            { "ho",     cmd 'Glance implementations',                        { desc = "Show Implementations",
                 silent = true } },
-            { "j",     vim.lsp.buf.signature_help,                          { desc = "Show Sig Help", silent = true } },
-            { "r",     cmd 'Glance references',                             { desc = "Show References", silent = true } },
-            { "n",     vim.lsp.buf.rename,                                  { desc = "Rename Object Under Cursor",
+            { "hj",     vim.lsp.buf.signature_help,                          { desc = "Show Sig Help", silent = true } },
+            { "hr",     cmd 'Glance references',                             { desc = "Show References", silent = true } },
+            { "ln",     vim.lsp.buf.rename,                                  { desc = "Rename Object Under Cursor",
                 silent = true } },
-            { "f",     function() vim.lsp.buf.format({ async = true }) end, { desc = "Format Buffer", silent = true } },
-            { "a",     vim.lsp.buf.code_action,                             { desc = "Show Code Actions", silent = true } },
-            { "d",     cmd 'TroubleToggle document_diagnostics',            { desc = "Show Diagnostics", silent = true } },
-            { "w",     cmd 'TroubleToggle workspace_diagnostics',           { desc = "Show Workspace Diagnostics",
+            { "lf",     function() vim.lsp.buf.format({ async = true }) end, { desc = "Format Buffer", silent = true } },
+            { "la",     vim.lsp.buf.code_action,                             { desc = "Show Code Actions", silent = true } },
+            { "ld",     cmd 'TroubleToggle document_diagnostics',            { desc = "Show Diagnostics", silent = true } },
+            { "lw",     cmd 'TroubleToggle workspace_diagnostics',           { desc = "Show Workspace Diagnostics",
                 silent = true } },
-            { "D",     cmd 'Glance type_definitions',                       { desc = "Show Type Definition",
+            { "hD",     cmd 'Glance type_definitions',                       { desc = "Show Type Definition",
                 silent = true } },
-            { "e",     vim.lsp.buf.decleration,                             { desc = "Show Declerations", silent = true } },
-            { ";",     nil,                                                 { desc = "quit", exit = true, nowait = true } },
-            { "q",     nil,                                                 { desc = "quit", exit = true, nowait = true } },
-            { "<Esc>", nil,                                                 { desc = "quit", exit = true, nowait = true } }
-        }
-    })
-    hydra({
-        name = "DAP",
-        mode = { "n" },
-        config = {
-            color = "pink",
-            invoke_on_body = true,
-            hint = {
-                type = "window",
-                position = "middle-right",
-                border = "rounded",
-                show_name = true,
-            },
-        },
-        hint = [[
-    DAP
-    _t_: Toggle UI
-    ^
-    _d_: Toggle Breakpoint
-    _D_: Set Conditional Breakpoint
-    _c_: Continue on Break
-    _S_: Stop Debugger
-    ^
-    _j_: Step out of code block
-    _k_: Step over code block
-    _l_: Step into code block
-    _L_: Launches DAP Server
-    ^
-    _r_: Open Live REPL
-    ^
-    _s_/_q_/_<Esc>_: Exit Hydra
-    ]],
-        body = "s",
-        heads = {
-            { "t", cmd "lua require('dapui').toggle()",                                  { desc = "Toggles the Dap UI",
+            { "he",     vim.lsp.buf.decleration,                             { desc = "Show Declerations", silent = true } },
+            { "dt", cmd "lua require('dapui').toggle()",                                  { desc = "Toggles the Dap UI",
                 silent = true } },
-            { "d", cmd "lua require('dap').toggle_breakpoint()",                         { desc = "Set Breakpoint",
+            { "dd", cmd "lua require('dap').toggle_breakpoint()",                         { desc = "Set Breakpoint",
                 silent = true } },
-            { "D", cmd "lua require('dap').set_breakpoint(vim.fn.input('Condition: '))",
+            { "dD", cmd "lua require('dap').set_breakpoint(vim.fn.input('Condition: '))",
                                                                                              { desc =
                 "Set conditional Breakpoint", silent = true } },
-            { "c", cmd "lua require('dap').continue()",                                  { desc = "Continue on break",
+            { "dc", cmd "lua require('dap').continue()",                                  { desc = "Continue on break",
                 silent = true } },
-            { "j", cmd "lua require('dap').step_out()",                                  { desc =
+            { "dj", cmd "lua require('dap').step_out()",                                  { desc =
             "Step out of code block", silent = true } },
-            { "k", cmd "lua require('dap').step_over()",                                 { desc = "Step over code block",
+            { "dk", cmd "lua require('dap').step_over()",                                 { desc = "Step over code block",
                 silent = true } },
-            { "l", cmd "lua require('dap').step_into()",                                 { desc = "Step into code block",
+            { "dl", cmd "lua require('dap').step_into()",                                 { desc = "Step into code block",
                 silent = true } },
-            { "L", function()
+            { "dL", function()
                 local filetype = vim.api.nvim_buf_get_option(0, 'filetype')
                 local dap = require("dap")
                 if filetype == '' then filetype = 'nil' end
@@ -446,18 +430,20 @@ local function setup_advanced_keycommands()
                     print(string.format("No DAP Launch server configured for filetype %s", filetype))
                 end
             end, { desc = "Launches Dap Server" } },
-            { "r",     cmd "lua require('dap').repl.open()",                                                                     { desc =
-            "Open Live REPL", silent = true } },
-            { "S",
-                           cmd "lua require('dap').terminate({},{terminateDebuggee = true}, function() require('dap').close() end)",
-                                                                                                                                     { desc =
-                "Stop Debugger", exit = true } },
-            { "s",     nil,                                                                                                      { desc =
-            "quit", exit = true, nowait = true } },
-            { "q",     nil,                                                                                                      { desc =
-            "quit", exit = true, nowait = true } },
-            { "<Esc>", nil,                                                                                                      { desc =
-            "quit", exit = true, nowait = true } }
+            -- { "dr", cmd "lua require('neotest').run.run()", { desc = "Run Unit Tests", silent = true }},
+            { "dr",     cmd "lua require('dap').repl.open()", { desc = "Open Live REPL", silent = true } },
+            { "dS",     cmd "lua require('dap').terminate({},{terminateDebuggee = true}, function() require('dap').close() end)",
+                 { desc = "Stop Debugger", exit = true }
+            },
+            { "tt",     cmd "lua require('neotest').output_panel.toggle()", { desc = "Toggle Testing Output Panel" }},
+            { "tr",     cmd 'lua require("neotest").run.run(vim.fn.expand("%"))', { desc = "Runs unit tests for current file"}},
+            { "tl",     cmd 'lua require("neotest").run.run_last()', {desc = "Runs last unit test" }},
+            { "ta",     cmd "lua require('neotest').run.run()", { desc = "Runs all unit tests" }},
+            { "ts",     cmd "lua require('neotest').run.stop()", { desc = "Stops running unit tests"}},
+            { "td",     cmd "lua require('neotest').run.run({strategy = 'dap'})", { desc = "Runs unit tests in debug mode" }},
+            { ";",     nil,                                                 { desc = "quit", exit = true, nowait = true } },
+            { "q",     nil,                                                 { desc = "quit", exit = true, nowait = true } },
+            { "<Esc>", nil,                                                 { desc = "quit", exit = true, nowait = true } }
         }
     })
 
