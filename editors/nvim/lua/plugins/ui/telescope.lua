@@ -4,10 +4,9 @@ local telescope_dependencies = {
 
 local telescope = {
     "nvim-telescope/telescope.nvim",
-    dependencies = {
-        'nvim-lua/plenary.nvim'
-    }
-    -- telescope_dependencies
+    dependencies = telescope_dependencies,
+    cmd = {"Telescope"}
+
 }
 
 return telescope
