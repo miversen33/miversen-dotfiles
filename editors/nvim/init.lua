@@ -78,6 +78,8 @@ local function vim_settings()
     local uv = vim.uv or vim.loop
     _G.os_sep = uv.os_uname().sysname:lower():match('windows') and '\\' or '/' -- \ for windows, mac and linux both use \
     _G.__miversen_border_color = "#806d9c"
+    _G.__miversen_augroup = "miversen_config_augroup"
+    vim.api.nvim_create_augroup(_G.__miversen_augroup, { clear = true })
 end
 
 local function setup_basic_keycommands()
