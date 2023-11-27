@@ -28,6 +28,7 @@ local ide = {
     require(current_path .. 'muren'),
     require(current_path .. "hlslens"),
     require(current_path .. "vim-visual-multi"),
+    require(current_path .. "neotest"),
     --- Langauage Specific Stuff
     require(current_path .. "python"),
     require(current_path .. "rust"),
