@@ -1,4 +1,6 @@
-local sunglasses_opts = {}
+local sunglasses_opts = {
+    filter_percent = .35
+}
 
 local sunglasses = {
     "miversen33/sunglasses.nvim",
