@@ -83,6 +83,11 @@ local function vim_settings()
 end
 
 local function setup_basic_keycommands()
+    local function save()
+        local filename = vim.fn.expand("%:t")
+        vim.notify(string.format("Saving %s", filename))
+        vim.api.nvim_command(':w')
+    end
     -- Keymappings
     vim.keymap.set('n', '<Space>', '<Nop>', { silent = true })
     vim.g.mapleader = ' '
@@ -104,10 +109,8 @@ local function setup_basic_keycommands()
     vim.keymap.set('v', '<S-Tab>', ':<<CR>', { silent = true })
     vim.keymap.set('n', '<C-Del>', 'dw', { silent = true })
     vim.keymap.set('i', '<C-Del>', '<esc>ldwi', { silent = true })
-    vim.keymap.set('n', '<C-s>', ':w<CR>:lua vim.notify(string.format("Saved %s", vim.fn.expand("%:t")), "info")<CR>',
-        { silent = true })
-    vim.keymap.set('i', '<C-s>',
-        '<esc>:w<CR>:lua vim.notify(string.format("Saved %s", vim.fn.expand("%:t")), "info")<CR>', { silent = true })
+    vim.keymap.set('n', '<C-s>', save, { silent = true })
+    vim.keymap.set('i', '<C-s>', save, { silent = true })
     vim.keymap.set('n', 'zz', 'zc', { silent = true })     -- Fold
     vim.keymap.set('n', 'zZ', 'zo', { silent = true })     -- Unfold
 end
