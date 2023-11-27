@@ -69,8 +69,6 @@ local function lualine_config()
                 },
             },
             lualine_x = {
-            -- Combine x and y
-            lualine_y = {
                 {
                     function()
                         local lsps = vim.lsp.get_active_clients({ bufnr = vim.fn.bufnr() })
@@ -100,6 +98,7 @@ local function lualine_config()
                 "encoding",
                 "progress",
             },
+            lualine_y = {},
             lualine_z = {
                 "location",
                 {
