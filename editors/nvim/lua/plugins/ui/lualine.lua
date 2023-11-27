@@ -1,5 +1,10 @@
 local function lualine_config()
     vim.g.gitblame_display_virtual_text = 0
+    vim.api.nvim_set_hl(0, 'Gitblame', {
+        fg = "#744F82",
+        italic = true
+    })
+    vim.g.gitblame_highlight_group = "Gitblame"
     local lualine = require("lualine")
     local git_blame = require("gitblame")
     local get_buf_filetype = function()
