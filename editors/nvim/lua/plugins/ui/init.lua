@@ -20,6 +20,7 @@ local ui = {
     require(ui_path .. "sunglasses"),
     require(ui_path .. "marks"),
     require(ui_path .. "illuminate"),
+    require(ui_path .. "neoscroll"),
 }
 
 return ui
