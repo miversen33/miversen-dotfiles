@@ -92,6 +92,7 @@ pre_profile_rc() {
     for dir in $HOME/.local/*; do
       [ -d "$dir" ] && [ -d "$dir/bin" ] && [[ "$PATH" != *"$dir/bin"* ]] && PATH="$dir/bin:$PATH"
     done
+    [ -d $HOME/.local/bin ] && [[ "$PATH" != *"$HOME/.local/bin"* ]] && PATH="$HOME/.local/bin:$PATH"
   fi
 
   [ -d $HOME/.local/programs/neovim/current ] && [[ "$PATH" != *"$HOME/.local/programs/neovim/current/bin" ]] && PATH="$HOME/.local/programs/neovim/current/bin:$PATH" 
