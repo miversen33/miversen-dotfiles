@@ -25,6 +25,9 @@ local function mason_config()
     require("mason").setup({
         ensure_installed = required_mason_modules,
         automatic_installation = true,
+        ui = {
+            border = "rounded"
+        }
     })
     local lspconf = require("lspconfig")
     local mason_lspconfig = require("mason-lspconfig")
