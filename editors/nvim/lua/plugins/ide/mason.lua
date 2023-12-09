@@ -9,7 +9,7 @@ local required_mason_modules = {
 
 local lsp_settings = {
     svelte = {
-        filetypes = { "svelte", "html", "js" },
+        filetypes = { "svelte", "html", "javascript", "typescript" },
     },
     ruff_lsp = {
         settings = {
