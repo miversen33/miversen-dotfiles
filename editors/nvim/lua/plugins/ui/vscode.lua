@@ -8,6 +8,7 @@ local function vscode_config()
         italic_comments = true,
         group_overrides = {
             CursorLine = { underline = true },
+            WinBar = { bg = nil }
         },
     })
     vscode.load()
