@@ -72,9 +72,7 @@ local function mason_config()
             local lsp_setting = lsp_settings[lsp] or {}
             local _ = lsp_setting.on_attach
             local lsp_on_attach = function(client, bufnr)
-                if client.server_capabilities.inlayHintProvider then
-                    vim.lsp.inlay_hint(bufnr, true)
-                end
+                vim.lsp.inlay_hint.enable(bufnr, true)
                 if _ then
                     _(client, bufnr)
                 end
@@ -85,7 +83,7 @@ local function mason_config()
             lspconf[lsp].setup(lsp_setting)
         end,
         ["rust_analyzer"] = function()
-            require("rust-tools").setup()
+            -- Purposely leaving this empty as rustaceanvim sets this up
         end,
         ["jdtls"] = function()
 
@@ -139,7 +137,7 @@ local mason_dependencies = {
     "hrsh7th/cmp-nvim-lsp", -- Neovim LSP feeder for cmp
     "jbyuki/one-small-step-for-vimkind", -- Neovim Dap
     "mfussenegger/nvim-dap-python", -- Python Dap
-    "simrat39/rust-tools.nvim", -- Neovim Rust Tools
+    "mrcjkb/rustaceanvim", -- Neovim Rust Tools new?
     "mfussenegger/nvim-jdtls", -- Neovim java tools
 }
 
