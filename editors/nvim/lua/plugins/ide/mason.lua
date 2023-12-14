@@ -27,8 +27,13 @@ local function mason_config()
         automatic_installation = true,
         ui = {
             border = "rounded"
+        },
+        registries = {
+            "github:nvim-java/mason-registry",
+            "github:mason-org/mason-registry"
         }
     })
+    require("java").setup()
     local lspconf = require("lspconfig")
     local mason_lspconfig = require("mason-lspconfig")
     local cmp_nvim_lsp = require("cmp_nvim_lsp")
@@ -85,9 +90,6 @@ local function mason_config()
         ["rust_analyzer"] = function()
             -- Purposely leaving this empty as rustaceanvim sets this up
         end,
-        ["jdtls"] = function()
-
-        end
     })
     local python_dap = require("dap-python")
     local debugpy_path = vim.fn.stdpath("data") .. "/mason/packages/debugpy/venv/bin/python3"
@@ -138,7 +140,15 @@ local mason_dependencies = {
     "jbyuki/one-small-step-for-vimkind", -- Neovim Dap
     "mfussenegger/nvim-dap-python", -- Python Dap
     "mrcjkb/rustaceanvim", -- Neovim Rust Tools new?
-    "mfussenegger/nvim-jdtls", -- Neovim java tools
+    {
+        "nvim-java/nvim-java",
+        dependencies = {
+            'nvim-java/lua-async-await',
+            'nvim-java/nvim-java-core',
+            'nvim-java/nvim-java-test',
+            'nvim-java/nvim-java-dap',
+        }
+    }
 }
 
 local mason = {
