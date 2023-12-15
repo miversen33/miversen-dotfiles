@@ -31,8 +31,12 @@ if not dap.configurations.c then
             type = "codelldb",
             request = "launch",
             program = function()
-                previous_selection = vim.fn.input("Path to executable: ", previous_selection)
-                return previous_selection
+                return coroutine.create(function(dap_run_co)
+                    vim.ui.input({ prompt = "Executable Path:", default = previous_selection }, function(selection)
+                        previous_selection = selection
+                        coroutine.resume(dap_run_co, selection)
+                    end)
+                end)
             end,
             cwd = '${workspaceFolder}',
             stopOnEntry = false
