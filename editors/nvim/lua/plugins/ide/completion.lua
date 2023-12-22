@@ -28,7 +28,7 @@ local function config()
     -- https://github.com/hrsh7th/nvim-cmp/wiki/Menu-Appearance#how-to-get-types-on-the-left-and-offset-the-menu
     -- Customization for Pmenu
     -- Weird side-effect of this is dropbar looks kinda fucky now
-    vim.api.nvim_set_hl(0, "Custom_CmpFloatBoarder", { fg = "#806d9c"})
+    vim.api.nvim_set_hl(0, "Custom_CmpFloatBorder", { fg = vim.g.__miversen_border_color })
     vim.api.nvim_set_hl(0, "Custom_CmpItemAbbrDeprecated", { fg = "#7E8294", bg = "NONE", strikethrough = true })
     vim.api.nvim_set_hl(0, "Custom_CmpItemAbbrMatch", { fg = "#82AAFF", bg = "NONE", bold = true })
     vim.api.nvim_set_hl(0, "Custom_CmpItemAbbrMatchFuzzy", { fg = "#82AAFF", bg = "NONE", bold = true })
@@ -118,13 +118,13 @@ local function config()
         },
         window = {
             completion = {
-                winhighlight = "Normal:Pmenu,FloatBorder:CmpFloatBoarder,Search:NONE,CursorLine:PmenuSel,CmpFloatBoarder:Custom_CmpFloatBoarder,CmpItemAbbrDeprecated:Custom_CmpItemAbbrDeprecated,CmpItemAbbrMatch:Custom_CmpItemAbbrMatch,CmpItemAbbrMatchFuzzy:Custom_CmpItemAbbrMatchFuzzy,CmpItemMenu:Custom_CmpItemMenu,CmpItemKindField:Custom_CmpItemKindField,CmpItemKindProperty:Custom_CmpItemKindProperty,CmpItemKindEvent:Custom_CmpItemKindEvent,CmpItemKindText:Custom_CmpItemKindText,CmpItemKindEnum:Custom_CmpItemKindEnum,CmpItemKindKeyword:Custom_CmpItemKindKeyword,CmpItemKindConstant:Custom_CmpItemKindConstant,CmpItemKindConstructor:Custom_CmpItemKindConstructor,CmpItemKindReference:Custom_CmpItemKindReference,CmpItemKindFunction:Custom_CmpItemKindFunction,CmpItemKindStruct:Custom_CmpItemKindStruct,CmpItemKindClass:Custom_CmpItemKindClass,CmpItemKindModule:Custom_CmpItemKindModule,CmpItemKindOperator:Custom_CmpItemKindOperator,CmpItemKindVariable:Custom_CmpItemKindVariable,CmpItemKindFile:Custom_CmpItemKindFile,CmpItemKindUnit:Custom_CmpItemKindUnit,CmpItemKindSnippet:Custom_CmpItemKindSnippet,CmpItemKindFolder:Custom_CmpItemKindFolder,CmpItemKindMethod:Custom_CmpItemKindMethod,CmpItemKindValue:Custom_CmpItemKindValue,CmpItemKindEnumMember:Custom_CmpItemKindEnumMember,CmpItemKindInterface:Custom_CmpItemKindInterface,CmpItemKindColor:Custom_CmpItemKindColor,CmpItemKindTypeParameter:Custom_CmpItemKindTypeParameter",
+                winhighlight = "Normal:Pmenu,FloatBorder:CmpFloatBorder,Search:NONE,CursorLine:PmenuSel,CmpFloatBorder:Custom_CmpFloatBorder,CmpItemAbbrDeprecated:Custom_CmpItemAbbrDeprecated,CmpItemAbbrMatch:Custom_CmpItemAbbrMatch,CmpItemAbbrMatchFuzzy:Custom_CmpItemAbbrMatchFuzzy,CmpItemMenu:Custom_CmpItemMenu,CmpItemKindField:Custom_CmpItemKindField,CmpItemKindProperty:Custom_CmpItemKindProperty,CmpItemKindEvent:Custom_CmpItemKindEvent,CmpItemKindText:Custom_CmpItemKindText,CmpItemKindEnum:Custom_CmpItemKindEnum,CmpItemKindKeyword:Custom_CmpItemKindKeyword,CmpItemKindConstant:Custom_CmpItemKindConstant,CmpItemKindConstructor:Custom_CmpItemKindConstructor,CmpItemKindReference:Custom_CmpItemKindReference,CmpItemKindFunction:Custom_CmpItemKindFunction,CmpItemKindStruct:Custom_CmpItemKindStruct,CmpItemKindClass:Custom_CmpItemKindClass,CmpItemKindModule:Custom_CmpItemKindModule,CmpItemKindOperator:Custom_CmpItemKindOperator,CmpItemKindVariable:Custom_CmpItemKindVariable,CmpItemKindFile:Custom_CmpItemKindFile,CmpItemKindUnit:Custom_CmpItemKindUnit,CmpItemKindSnippet:Custom_CmpItemKindSnippet,CmpItemKindFolder:Custom_CmpItemKindFolder,CmpItemKindMethod:Custom_CmpItemKindMethod,CmpItemKindValue:Custom_CmpItemKindValue,CmpItemKindEnumMember:Custom_CmpItemKindEnumMember,CmpItemKindInterface:Custom_CmpItemKindInterface,CmpItemKindColor:Custom_CmpItemKindColor,CmpItemKindTypeParameter:Custom_CmpItemKindTypeParameter",
                 col_offset = -3,
                 side_padding = 0,
                 border = "rounded"
             },
             documentation = {
-                winhighlight = "Normal:Pmenu,FloatBorder:CmpFloatBoarder,Search:NONE",
+                winhighlight = "Normal:Pmenu,FloatBorder:CmpFloatBorder,Search:NONE",
                 border = "rounded"
             }
         },
