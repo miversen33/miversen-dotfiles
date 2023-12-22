@@ -34,7 +34,9 @@ local function mason_config()
         }
     })
     require("java").setup()
+    vim.api.nvim_set_hl(0, "LspInfoBorder", { fg = _G.__miversen_border_color})
     local lspconf = require("lspconfig")
+    require("lspconfig.ui.windows").default_options.border = "rounded"
     local mason_lspconfig = require("mason-lspconfig")
     local cmp_nvim_lsp = require("cmp_nvim_lsp")
     local dap = require("dap")
