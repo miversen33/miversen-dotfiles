@@ -89,6 +89,8 @@ local function setup_basic_keycommands()
         local filename = vim.fn.expand("%:t")
         vim.notify(string.format("Saving %s", filename))
         vim.api.nvim_command(':w')
+        local esc = vim.api.nvim_replace_termcodes('<ESC>', true, false, true)
+        vim.api.nvim_feedkeys(esc, 'm', false)
     end
     local jump_to_next_word_pattern = [[\v['"({[< ]@<=(\w)|^(\w)|([]'"\>)}]\.)@<=(\w)|(['"])@<=([][(){}.,;])(['"])]]
 
