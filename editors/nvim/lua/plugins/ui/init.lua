@@ -21,6 +21,7 @@ local ui = {
     require(ui_path .. "marks"),
     require(ui_path .. "illuminate"),
     require(ui_path .. "neoscroll"),
+    require(ui_path .. "registers"),
 }
 
 return ui
