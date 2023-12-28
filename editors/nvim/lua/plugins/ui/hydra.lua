@@ -1,5 +1,5 @@
 local hydra = {
-    "nvim-island/hydra.nvim",
+    "nvimtools/hydra.nvim",
 }
 
 return hydra

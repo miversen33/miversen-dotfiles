@@ -157,7 +157,7 @@ local function setup_advanced_keycommands()
             hint = {
                 type = 'window',
                 position = 'bottom',
-                border = 'rounded',
+                float_opts = { border = 'rounded', },
                 show_name = true
             }
         },
@@ -194,7 +194,7 @@ local function setup_advanced_keycommands()
             hint = {
                 type = "window",
                 position = "top-right",
-                border = "rounded",
+                float_opts = { border = 'rounded', },
                 show_name = true
             },
         },
@@ -240,7 +240,7 @@ local function setup_advanced_keycommands()
             hint = {
                 type = "window",
                 position = "bottom",
-                border = "rounded",
+                float_opts = { border = 'rounded', },
                 show_name = true,
             }
         },
@@ -285,7 +285,7 @@ local function setup_advanced_keycommands()
             hint = {
                 type = "window",
                 position = "top",
-                border = "rounded",
+                float_opts = { border = 'rounded', },
                 show_name = true
             },
         },
@@ -344,7 +344,7 @@ local function setup_advanced_keycommands()
             hint = {
                 type = "window",
                 position = "bottom-right",
-                border = "rounded",
+                float_opts = { border = 'rounded', },
                 show_name = true
             },
         },
