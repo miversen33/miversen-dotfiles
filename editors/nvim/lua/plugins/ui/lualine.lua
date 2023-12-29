@@ -146,7 +146,7 @@ end
 local lualine = {
     "nvim-lualine/lualine.nvim", -- Neovim status line
     dependencies = {
-        "kyazdani42/nvim-web-devicons",
+        "nvim-tree/nvim-web-devicons",
         "onsails/lspkind-nvim",
         "f-person/git-blame.nvim",
     },
