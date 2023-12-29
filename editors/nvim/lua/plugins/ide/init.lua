@@ -33,7 +33,8 @@ local ide = {
     require(current_path .. "python"),
     require(current_path .. "rust"),
     require(current_path .. "svelte"),
-    require(current_path .. "haskell")
+    require(current_path .. "haskell"),
+    require(current_path .. "neovim")
 }
 
 return ide
