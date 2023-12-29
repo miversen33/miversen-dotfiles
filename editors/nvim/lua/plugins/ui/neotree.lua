@@ -11,6 +11,7 @@ local neo_tree = {
         vim.api.nvim_set_hl(0, "NeoTreeCursorLine", { bold = true, underline = true })
         local neo_tree = require("neo-tree")
         local config = {
+            auto_clean_after_session_restore = true,
             popup_border_style = "rounded",
             source_selector = {
                 winbar = true,
