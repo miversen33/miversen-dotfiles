@@ -190,7 +190,7 @@ local dependencies = {
     "rcarriga/cmp-dap",                -- Neovim autocomplete for dap
     {
         "L3MON4D3/LuaSnip",                -- Neovim Lua based snippet manager
-        build = "make install_jsregex"
+        build = "make install_jsregexp"
     },
     "saadparwaiz1/cmp_luasnip",        -- Neovim LuaSnip autocompletion engine for nvim-cmp
     "hrsh7th/cmp-nvim-lsp",            -- vim/neovim snippet stuffs
