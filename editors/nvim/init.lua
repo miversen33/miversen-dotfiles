@@ -453,7 +453,7 @@ local function setup_advanced_keycommands()
 
     local function do_exit()
         vim.cmd('noh')
-        local success, notify, hover, specs = nil, nil, nil, nil
+        local success, notify, hover, specs, cmp = nil, nil, nil, nil, nil
         success, notify = pcall(require, "notify")
         if success then
             notify.dismiss()
@@ -465,6 +465,14 @@ local function setup_advanced_keycommands()
         success, specs = pcall(require, "specs")
         if success then
             specs.show_specs()
+        end
+        success, _ = pcall(require, "fidget")
+        if success then
+            vim.cmd('Fidget clear')
+        end
+        success, cmp = pcall(require, 'cmp')
+        if success then
+            cmp.close()
         end
         local key = vim.api.nvim_replace_termcodes('<ESC>', true, false, true)
         vim.api.nvim_feedkeys(key, 'n', false)
