@@ -67,7 +67,11 @@ local function config()
     vim.api.nvim_set_hl(0, "Custom_CmpItemKindColor", { fg = "#D8EEEB", bg = "#58B5A8" })
     vim.api.nvim_set_hl(0, "Custom_CmpItemKindTypeParameter", { fg = "#D8EEEB", bg = "#58B5A8" })
 
-
+    luasnip.setup({
+        load_ft_func = require("luasnip_snippets.common.snip_utils").load_ft_func,
+        ft_func = require("luasnip_snippets.common.snip_utils").ft_func,
+        enable_autosnippets = true
+    })
     luasnip.config.set_config({ history = true, update_events = "TextChanged,TextChangedI" })
     require("luasnip.loaders.from_vscode").lazy_load()
     local next_option_mapping = function(fallback)
@@ -184,7 +188,10 @@ local function config()
 end
 local dependencies = {
     "rcarriga/cmp-dap",                -- Neovim autocomplete for dap
-    "L3MON4D3/LuaSnip",                -- Neovim Lua based snippet manager
+    {
+        "L3MON4D3/LuaSnip",                -- Neovim Lua based snippet manager
+        build = "make install_jsregex"
+    },
     "saadparwaiz1/cmp_luasnip",        -- Neovim LuaSnip autocompletion engine for nvim-cmp
     "hrsh7th/cmp-nvim-lsp",            -- vim/neovim snippet stuffs
     "hrsh7th/cmp-buffer",              -- vim/neovim snippet stuffs
@@ -195,6 +202,17 @@ local dependencies = {
     "theHamsta/nvim-dap-virtual-text", -- Neovim DAP Virutal Text lol what else do you think this is?
     "ray-x/cmp-treesitter",            -- Neovim snippet for treesitter (Maybe replace the buffer completion?)
     "Saecki/crates.nvim",              -- Neovim crates snippet/completion engine
+    {
+        "mireq/luasnip-snippets",           -- vim-snippets ported to luasnip
+        dependencies = { "L3MON4D3/LuaSnip"},
+        init = function()
+            vim.g.snips_author = "miversen33"
+            vim.g.snips_email = "miversen33@gmail.com"
+            vim.g.snips_github = "https://github.com/miversen33"
+            vim.g.snips_company = "company"
+            require("luasnip_snippets.common.snip_utils").setup()
+        end
+    }
 }
 
 local completion = { {
