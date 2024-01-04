@@ -74,6 +74,7 @@ function M.generate()
             },
         },
         domains = domains,
+        blur = false,
         raw = {
             window_close_confirmation = 'NeverPrompt',
             -- Stop telling me glyphs are missing
