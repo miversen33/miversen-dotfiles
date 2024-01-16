@@ -87,8 +87,12 @@ end
 local function setup_basic_keycommands()
     local function save()
         local filename = vim.fn.expand("%:t")
-        vim.notify(string.format("Saving %s", filename))
-        vim.api.nvim_command(':w')
+        local write_success, error_message = pcall(vim.api.nvim_command, ':w')
+        if write_success then
+            vim.notify(string.format("Saving %s", filename), vim.log.levels.INFO)
+        else
+            vim.notify(string.format("Error while saving %s\n\t%s", filename, error_message), vim.log.levels.ERROR)
+        end
         local esc = vim.api.nvim_replace_termcodes('<ESC>', true, false, true)
         vim.api.nvim_feedkeys(esc, 'm', false)
     end
@@ -115,8 +119,7 @@ local function setup_basic_keycommands()
     vim.keymap.set('v', '<S-Tab>', ':<<CR>', { silent = true })
     vim.keymap.set('n', '<C-Del>', 'dw', { silent = true })
     vim.keymap.set('i', '<C-Del>', '<esc>ldwi', { silent = true })
-    vim.keymap.set('n', '<C-s>', save, { silent = true })
-    vim.keymap.set('i', '<C-s>', save, { silent = true })
+    vim.keymap.set({"n", "i", "v"}, "<C-s>", save, {silent = true})
     vim.keymap.set('n', 'zz', 'zc', { silent = true })     -- Fold
     vim.keymap.set('n', 'zZ', 'zo', { silent = true })     -- Unfold
     vim.keymap.set({'n', 'v'}, 'e', function()
