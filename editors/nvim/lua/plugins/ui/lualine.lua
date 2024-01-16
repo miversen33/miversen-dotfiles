@@ -1,3 +1,12 @@
+local extended_mode_map = {
+    dap="",
+    repl="ﲵ",
+    lsp="",
+    test="ﭧ",
+    search="",
+}
+
+-- TODO: Add hydra mode and color of some kind?
 local function lualine_config()
     vim.g.gitblame_display_virtual_text = 0
     vim.api.nvim_set_hl(0, 'Gitblame', {
@@ -32,6 +41,11 @@ local function lualine_config()
                     "mode",
                     fmt = function(output)
                         return output:len() > 0 and output:sub(1,1):upper() or ""
+                    end
+                },
+                {
+                    function()
+                        return extended_mode_map[vim.g.__miversen_extended_mode] or ''
                     end
                 },
                 {
