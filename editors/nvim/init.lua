@@ -1,13 +1,13 @@
 vim.g.neo_tree_remove_legacy_commands = 1
 -- Setting Basic Vim Settings
 local function vim_settings()
-    -- local undo_dir = vim.fn.stdpath('cache') .. "/undo/"
-    -- vim.fn.mkdir(undo_dir, 'p')
+    local undo_dir = vim.fn.stdpath('cache') .. "/undo/"
+    vim.fn.mkdir(undo_dir, 'p')
     -- Fixes wezterm artifacts in muxer :(
     vim.opt.termsync = false
     vim.opt.undofile  = true
     vim.opt.splitkeep = 'screen'
-    -- vim.opt.undodir       = undo_dir
+    vim.opt.undodir       = undo_dir
     vim.opt.fillchars:append(',eob: ')
     vim.opt.scrolloff     = 3
     vim.opt.undolevels    = 1000
