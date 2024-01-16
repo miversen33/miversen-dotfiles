@@ -68,12 +68,11 @@ local function config()
     vim.api.nvim_set_hl(0, "Custom_CmpItemKindTypeParameter", { fg = "#D8EEEB", bg = "#58B5A8" })
 
     luasnip.setup({
-        load_ft_func = require("luasnip_snippets.common.snip_utils").load_ft_func,
-        ft_func = require("luasnip_snippets.common.snip_utils").ft_func,
-        enable_autosnippets = true
+        enable_autosnippets = true,
+        history = true,
+        update_events = "TextChanged,TextChangedI"
     })
-    luasnip.config.set_config({ history = true, update_events = "TextChanged,TextChangedI" })
-    require("luasnip.loaders.from_vscode").lazy_load()
+    require("luasnip.loaders.from_vscode").lazy_load({paths = { vim.fn.stdpath("config") .. "/snippets" }})
     local next_option_mapping = function(fallback)
         if cmp.visible() and cmp.get_active_entry() then
             cmp.select_next_item()
@@ -137,6 +136,8 @@ local function config()
             ["<Tab>"] = cmp.mapping(function(fallback)
                 if cmp.visible() then
                     cmp.select_next_item()
+                elseif luasnip.expand_or_locally_jumpable() then
+                    luasnip.expand_or_jump()
                 else
                     fallback()
                 end
@@ -146,6 +147,8 @@ local function config()
             ["<S-Tab>"] = cmp.mapping(function(fallback)
                 if cmp.visible() then
                     cmp.select_prev_item()
+                elseif luasnip.locally_jumpable(-1) then
+                    luasnip.jump(-1)
                 else
                     fallback()
                 end
@@ -202,17 +205,6 @@ local dependencies = {
     "theHamsta/nvim-dap-virtual-text", -- Neovim DAP Virutal Text lol what else do you think this is?
     "ray-x/cmp-treesitter",            -- Neovim snippet for treesitter (Maybe replace the buffer completion?)
     "Saecki/crates.nvim",              -- Neovim crates snippet/completion engine
-    {
-        "mireq/luasnip-snippets",           -- vim-snippets ported to luasnip
-        dependencies = { "L3MON4D3/LuaSnip"},
-        init = function()
-            vim.g.snips_author = "miversen33"
-            vim.g.snips_email = "miversen33@gmail.com"
-            vim.g.snips_github = "https://github.com/miversen33"
-            vim.g.snips_company = "company"
-            require("luasnip_snippets.common.snip_utils").setup()
-        end
-    }
 }
 
 local completion = { {
