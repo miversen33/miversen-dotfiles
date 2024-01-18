@@ -172,6 +172,14 @@ local function setup_advanced_keycommands()
     vim.keymap.set({ 'n', 'i', 'v', 's', 'c', 'x' }, '<Esc>', do_exit, { silent = true })
     vim.keymap.set('n', '<C-t>', ':CFloatTerm<CR>', { silent = true })
     vim.keymap.set({'n', 'v'}, '<C-f>', function() require("telescope").extensions.live_grep_args.live_grep_args() end, { silent = true})
+    vim.keymap.set(
+        {"n", "v", "i", "t"},
+        "<C-S-o>",
+        function()
+            require("telescope.command").load_command("builtin", "layout_config={width=0.95,height=0.9}")
+        end,
+        { silent = true }
+    )
     vim.keymap.set('t', '<C-t>', '<C-\\><C-n>:CFloatTerm<CR>', { silent = true })
     vim.keymap.set('n', '<C-p>', ':CSplitTerm vertical<CR>', { silent = true })
     vim.keymap.set('t', '<C-p>', '<C-\\><C-n>:CSplitTerm vertical<CR>', { silent = true })
