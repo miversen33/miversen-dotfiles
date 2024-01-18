@@ -169,7 +169,6 @@ local function setup_advanced_keycommands()
         local key = vim.api.nvim_replace_termcodes('<ESC>', true, false, true)
         vim.api.nvim_feedkeys(key, 'n', false)
     end
-    vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { silent = true})
     vim.keymap.set({ 'n', 'i', 'v', 's', 'c', 'x' }, '<Esc>', do_exit, { silent = true })
     vim.keymap.set('n', '<C-t>', ':CFloatTerm<CR>', { silent = true })
     vim.keymap.set({'n', 'v'}, '<C-f>', function() require("telescope").extensions.live_grep_args.live_grep_args() end, { silent = true})
