@@ -15,10 +15,19 @@ local setup_bufdel = function()
     )
 
     vim.api.nvim_create_user_command(
-        'Bda',
+        'Bdo',
         function(command)
             local bang = command.bang and "!" or ""
             vim.cmd("BufDelOthers" .. bang)
+        end,
+        {}
+    )
+
+    vim.api.nvim_create_user_command(
+        'Bda',
+        function(command)
+            local bang = command.bang and "!" or ""
+            vim.cmd("BufDelAll" .. bang)
         end,
         {}
     )
