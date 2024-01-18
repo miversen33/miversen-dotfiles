@@ -12,7 +12,6 @@ local ide = {
     require(current_path .. "icons"),
     require(current_path .. "indent"),
     require(current_path .. "move"),
-    require(current_path .. "bufdelete"),
     require(current_path .. "clipboard"),
     require(current_path .. "glance"),
     require(current_path .. "comment"),
