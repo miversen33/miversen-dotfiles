@@ -298,16 +298,6 @@ local function setup_plugins()
     vim.api.nvim_set_hl(0, "Pmenu", { fg = "#C5CDD9", bg = "NONE" })
     vim.api.nvim_set_hl(0, "FloatBorder", { fg = _G.__miversen_border_color})
     vim.api.nvim_set_hl(0, "NormalFloat", {fg="NONE", bg="NONE"})
-    vim.api.nvim_create_user_command("Bda",
-        function()
-            local callback = function(confirmation)
-                if confirmation and not string.match(confirmation, '^[nN]') then
-                    vim.cmd('%bd')
-                end
-            end
-            vim.ui.input({ prompt = "This command will kill all your buffers. Are you sure? [y/N] ", default = "n"}, callback)
-        end,
-    {})
     -- vim.api.nvim_set_hl(0, "ColorColumn", {fg = "#97E004"})
 end
 
