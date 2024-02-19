@@ -17,7 +17,7 @@ local setup_hydras = function()
         }
     })
     local cmd = require("hydra.keymap-util").cmd
-    local lsp_hydra, dap_hydra, repl_hydra, test_hydra = nil
+    local lsp_hydra, dap_hydra, repl_hydra, test_hydra = nil, nil, nil, nil
 
     local mode_hydras = {}
 
@@ -27,26 +27,36 @@ local setup_hydras = function()
         end
     end
 
+    -- TODO: For some reason, we actually have to quit the mode from within the mode
+    -- Hydra:exit doesn't seem to properly close out the hydra...
+    local hydra_disable_function = function(mode, is_exiting)
+        if mode == vim.g.__miversen_extended_mode then
+            vim.g.__miversen_extended_mode = nil
+        end
+
+        if mode_hydras[mode] and mode_hydras[mode].exit and not is_exiting then
+            mode_hydras[mode]:close()
+        end
+
+    end
+
     local hydra_enable_function = function(mode)
         vim.g.__miversen_extended_mode = mode
+        if not mode then
+            for mode_name, _ in pairs(mode_hydras) do
+                hydra_disable_function(mode_name)
+            end
+            return
+        end
         if mode_hydras[mode] and mode_hydras[mode].activate then
             mode_hydras[mode]:activate()
         end
     end
 
-    local hydra_disable_function = function(mode, is_exiting)
-        if mode == vim.g.__miversen_extended_mode then
-            vim.g.__miversen_extended_mode = nil
-        end
-        if mode_hydras[mode] and mode_hydras[mode].exit and not is_exiting then
-            mode_hydras[mode]:exit()
-        end
-    end
 
     local hydra_toggle_function = function(mode)
         return function()
-            print(string.format("Setting current mode to %s", mode))
-            if vim.g.__miversen_extended_mode == mode then
+            if vim.g.__miversen_extended_mode == mode or not mode then
                 hydra_disable_function(mode)
             else
                 hydra_enable_function(mode)
@@ -243,7 +253,7 @@ _q_: Quit Mode
         mode = { "n", "v" },
         config = {
             color = "pink",
-            invoke_on_body = true,
+            -- invoke_on_body = true,
             hint = {
                 type = "window",
                 position = "middle-right",
