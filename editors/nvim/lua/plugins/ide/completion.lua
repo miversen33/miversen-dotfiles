@@ -181,7 +181,7 @@ local function config()
         sources = cmp.config.sources({
             { name = "path" },
         }, {
-            { name = "cmdline" },
+            { name = "cmdline", keyword_pattern = [=[[^[:blank:]\!]*]=] },
         }),
     })
     cmp.setup.filetype({ "dap-repl", "dapui_watches", "dapui_hover" }, {
