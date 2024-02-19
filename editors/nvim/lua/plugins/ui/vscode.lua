@@ -7,7 +7,7 @@ local function vscode_config()
         -- Enable italic comment
         italic_comments = true,
         group_overrides = {
-            CursorLine = { underline = true },
+            -- CursorLine = { underline = true },
             WinBar = { bg = nil }
         },
     })
