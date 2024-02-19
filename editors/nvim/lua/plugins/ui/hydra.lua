@@ -832,7 +832,7 @@ _q_: Quit Mode
         heads = {
             {
                 "f",
-                cmd 'Neotree filesystem reveal',
+                cmd 'Neotree filesystem reveal right',
                 {
                     desc = "Opens Neotree File Explorer",
                     silent = true
