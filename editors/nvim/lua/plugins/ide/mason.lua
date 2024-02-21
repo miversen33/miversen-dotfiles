@@ -19,6 +19,11 @@ local lsp_settings = {
             client.server_capabilities.hoverProvider = false
         end,
     },
+    rust_analyzer = {
+        imports = {
+            granularity = {
+                group = "module",
+            },
 }
 
 local function mason_config()

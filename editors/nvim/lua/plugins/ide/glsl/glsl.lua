@@ -1,5 +1,5 @@
 local glsl = {
-    "tikhomirow/vim-glsl",
+    "tikhomirov/vim-glsl",
 }
 
 return glsl
