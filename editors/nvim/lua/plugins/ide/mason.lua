@@ -24,6 +24,17 @@ local lsp_settings = {
             granularity = {
                 group = "module",
             },
+            prefix = "self",
+        },
+        cargo = {
+            buildScripts = {
+                enable = true,
+            },
+        },
+        procMacro = {
+            enable = true
+        },
+    }
 }
 
 local function mason_config()
