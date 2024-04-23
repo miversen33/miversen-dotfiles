@@ -1,1 +1,1 @@
-au BufRead,BufNewFile *[Zz]sh[rc]?		set filetype=bash
+au BufRead,BufNewFile *[Zz]sh[rc]?*		set filetype=bash
