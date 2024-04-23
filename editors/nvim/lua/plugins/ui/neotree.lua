@@ -48,7 +48,13 @@ local neo_tree = {
                 },
                 window = {
                     mappings = {
-                        ["/"] = "noop"
+                        ["/"] = "noop",
+                        ["<Left>"] = function(state)
+                            if not state or not state.tree then return end -- Nothing to do if we didn't get a state
+                            vim.schedule(function()
+                                require("neo-tree.ui.renderer").focus_node(state, state.tree:get_node():get_parent_id())
+                            end)
+                        end
                     }
                 }
             },
