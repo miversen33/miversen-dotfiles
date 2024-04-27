@@ -47,6 +47,7 @@ function install(){
     debug "Checking if zshrc is linked correctly"
     if [ ! -f ~/.zshrc ]; then
       debug "No zshrc found, setting ${RC_PATH} as zshrc"
+      rm -f ~/.zshrc
       ln -s $RC_PATH ~/.zshrc
     elif [ "$(tail -n1 ~/.zshrc)" != "# miversen33 zshrc" ]; then
       old_zshrc_name=~/.zshrc-old-$cur_date
