@@ -76,7 +76,7 @@ function install(){
     error "Missing git! Please install git"
     return
   fi
-  plugins+=("git")
+  [ $(command -v git) ] && plugins+=("git")
   if [ ! -d $HOME/.oh-my-zsh ]; then
     echo "Installing oh my zsh"
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
