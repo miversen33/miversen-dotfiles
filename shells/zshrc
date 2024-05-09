@@ -417,7 +417,7 @@ if [ -z ${SKIP_CUSTOM+x} ]; then
     alias ls="eza --color=always --icons=always"
     alias lst="ls --tree --level 2"
   fi
-  alias lsa="ls -la"
+  alias lsa="ls -lah"
   alias less="less -r"
   alias ZSHRC="${EDITOR} ~/.zshrc && reload"
 fi
