@@ -30,6 +30,7 @@ local ide = {
     require(current_path .. "neotest"),
     require(current_path .. "scissors"),
     require(current_path .. "wakatime"),
+    require(current_path .. "grug-far"),
     --- Langauage Specific Stuff
     require(current_path .. "python"),
     require(current_path .. "rust"),
