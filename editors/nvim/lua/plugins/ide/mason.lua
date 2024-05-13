@@ -95,7 +95,9 @@ local function mason_config()
             local lsp_setting = lsp_settings[lsp] or {}
             local _ = lsp_setting.on_attach
             local lsp_on_attach = function(client, bufnr)
-                vim.lsp.inlay_hint.enable(bufnr, true)
+                vim.lsp.inlay_hint.enable(true, {
+                    bufnr = bufnr
+                })
                 if _ then
                     _(client, bufnr)
                 end
