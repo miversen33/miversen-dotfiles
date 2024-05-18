@@ -79,7 +79,8 @@ function M.generate()
         raw = {
             window_close_confirmation = 'NeverPrompt',
             -- Stop telling me glyphs are missing
-            warn_about_missing_glyphs = false
+            warn_about_missing_glyphs = false,
+            scrollback_lines = 4000
         }
     }
 
