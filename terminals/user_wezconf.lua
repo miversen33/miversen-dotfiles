@@ -44,7 +44,8 @@ function M.generate()
     -- "none"
     -- EG: pref_fonts = "none"
     local user_config = {
-        pref_fonts = {'JetBrains Mono', 'MesloLGS NF'},
+        window_decorations = false,
+        pref_fonts = {'JetBrains Mono', 'Fira Code', 'MesloLGS NF'},
         env_vars = { NOTMUX = "1" },
         tab_bar_appearance = 'Retro',
         tab_bar_location = 'Bottom',
