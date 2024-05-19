@@ -132,6 +132,7 @@ local function config()
             }
         },
         mapping = {
+            ["<C-Space>"] = cmp.mapping.complete(),
             ["<CR>"] = cmp.mapping.confirm({ select = true }),
             ["<Tab>"] = cmp.mapping(function(fallback)
                 if cmp.visible() then
