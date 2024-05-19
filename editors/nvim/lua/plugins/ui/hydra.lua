@@ -682,10 +682,10 @@ _q_: Quit Mode
             {
                 "?",
                 function()
-                    if test_hydra.hint.win then
-                        test_hydra.hint:close()
+                    if repl_hydra.hint.win then
+                        repl_hydra.hint:close()
                     else
-                        test_hydra.hint:show()
+                        repl_hydra.hint:show()
                     end
                 end,
                 {
