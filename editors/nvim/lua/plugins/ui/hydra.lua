@@ -645,7 +645,7 @@ _q_: Quit Mode
 ^          REPL
 ^
 --------------------------------
-_<C-S>_: Send current file to REPL
+_<C-s>_: Send current file to REPL
 _r_: Restart REPL
 ^
 -------------------------------
