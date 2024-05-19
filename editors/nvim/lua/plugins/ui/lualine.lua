@@ -17,7 +17,7 @@ local function lualine_config()
     local lualine = require("lualine")
     local git_blame = require("gitblame")
     local get_buf_filetype = function()
-        return vim.api.nvim_buf_get_option(0, "filetype")
+        return vim.api.nvim_get_option_value('filetype', { buf = 0})
     end
     local format_name = function(output)
         for _, excluded_filetype in ipairs(_G.__miversen_config_excluded_filetypes_array) do
@@ -93,26 +93,23 @@ local function lualine_config()
             lualine_x = {
                 {
                     function()
-                        local lsps = vim.lsp.get_active_clients({ bufnr = vim.fn.bufnr() })
                         local icon = require("nvim-web-devicons").get_icon_by_filetype(
-                        vim.api.nvim_buf_get_option(0, "filetype")
+                            vim.api.nvim_get_option_value("filetype", { buf = 0 })
                         )
-                        if lsps and #lsps > 0 then
-                            local names = {}
-                            for _, lsp in ipairs(lsps) do
-                                table.insert(names, lsp.name)
-                            end
-                            return string.format("%s %s", table.concat(names, ", "), icon or "")
-                        else
-                            return icon or ""
+                        local lsps = vim.lsp.get_clients({ bufnr = 0 })
+                        if not lsps or #lsps == 0 then return icon or "" end
+                        local names = {}
+                        for _, lsp in ipairs(lsps) do
+                            table.insert(names, lsp.name)
                         end
+                        return string.format("%s | %s", icon, table.concat(names, ", "))
                     end,
                     on_click = function()
                         vim.api.nvim_command("LspInfo")
                     end,
                     color = function()
                         local _, color = require("nvim-web-devicons").get_icon_cterm_color_by_filetype(
-                        vim.api.nvim_buf_get_option(0, "filetype")
+                            vim.api.nvim_get_option_value("filetype", { buf = 0 })
                         )
                         return { fg = color }
                     end,
