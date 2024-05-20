@@ -19,22 +19,22 @@ local lsp_settings = {
             client.server_capabilities.hoverProvider = false
         end,
     },
-    rust_analyzer = {
-        imports = {
-            granularity = {
-                group = "module",
-            },
-            prefix = "self",
-        },
-        cargo = {
-            buildScripts = {
-                enable = true,
-            },
-        },
-        procMacro = {
-            enable = true
-        },
-    }
+    -- rust_analyzer = {
+    --     imports = {
+    --         granularity = {
+    --             group = "module",
+    --         },
+    --         prefix = "self",
+    --     },
+    --     cargo = {
+    --         buildScripts = {
+    --             enable = true,
+    --         },
+    --     },
+    --     procMacro = {
+    --         enable = true
+    --     },
+    -- }
 }
 
 local function mason_config()
@@ -108,7 +108,8 @@ local function mason_config()
             lspconf[lsp].setup(lsp_setting)
         end,
         ["rust_analyzer"] = function()
-            -- Purposely leaving this empty as rustaceanvim sets this up
+            -- Purposely stubbing rust_analyzer out so rustaceanvim can do what it does
+            -- instead
         end,
     })
     local python_dap = require("dap-python")
@@ -159,7 +160,6 @@ local mason_dependencies = {
     "hrsh7th/cmp-nvim-lsp", -- Neovim LSP feeder for cmp
     "jbyuki/one-small-step-for-vimkind", -- Neovim Dap
     "mfussenegger/nvim-dap-python", -- Python Dap
-    "mrcjkb/rustaceanvim", -- Neovim Rust Tools new?
     {
         "nvim-java/nvim-java",
         dependencies = {
@@ -174,7 +174,7 @@ local mason_dependencies = {
 local mason = {
     "williamboman/mason.nvim",
     dependencies = mason_dependencies,
-    config = mason_config
+    config = mason_config,
 }
 
 return mason

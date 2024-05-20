@@ -1,7 +1,10 @@
+local rust_config = function()
+end
 local rustaceanvim = {
     "mrcjkb/rustaceanvim",
     ft = {"rust"},
-    version = "^3"
+    version = "^4",
+    config = rust_config
 }
 
 return rustaceanvim
