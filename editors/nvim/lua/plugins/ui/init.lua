@@ -24,6 +24,7 @@ local ui = {
     require(ui_path .. "neoscroll"),
     require(ui_path .. "nvim-bufdel"),
     require(ui_path .. "registers"),
+    require(ui_path .. "reactive")
 }
 
 return ui
