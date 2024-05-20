@@ -17,6 +17,7 @@ local crates = {
     dependencies = crates_dependencies,
     config = true,
     lazy = true,
+    enabled = true,
     event = { "BufRead Cargo.toml" }
 }
 
