@@ -3,6 +3,7 @@ local ui_path = current_path .. '.'
 
 local ui = {
     require(ui_path .. "vscode"),
+    require(ui_path .. "screenkey"),
     require(ui_path .. "dressing"),
     require(ui_path .. "cokeline"),
     require(ui_path .. "lualine"),
