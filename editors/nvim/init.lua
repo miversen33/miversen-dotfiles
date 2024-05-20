@@ -238,6 +238,7 @@ local function setup_plugins()
     end
     _G.__miversen_config_excluded_filetypes_array = {
         "lsp-installer",
+        "grug-far",
         "lspinfo",
         "Outline",
         "lazy",
