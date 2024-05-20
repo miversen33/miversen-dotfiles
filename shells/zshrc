@@ -391,6 +391,7 @@ if [ -z ${SKIP_CUSTOM+x} ]; then
   if [ $(command -v docker) ]; then
     plugins+=("docker")
     plugins+=("docker-compose")
+    alias "dcw"="docker compose up --abort-on-container-failure --watch --build"
   fi
   plugins+=("dotenv")
   [ $(command -v rustc) ] && plugins+=("rust")
