@@ -254,6 +254,11 @@ function setup_base(){
   }
 
   fi
+
+  if [ -d ~/node_modules ]; then
+    # Add stupid node modules to path
+    [ -d ~/node_modules/live-server ] && alias "live-server"="~/node_modules/live-server/live-server.js"
+  fi
   debug "Disabling nomatch"
   setopt nomatch
 }
