@@ -10,6 +10,7 @@ local function vim_settings()
     vim.opt.undodir       = undo_dir
     vim.opt.fillchars:append(',eob: ')
     vim.opt.scrolloff     = 3
+    vim.opt.scrollback    = 5000
     vim.opt.undolevels    = 1000
     vim.opt.undoreload    = 10000
     vim.opt.mouse         = 'a'
@@ -297,7 +298,7 @@ local function setup_plugins()
             notify = true
         },
         ui = {
-            border = "rounded",
+            border = 'rounded',
         }
     }
     lazy.setup("plugins", lazy_opts)
