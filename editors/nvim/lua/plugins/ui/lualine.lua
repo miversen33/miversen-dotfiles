@@ -26,6 +26,11 @@ local function lualine_config()
                 break
             end
         end
+        local output_limit = 40
+        if output:len() > output_limit - 3 then
+            local new_first = output:len() - output_limit - 3
+            output = "..." .. output:sub(new_first)
+        end
         return output
     end
     local branch_max_width = 40
