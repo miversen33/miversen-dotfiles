@@ -11,12 +11,7 @@ local lsp_settings = {
     svelte = {
         filetypes = { "svelte", "html", "javascript", "typescript" },
     },
-    ruff_lsp = {
         settings = {
-            organizeImports = false,
-        },
-        on_attach = function(client)
-            client.server_capabilities.hoverProvider = false
         end,
     lua_ls = {
         settings = {
