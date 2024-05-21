@@ -11,8 +11,18 @@ local lsp_settings = {
     svelte = {
         filetypes = { "svelte", "html", "javascript", "typescript" },
     },
+    jdtls = {
         settings = {
-        end,
+            -- https://github.com/eclipse-jdtls/eclipse.jdt.ls/wiki/Running-the-JAVA-LS-server-from-the-command-line#initialize-request
+            java = {
+                inlayHints = {
+                    parameterNames = {
+                        enabled = true
+                    }
+                }
+            }
+        }
+    },
     lua_ls = {
         settings = {
             -- https://luals.github.io/wiki/settings/
