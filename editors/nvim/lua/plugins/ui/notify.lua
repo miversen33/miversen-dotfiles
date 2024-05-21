@@ -8,7 +8,8 @@ end
 
 local notify = {
     "rcarriga/nvim-notify",
-    config = config_notify
+    config = config_notify,
+    priority = 900
 }
 
 return notify
