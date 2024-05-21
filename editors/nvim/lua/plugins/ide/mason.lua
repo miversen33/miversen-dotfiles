@@ -18,22 +18,30 @@ local lsp_settings = {
         on_attach = function(client)
             client.server_capabilities.hoverProvider = false
         end,
+    lua_ls = {
+        settings = {
+            -- https://luals.github.io/wiki/settings/
+            Lua = {
+                hint = {
+                    enable = true,
+                    setType = true
+                }
+            }
+        }
     },
-    -- rust_analyzer = {
-    --     imports = {
-    --         granularity = {
-    --             group = "module",
-    --         },
-    --         prefix = "self",
-    --     },
-    --     cargo = {
-    --         buildScripts = {
-    --             enable = true,
-    --         },
-    --     },
-    --     procMacro = {
-    --         enable = true
-    --     },
+    basedpyright = {
+        settings = {
+            -- https://docs.basedpyright.com/#/configuration
+            -- python = {
+                venvPath = {
+                    "."
+                },
+                venv = "venv",
+                typeCheckingMode = "off",
+                verboseOutput = true
+            -- }
+        }
+    },
     -- }
 }
 
@@ -95,9 +103,7 @@ local function mason_config()
             local lsp_setting = lsp_settings[lsp] or {}
             local _ = lsp_setting.on_attach
             local lsp_on_attach = function(client, bufnr)
-                vim.lsp.inlay_hint.enable(true, {
-                    bufnr = bufnr
-                })
+                vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
                 if _ then
                     _(client, bufnr)
                 end
