@@ -2,60 +2,110 @@ vim.g.neo_tree_remove_legacy_commands = 1
 -- Setting Basic Vim Settings
 local function vim_settings()
     local undo_dir = vim.fn.stdpath('cache') .. "/undo/"
+    -- Creates the directory we are going to use for undo tracking
     vim.fn.mkdir(undo_dir, 'p')
+    -- Use the directory we created earlier to store our undo delta
+    vim.opt.undodir       = undo_dir
+    -- Tells vim to keep track of changes made in a delta file so I can undo
+    -- file changes even after closing my neovim instance and reopening it
+    vim.opt.undofile  = true
+    -- How many changes do we keep track of?
+    vim.opt.undolevels    = 1000
     -- Fixes wezterm artifacts in muxer :(
     vim.opt.termsync = false
-    vim.opt.undofile  = true
+    -- Don't move my shit around when you are opening splits
     vim.opt.splitkeep = 'screen'
-    vim.opt.undodir       = undo_dir
+    -- Gets rid of the icky `~` filling the number column at the end of the file
     vim.opt.fillchars:append(',eob: ')
+    -- Ensure there is at least 3 lines between the cursor and the top/bottom of the buffer if possible
     vim.opt.scrolloff     = 3
+    -- Limit how many lines of scrollback history `:h term` keeps
     vim.opt.scrollback    = 5000
-    vim.opt.undolevels    = 1000
-    vim.opt.undoreload    = 10000
+    -- Ya I sometimes use the mouse. Fucking sue me
     vim.opt.mouse         = 'a'
+    -- Sets what the cursor will look like in each mode. I did not make this mess, I found it on /r/neovim somewhere
+    -- It basically ensures I have a "blinking line" when in insert mode and a block all other times
     vim.opt.guicursor     =
     'n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175'
     vim.opt.whichwrap     = '<,>,[,]'
     vim.opt.encoding      = 'UTF-8'
     vim.log.level         = "warn"
+    -- Enables line numbers
     vim.opt.number        = true
+    -- Enables syntax highlighting
     vim.opt.syntax        = 'enable'
+    -- Tells the host term to enable 24bit color instead of 8
     vim.opt.termguicolors = true
+    -- A tab is 4 spaces. If you think otherwise, you are wrong
     vim.opt.tabstop       = 4
+    -- I use lualine (and a tabbar and my cursorline) to tell me what mode I am in. I 
+    -- don't need vim to also tell me
     vim.opt.showmode      = false
+    -- If tabs are 4 spaces, indents should be 1 tab. Vim defaulting to 8 is just fucking silly
     vim.opt.shiftwidth    = 4
+    -- Tab is 4 spaces.
     vim.opt.softtabstop   = 4
+    -- How wide is my number column? I have it set to 2, though I might bump it up to 3 so include more info there. Not sure yet
     vim.opt.numberwidth   = 2
+    -- Enable line wrapping
     vim.opt.wrap          = true
+    -- force all yanks into clipboard
     vim.opt.clipboard:append('unnamedplus')
     vim.opt.background     = 'dark'
+    -- Keep my last search highlighted until I disable it. I have <esc><esc> mapped to :nohl (among other things)
     vim.opt.hlsearch       = true
+    -- ignore case when searching/replacing
     vim.opt.ignorecase     = true
+    -- Show my substitutions in the buffer as I type them. Super great for visually seeing what I am about to do
     vim.opt.incsearch      = true
+    -- Allows hidding abandoned buffers. Not terribly sure this is useful but 🤷
     vim.opt.hidden         = true
+    -- fold by indent. Since indents are now consistent (see above), this allows for consistent folding
     vim.opt.foldmethod     = 'indent'
+    -- how many folds are we willing to do within a fold before we just stop folding
     vim.opt.foldlevel      = 99
+    -- Enables listchars
     vim.opt.list           = true
     -- vim.opt.spell         = true
+    -- Hide commandline when not in use
     vim.opt.cmdheight      = 0
+    
     vim.opt.listchars      = {
+        -- Replace tab whitespace with -->
         tab = '-->',
+        -- I don't care about spaces so spaces are just plain old whitespace
         multispace = ' ',
         -- nbsp=' ',
+        -- If a line ends with a space, I probably do care about that, show this instead of whitespace
         trail = '',
+        -- If the line goes off the screen (for some reason), show this as the last character of the line so I know the
+        -- line continues to the right
         extends = '⟩',
+        -- Literally the same but left
         precedes = '⟨'
     }
+    -- Tells me if there is the line is wrapped
     vim.g.showbreak        = '↪'
+    -- Show cursorline
     vim.opt.cursorline     = true
+    -- Put my horizontal splits to the right instead of the left
     vim.opt.splitright     = true
+    -- Put my vertical splits under me instead of above me
     vim.opt.splitbelow     = true
+    -- Tab is 4 spaces. Make it 4 spaces
     vim.opt.expandtab      = true
+    -- Be smart about tabs when opening an existing file. Tabs are 4 spaces for me,
+    -- but they may be 8 in another file, or actual \t. Handle that all gracefully
     vim.opt.smarttab       = true
+    -- Honestly I can probably get rid of this since I don't use omnifunc
     vim.opt.completeopt    = 'longest,preview,menuone,noselect'
-    vim.g.vimsyn_embed     = 'lPrj'
+    -- Syntax highlighting in strings for augroups, lua, perl, python, javascript. Useful if you are doing stuff like
+    -- generating SQL/HTML/XML in strings
+    vim.g.vimsyn_embed     = 'alpPrj'
+    -- How long between "do-nothing" time do we write swap to disk
     vim.opt.updatetime     = 2000
+    -- Session options for resuming neovim where I was before. Use whatever the session plugin you are using recommends
+    -- NOTE: You don't need to use a plugin for session management, I just chose to because I am lazy
     vim.opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
     for _, group in ipairs(vim.fn.getcompletion("@lsp", "highlight")) do vim.api.nvim_set_hl(0, group, {}) end
     local _print = _G.print
