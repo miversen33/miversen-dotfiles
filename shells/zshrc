@@ -254,6 +254,9 @@ function setup_base(){
     }
   fi
   if [ $(command -v rsync ) ]; then
+    # alias rsync to cp with pretty stuff
+    alias 'cp'='rsync -ravh --info=progress2 --stats --no-i-r'
+  fi
 
   if [ -d ~/node_modules ]; then
     # Add stupid node modules to path
