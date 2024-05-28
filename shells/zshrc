@@ -242,18 +242,18 @@ function setup_base(){
     alias NVIMRC="${EDITOR} ~/.config/nvim"
     [ -f $HOME/.config/nvim/init.lua ] && VIMRC=$HOME/.config/nvim/init.lua
     alias nvim_repro="pushd /tmp 2>&1 1>/dev/null; nvim --clean -u ~/.dotfiles/editors/nvim/repro.lua; popd 2>&1 1>/dev/null"
-
-   export function debug_nvim() {
-    if [ -n "${DEBUG_NEOVIM_CONFIG+set}" ]; then
-      echo "Disabling Debug Neovim Flag"
-      unset DEBUG_NEOVIM_CONFIG
-    else
-      echo "Setting Debug Neovim Flag"
-      export DEBUG_NEOVIM_CONFIG=1
-    fi
-  }
-
+    
+    export function debug_nvim() {
+     if [ -n "${DEBUG_NEOVIM_CONFIG+set}" ]; then
+       echo "Disabling Debug Neovim Flag"
+       unset DEBUG_NEOVIM_CONFIG
+     else
+       echo "Setting Debug Neovim Flag"
+       export DEBUG_NEOVIM_CONFIG=1
+     fi
+    }
   fi
+  if [ $(command -v rsync ) ]; then
 
   if [ -d ~/node_modules ]; then
     # Add stupid node modules to path
