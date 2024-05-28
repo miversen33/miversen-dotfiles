@@ -1,7 +1,6 @@
 vim.g.rustaceanvim = {
     server = {
         on_attach = function(_, bufnr)
-            print("Connecting to rust buffer")
             vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
         end,
         default_settings = {
