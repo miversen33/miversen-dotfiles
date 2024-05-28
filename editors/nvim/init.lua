@@ -23,6 +23,7 @@ local function vim_settings()
     vim.opt.scrollback    = 5000
     -- Ya I sometimes use the mouse. Fucking sue me
     vim.opt.mouse         = 'a'
+    vim.opt.mousemodel    = 'extend'
     -- Sets what the cursor will look like in each mode. I did not make this mess, I found it on /r/neovim somewhere
     -- It basically ensures I have a "blinking line" when in insert mode and a block all other times
     vim.opt.guicursor     =
@@ -46,7 +47,7 @@ local function vim_settings()
     -- Tab is 4 spaces.
     vim.opt.softtabstop   = 4
     -- How wide is my number column? I have it set to 2, though I might bump it up to 3 so include more info there. Not sure yet
-    vim.opt.numberwidth   = 2
+    vim.opt.numberwidth   = 3
     -- Enable line wrapping
     vim.opt.wrap          = true
     -- force all yanks into clipboard
