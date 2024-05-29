@@ -70,7 +70,8 @@ end
 
 local neoscroll = {
     "karb94/neoscroll.nvim",
-    config = neoscroll_config
+    config = neoscroll_config,
+    enabled = false,
 }
 
 return neoscroll
