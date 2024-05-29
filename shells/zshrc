@@ -395,7 +395,8 @@ if [ -z ${SKIP_CUSTOM+x} ]; then
     plugins+=("docker")
     plugins+=("docker-compose")
     alias "dcw"="docker compose up --abort-on-container-failure --watch --build"
-    alias "dcu"="docker compose up --detach --build && docker compose logs --follow --timestamps"
+    alias "dcl"="docker compose logs --folow --timestamps --tail "0
+    alias "dcu"="docker compose up --detach --build && dcl"
     alias "dcd"="docker compose down"
   fi
   plugins+=("dotenv")
