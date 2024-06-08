@@ -36,15 +36,17 @@ local lsp_settings = {
     },
     basedpyright = {
         settings = {
-            -- https://docs.basedpyright.com/#/configuration
-            -- python = {
-                venvPath = {
-                    "."
+            basedpyright = {
+                -- https://docs.basedpyright.com/#/configuration
+                analysis = {
+                    typeCheckingMode = "standard",
+                    diagnosticSeverityOverrides = {
+                        reportAssignmentType = false,
+                        reportArgumentType = "information",
+                    }
                 },
-                venv = "venv",
-                typeCheckingMode = "off",
-                verboseOutput = true
-            -- }
+                venvPath = "./venv"
+            }
         }
     },
     -- }
@@ -104,7 +106,7 @@ local function mason_config()
         automatic_installation = true,
     })
     mason_lspconfig.setup_handlers({
-        function(lsp)
+     function(lsp)
             local lsp_setting = lsp_settings[lsp] or {}
             local _ = lsp_setting.on_attach
             local lsp_on_attach = function(client, bufnr)
