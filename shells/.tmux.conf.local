@@ -16,9 +16,9 @@
 
 # -- keybindings ---------------------------------------------------------------
 
-bind -r j select-pane -L
-bind -r i select-pane -U
-bind -r k select-pane -D
+bind -r j select-pane -D
+bind -r h select-pane -L
+bind -r k select-pane -U
 bind -r l select-pane -R
 bind C-n new-window
 bind , previous-window
