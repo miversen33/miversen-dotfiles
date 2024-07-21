@@ -350,9 +350,22 @@ local function setup_plugins()
         },
         ui = {
             border = 'rounded',
+        },
+        spec = {
+            { import = "plugins.ui" },
+            { import = "plugins.ide" },
+            { import = "plugins.ide.haskell" },
+            { import = "plugins.ide.glsl" },
+            { import = "plugins.ide.java" },
+            { import = "plugins.ide.neovim" },
+            { import = "plugins.ide.python" },
+            { import = "plugins.ide.rust" },
+            { import = "plugins.ide.sql" },
+            { import = "plugins.ide.svelte" }
+
         }
     }
-    lazy.setup("plugins", lazy_opts)
+    lazy.setup(lazy_opts)
         -- Setting up some basic highlight groups
     vim.api.nvim_set_hl(0, "PmenuSel", { bg = "#004b72", fg = "NONE" })
     vim.api.nvim_set_hl(0, "Pmenu", { fg = "#C5CDD9", bg = "NONE" })
