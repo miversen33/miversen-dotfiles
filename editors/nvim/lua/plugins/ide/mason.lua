@@ -52,6 +52,11 @@ local lsp_settings = {
                     diagnosticSeverityOverrides = {
                         reportAssignmentType = false,
                         reportArgumentType = "information",
+                        reportUnusedFunction = "information",
+                        reportOptionalMemberAccess = "information",
+                        reportRedeclaration = "information",
+                        reportImplicitOverride = false,
+                        reportAny = false,
                     }
                 },
                 venvPath = "./venv"
