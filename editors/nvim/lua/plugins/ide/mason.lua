@@ -1,6 +1,6 @@
 local required_mason_modules = {
-    "pyright",
-    "ruff-lsp",
+    "basedpyright",
+    "ruff",
     "debugpy",
     "isort",
     "luaformatter",
