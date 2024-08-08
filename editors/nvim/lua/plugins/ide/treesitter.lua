@@ -69,15 +69,14 @@ local treesitter_config = {
     },
 }
 
-local treesitter_dependencies = {
-    "nvim-treesitter/playground"
-}
+local treesitter_dependencies = {}
 
 local treesitter = {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate|TSInstall query",
     dependencies = treesitter_dependencies,
     main = "nvim-treesitter.configs",
+    opts = treesitter_config
 }
 
 return treesitter
