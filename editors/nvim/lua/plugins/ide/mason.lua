@@ -193,6 +193,10 @@ local mason_dependencies = {
     "jbyuki/one-small-step-for-vimkind", -- Neovim Dap
     "mfussenegger/nvim-dap-python", -- Python Dap
     {
+        "zapling/mason-conform.nvim",
+            priority = 1000
+        },
+    {
         "nvim-java/nvim-java",
         dependencies = {
             'nvim-java/lua-async-await',
