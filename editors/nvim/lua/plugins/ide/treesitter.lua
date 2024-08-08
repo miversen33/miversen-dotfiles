@@ -1,8 +1,3 @@
-local auto_treesitter_installer = function()
-    -- TODO: Setup a thing to automatically install
-    -- missing Treesitter parsers as needed
-end
-
 local treesitter_config = {
     -- If TS highlights are not enabled at all, or disabled via `disable` prop, highlighting will fallback to default Vim syntax highlighting
     highlight = { enable = true },
