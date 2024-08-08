@@ -69,11 +69,6 @@ local treesitter_config = {
     },
 }
 
-local function setup()
-    require("nvim-treesitter.configs").setup(treesitter_config)
-    auto_treesitter_installer()
-end
-
 local treesitter_dependencies = {
     "nvim-treesitter/playground"
 }
@@ -82,7 +77,7 @@ local treesitter = {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate|TSInstall query",
     dependencies = treesitter_dependencies,
-    config = setup
+    main = "nvim-treesitter.configs",
 }
 
 return treesitter
