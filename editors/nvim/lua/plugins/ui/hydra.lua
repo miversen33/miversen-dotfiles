@@ -253,7 +253,7 @@ _q_: Quit Mode
         mode = { "n", "v" },
         config = {
             color = "pink",
-            -- invoke_on_body = true,
+            invoke_on_body = true,
             hint = {
                 type = "window",
                 position = "middle-right",
