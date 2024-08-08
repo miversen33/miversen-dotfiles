@@ -28,7 +28,7 @@ local hlchunk_opts = {
 
 local hlchunk = {
     "shellRaining/hlchunk.nvim",
-    event = "UIEnter",
+    event = {"BufReadPre", "BufNewFile"},
     config = true,
     opts = hlchunk_opts
 }
