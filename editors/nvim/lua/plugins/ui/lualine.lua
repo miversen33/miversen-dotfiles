@@ -19,6 +19,7 @@ local function lualine_config()
     local get_buf_filetype = function()
         return vim.api.nvim_get_option_value('filetype', { buf = 0})
     end
+    ---@param output string
     local format_name = function(output)
         for _, excluded_filetype in ipairs(_G.__miversen_config_excluded_filetypes_array) do
             if excluded_filetype == get_buf_filetype() then
@@ -28,7 +29,7 @@ local function lualine_config()
         end
         local output_limit = 40
         if output:len() > output_limit - 3 then
-            local new_first = output:len() - output_limit - 3
+            local new_first = output:len() - (output_limit - 3)
             output = "..." .. output:sub(new_first)
         end
         return output
