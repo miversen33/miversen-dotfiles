@@ -200,6 +200,7 @@ local mason_dependencies = {
             'nvim-java/nvim-java-core',
             'nvim-java/nvim-java-test',
             'nvim-java/nvim-java-dap',
+            'MunifTanjim/nui.nvim',
         }
     }
 }
