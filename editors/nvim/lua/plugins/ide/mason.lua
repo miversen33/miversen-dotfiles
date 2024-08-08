@@ -11,8 +11,15 @@ local required_mason_modules = {
 
 local lsp_settings = {
     svelte = {
-        filetypes = { "svelte", "html", "javascript", "typescript" },
+        filetypes = { "svelte" },
     },
+    html = {
+        filetypes = { "html", "svelte" }
+    },
+    emmet_language_server = {
+        filetypes = { "html", "svelte" }
+    },
+    ruff = {},
     jdtls = {
         settings = {
             -- https://github.com/eclipse-jdtls/eclipse.jdt.ls/wiki/Running-the-JAVA-LS-server-from-the-command-line#initialize-request
