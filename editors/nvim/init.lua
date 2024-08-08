@@ -362,9 +362,9 @@ local function setup_plugins()
             { import = "plugins.ide.neovim" },
             { import = "plugins.ide.python" },
             { import = "plugins.ide.rust" },
-            { import = "plugins.ide.sql" },
-            { import = "plugins.ide.svelte" }
 
+            -- { import = "plugins.ide.sql" },
+            { import = "plugins.ide.svelte" },
         }
     }
     lazy.setup(lazy_opts)
