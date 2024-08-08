@@ -35,6 +35,8 @@ local function vim_settings()
     vim.opt.number        = true
     -- Enables syntax highlighting
     vim.opt.syntax        = 'enable'
+    -- Enable auto read from disk. If a file changes, we should enable this
+    vim.opt.autoread      = true -- though maybe it makes sense for this to be toggleable?
     -- Tells the host term to enable 24bit color instead of 8
     vim.opt.termguicolors = true
     -- A tab is 4 spaces. If you think otherwise, you are wrong
