@@ -161,7 +161,7 @@ _q_: Quit Mode
             {
                 "f",
                 function()
-                    vim.lsp.buf.format({async = true})
+                    require("conform").format({bufnr = 0})
                 end,
                 {
                     desc = "Format current buffer",
