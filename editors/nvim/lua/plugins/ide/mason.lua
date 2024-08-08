@@ -2,9 +2,11 @@ local required_mason_modules = {
     "pyright",
     "ruff-lsp",
     "debugpy",
-    "black",
     "isort",
-    "taplo",
+    "luaformatter",
+    "prettier",
+    "shfmt",
+    "clang-format"
 }
 
 local lsp_settings = {
