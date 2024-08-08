@@ -180,7 +180,12 @@ local mason_dependencies = {
     "tikhomirov/vim-glsl",
     "neovim/nvim-lspconfig", -- Neovim LSP Setup
     "williamboman/mason-lspconfig.nvim", -- Mason lsp config bindings
-    "rcarriga/nvim-dap-ui", -- UI for Dap
+    {
+            "rcarriga/nvim-dap-ui", -- UI for Dap
+            dependencies = {
+                "nvim-neotest/nvim-nio"
+            }
+        },
     "mfussenegger/nvim-dap", -- Debugger, setup below
     "mfussenegger/nvim-lint", -- Neovim linter
     "mhartington/formatter.nvim", -- Neovim formatter
