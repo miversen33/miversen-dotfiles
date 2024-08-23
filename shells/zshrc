@@ -212,6 +212,7 @@ function setup_base(){
   [ -d "${HOME}/.local/programs/node/current" ] && PATH="${HOME}/.local/programs/node/current/bin:$PATH"
   [ -d "${HOME}/.local/bin" ] && PATH="${HOME}/.local/bin:$PATH"
   [ -d "${HOME}/.cargo/bin" ] && PATH="${HOME}/.cargo/bin:$PATH"
+  [ -d "${HOME}/.local/share/nvim/mason/bin" ] && PATH="${HOME}/.local/share/nvim/mason/bin:$PATH" # Adding mason modules to path
 
   autoload -Uz compinit && compinit
   if [ -d "${AUTO_DIR}" ]; then
