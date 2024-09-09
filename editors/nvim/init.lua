@@ -334,6 +334,7 @@ local function setup_advanced_keycommands()
     vim.keymap.set("n", "<C-Enter>", ":Glance definitions<CR>", {silent = true})
     vim.keymap.set("t", "<S-space>", "<space>", {silent = true})
     vim.keymap.set("t", "<S-BS>", "<BS>", {silent = true})
+    vim.keymap.set("n", "<S-b>", ":Telescope buffers<CR>")
     vim.api.nvim_set_keymap('n', 'n',
                             [[<Cmd>execute('normal! ' . v:count1 . 'n')<CR><Cmd>lua require('hlslens').start()<CR>]],
                             {noremap = true, silent = true})
