@@ -1,6 +1,5 @@
-local gitsigns = {
+return {
     "lewis6991/gitsigns.nvim",
-    config = true
+    event = "VeryLazy",
+    opts = {}
 }
-
-return gitsigns

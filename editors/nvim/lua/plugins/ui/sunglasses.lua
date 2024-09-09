@@ -1,11 +1,15 @@
+---@module "sunglassess"
 local sunglasses_opts = {
-    filter_percent = .35
+    filter_percent = .35,
+    log_level = "TRACE2"
 }
 
-local sunglasses = {
+---@module "lazy"
+---@type LazySpec
+return {
     "miversen33/sunglasses.nvim",
-    config = true,
-    opts = sunglasses_opts
+    commit = '9175716',
+    opts = sunglasses_opts,
+    event = "VeryLazy",
+    enabled = false,
 }
-
-return sunglasses

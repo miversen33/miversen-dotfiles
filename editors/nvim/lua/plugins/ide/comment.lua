@@ -1,7 +1,6 @@
-local comment = {
+return {
     "numToStr/Comment.nvim",
     lazy = true,
-    config = true
+    event = "VeryLazy",
+    opts = {}
 }
-
-return comment
