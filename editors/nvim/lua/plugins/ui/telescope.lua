@@ -8,6 +8,19 @@ local telescope_extensions = {
 }
 
 local telescope_options = {
+    pickers = {
+        buffers = {
+            show_all_buffers = true,
+            sort_lastused = true,
+            theme = "dropdown",
+            previewer = false,
+            mappings = {
+                i = {
+                    ["<c-d>"] = "delete_buffer",
+                }
+            }
+        }
+    }
 }
 
 local telescope = {
@@ -15,11 +28,11 @@ local telescope = {
     dependencies = telescope_dependencies,
     cmd = {"Telescope"},
     opts = telescope_options,
-    config = function()
+    init = function()
         for _, extension in ipairs(telescope_extensions) do
             require("telescope").load_extension(extension)
         end
-    end
+    end,
 }
 
 return telescope

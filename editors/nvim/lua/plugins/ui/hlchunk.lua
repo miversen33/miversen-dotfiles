@@ -6,31 +6,26 @@ end
 local hlchunk_opts = {
     chunk = {
         enable = true,
-        notify = false,
         exclude_filetypes = exclude_filetypes
     },
     indent = {
         enable = true,
-        notify = false,
         exclude_filetypes = exclude_filetypes
     },
     line_num = {
         enable = true,
-        notify = false,
         exclude_filetypes = exclude_filetypes
     },
     blank = {
         enable = true,
-        notify = false,
         exclude_filetypes = exclude_filetypes
     }
 }
 
-local hlchunk = {
+---@module "lazy"
+---@type LazySpec
+return {
     "shellRaining/hlchunk.nvim",
     event = {"BufReadPre", "BufNewFile"},
-    config = true,
     opts = hlchunk_opts
 }
-
-return hlchunk

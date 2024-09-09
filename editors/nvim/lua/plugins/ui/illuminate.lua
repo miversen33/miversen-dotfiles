@@ -1,18 +1,21 @@
 local illuminate_opts = {
     providers = {
+        "lsp",
+        "regex",
         -- Omitting treesitter for now because I don't trust it with big files...
-        "lsp", "regex", -- "treesitter"
-    }
+        -- "treesitter"
+    },
+    filetypes_denylist = __miversen_config_excluded_filetypes_array
 }
 
-local illuminate = {
+---@module "lazy"
+---@type LazySpec
+return {
     "RRethy/vim-illuminate",
-    config = function()
-        require("illuminate").configure(illuminate_opts)
-        vim.api.nvim_set_hl(0, "IlluminatedWordText", { italic = true, underline = true, bold = true })
-        vim.api.nvim_set_hl(0, "IlluminatedWordRead", { italic = true, underline = true, bold = true })
-        vim.api.nvim_set_hl(0, "IlluminatedWordWrite", { italic = true, underline = true, bold = true})
-    end
+    name = "illuminate",
+    event = "VeryLazy",
+    config = function(_, opts)
+        require("illuminate").configure(opts)
+    end,
+    opts = illuminate_opts,
 }
-
-return illuminate

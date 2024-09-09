@@ -2,11 +2,11 @@ local sniprun_opts = {
     display = { "VirtualTextOk", "TerminalWithCodeErr" }
 }
 
-local sniprun = {
+---@module "lazy"
+---@type LazySpec
+return {
     "michaelb/sniprun",
     build = "sh install.sh",
-    config = true,
+    event = "VeryLazy",
     opts = sniprun_opts
 }
-
-return sniprun

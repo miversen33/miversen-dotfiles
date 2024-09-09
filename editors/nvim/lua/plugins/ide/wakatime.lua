@@ -1,6 +1,4 @@
-local wakatime = {
+return {
     "wakatime/vim-wakatime",
     lazy = false
 }
-
-return wakatime

@@ -1,7 +1,9 @@
 local glance_opts = {
     height = 25,
     border = {
-        enable = true
+        enable = true,
+        top_char = '─',
+        bottom_char = '─'
     },
     list = {
         position = "left"
@@ -11,10 +13,10 @@ local glance_opts = {
     }
 }
 
-local glance = {
+---@module "lazy"
+---@type LazySpec
+return {
     "dnlhc/glance.nvim",
-    config = true,
+    event = "VeryLazy",
     opts = glance_opts
 }
-
-return glance
