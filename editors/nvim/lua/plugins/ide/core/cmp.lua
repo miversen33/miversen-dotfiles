@@ -8,6 +8,7 @@ local function config()
     local has_autopairs, nvim_autopairs = pcall(require, "nvim-autopairs")
     local cmp_autopairs = has_autopairs and require("nvim-autopairs.completion.cmp")
     local has_dap_vt, ndvt = pcall(require, "nvim-dap-virtual-text")
+    local has_nvim_highlight_colors, nvim_highlight_colors = pcall(require, "nvim-highlight-colors")
     if has_dap_vt then
         ndvt.setup()
     end
@@ -97,6 +98,10 @@ local function config()
         formatting = {
             fields = { "kind", "abbr", "menu" },
             format = function(entry, vim_item)
+                color_item = nil
+                if has_nvim_highlight_colors then
+                    color_item = nvim_highlight_colors.format(entry, { kind = vim_item.kind })
+                end
                 local kind = lspkind.cmp_format({
                     mode = "symbol_text",
                     maxwidth = 50
@@ -108,6 +113,10 @@ local function config()
                 end
                 kind.kind = string.format(" %s ", s[1])
                 kind.menu = string.format(" (%s)", s[2])
+                if has_nvim_highlight_colors and color_item and color_item.abbr_hl_group then
+                    kind.kind_hl_group = color_item.abbr_hl_group
+                    kind.kind = color_item.abbr
+                end
                 return kind
             end
             -- }),
