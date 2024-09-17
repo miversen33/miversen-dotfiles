@@ -13,7 +13,9 @@ local persisted_opts = {
 local function auto_session_restore()
     vim.schedule(function()
         require("persisted").start()
-        require("persisted").load()
+        if not next(vim.fn.argv()) then
+            require("persisted").load()
+        end
     end)
 end
 
