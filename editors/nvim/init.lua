@@ -1,3 +1,8 @@
+-- Known dependencies
+-- gcc/c compiler (clang gud)
+-- ripgrep: https://github.com/BurntSushi/ripgrep
+--
+
 vim.g.neo_tree_remove_legacy_commands = 1
 vim.g.__miversen_config = {}
 -- Setting Basic Vim Settings
