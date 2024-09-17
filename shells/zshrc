@@ -415,7 +415,6 @@ fi
 if [ -z ${SKIP_CUSTOM+x} ]; then
   debug "Setting up aliases and exports"
   ######## Aliases/exports
-  [ ! -z ${TERM+x} ] && export TERM="xterm-256color"
   export PATH
   export SCREENDIR
   export LANG=en_US.UTF-8
