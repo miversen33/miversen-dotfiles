@@ -14,6 +14,7 @@ return {
     },
     {
         "rest-nvim/rest.nvim",
-        init = rest_init
+        init = rest_init,
+        enabled = vim.fn.executable('luarocks') == 1
     }
 }
