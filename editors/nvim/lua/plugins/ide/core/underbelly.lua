@@ -29,7 +29,7 @@ local lsp_handlers = {
 }
 
 local required_bricks = {
-    "basedpyright", "lua_ls", "ruff-lsp", "debugpy", "isort",
+    "basedpyright", "lua_ls", "ruff", "debugpy", "isort",
     "prettier", "shfmt", "clang-format"
 }
 
