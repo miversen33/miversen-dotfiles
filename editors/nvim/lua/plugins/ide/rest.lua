@@ -12,8 +12,8 @@ return {
     "mistweaverco/kulala.nvim",
        opts = rest_opts
     },
-    {
-        "rest-nvim/rest.nvim",
-        init = rest_init
-    }
+    -- {
+    --     "rest-nvim/rest.nvim",
+    --     init = rest_init
+    -- }
 }
