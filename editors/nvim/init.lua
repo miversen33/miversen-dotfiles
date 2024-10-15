@@ -41,7 +41,12 @@ local function vim_settings()
     -- Enables syntax highlighting
     vim.opt.syntax = 'enable'
     -- Enable auto read from disk. If a file changes, we should enable this
-    vim.opt.autoread = true -- though maybe it makes sense for this to be toggleable?
+    -- Disabling auto read. This will prevent neovim from auto loading in changes on a file if the file is loaded into a buffer already
+    vim.opt.autoread = false
+    -- Enables auto external file change detection
+    -- Combined with disabling vim.opt.autoread, this makes it so that if a file is changed, vim gives us a prompt asking us if we want to
+    -- load the changes or not
+    vim.schedule_wrap(vim.fn.checktime)
     -- Tells the host term to enable 24bit color instead of 8
     vim.opt.termguicolors = true
     -- A tab is 4 spaces. If you think otherwise, you are wrong
