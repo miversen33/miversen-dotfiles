@@ -421,10 +421,11 @@ if [ -z ${SKIP_CUSTOM+x} ]; then
   export SCREENDIR
   export LANG=en_US.UTF-8
   export LC_ALL=en_US.UTF-8
-  export whatsmyip
   export EDITOR
   export VIMRC
   export BAT_THEME="OneHalfDark"
+  
+  export whatsmyip
 
   [ $(command -v bat) ] && alias cat="bat" && debug "Found bat, setting alias of cat to bat"
   if [ $(command -v eza) ]; then
