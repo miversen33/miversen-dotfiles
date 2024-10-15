@@ -216,7 +216,6 @@ function setup_base(){
 
   autoload -Uz compinit && compinit
   if [ -d "${AUTO_DIR}" ]; then
-    for auto in $(ls $AUTO_DIR/*.zsh); do
     for auto in $(ls $AUTO_DIR/*.zsh $AUTO_DIR/*.sh); do
       debug "Executing auto complete zsh script: ${auto}"
       . "${auto}"
