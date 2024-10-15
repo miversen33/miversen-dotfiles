@@ -1,3 +1,8 @@
+-- Known dependencies
+-- gcc/c compiler (clang gud)
+-- ripgrep: https://github.com/BurntSushi/ripgrep
+--
+
 vim.g.neo_tree_remove_legacy_commands = 1
 vim.g.__miversen_config = {}
 -- Setting Basic Vim Settings
@@ -328,8 +333,10 @@ local function setup_advanced_keycommands()
         end
     end, {silent = true})
     vim.keymap.set('n', '<C-n>', ':tabnew<CR>', {silent = true})
-    vim.keymap.set("n", "<S-h>", ":tabp<CR>", {silent = true})
-    vim.keymap.set("n", "<S-l>", ":tabn<CR>", {silent = true})
+    vim.keymap.set({"n", "t", "v"}, "<M-h>", ":tabp<CR>", {silent = true})
+    vim.keymap.set("i", "<M-h>", "<ESC>:tabp<CR>", {silent = true})
+    vim.keymap.set({"n", "t", "v"}, "<M-l>", ":tabn<CR>", {silent = true})
+    vim.keymap.set("i", "<M-l>", "<ESC>:tabn<CR>", {silent = true})
     vim.keymap.set("n", '<A-Down>', ':MoveLine(1)<CR>', {silent = true})
     vim.keymap.set("n", '<A-Up>', ':MoveLine(-1)<CR>', {silent = true})
     vim.keymap.set("i", '<A-Up>', '<ESC>:MoveLine(-1)<CR>i', {silent = true})
