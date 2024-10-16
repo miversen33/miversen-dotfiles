@@ -851,7 +851,7 @@ _q_: Quit Mode
 ^_f_: Show Filesystem        _t_: Show Terminal (float)       _x_: Open Quickfix
 ^_s_: Buffer Fuzzy Search    _o_: Open Horizontal Terminal    _p_: Open Vertical Terminal
 ^_h?_: Show Help Tags        _c?_: Show Vim Commands          _m_: Show Man Pages
-^_l_: Open Location List
+^_l_: Open Location List     _b_: Show buffer picker
 ^
 ^                                _q_/_<Esc>_: Exit Hydra
 ]],
@@ -879,6 +879,14 @@ _q_: Quit Mode
                 cmd 'Neotree filesystem reveal right',
                 {
                     desc = "Opens Neotree File Explorer",
+                    silent = true
+                }
+            },
+            {
+                "b",
+                cmd "Telescope buffers",
+                {
+                    desc = "Opens Telescope Buffer Picker",
                     silent = true
                 }
             },
