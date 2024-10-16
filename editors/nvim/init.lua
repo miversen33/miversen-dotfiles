@@ -327,7 +327,7 @@ local function setup_advanced_keycommands()
             end
         end
     end, {silent = true})
-    vim.keymap.set({'n', 't'}, '<C-n>', ':tabnew<CR>', {silent = true})
+    vim.keymap.set('n', '<C-n>', ':tabnew<CR>', {silent = true})
     vim.keymap.set({"n", "v"}, "<M-h>", ":tabp<CR>", {silent = true})
     vim.keymap.set("t", "<M-h>", "<C-\\><C-n>:tabp<CR>", {silent = true})
     vim.keymap.set("i", "<M-h>", "<ESC>:tabp<CR>", {silent = true})
