@@ -236,12 +236,12 @@ local function setup_basic_keycommands()
     vim.keymap.set('n', 'Zz', 'zo', {silent = true}) -- Unfold
     vim.keymap.set({'n', 'i', 'v', 's', 'c', 'x'}, '<Esc>', do_exit,
                    {silent = true})
-    vim.keymap.set({'n', 'v'}, 'e',
-                   function() vim.fn.search(jump_to_next_word_pattern) end)
-    vim.keymap.set({'n', 'v'}, 'E', function()
-        -- (word) backwards
-        vim.fn.search(jump_to_next_word_pattern, 'b')
-    end)
+    -- vim.keymap.set({'n', 'v'}, 'e',
+    --                function() vim.fn.search(jump_to_next_word_pattern) end)
+    -- vim.keymap.set({'n', 'v'}, 'E', function()
+    --     -- (word) backwards
+    --     vim.fn.search(jump_to_next_word_pattern, 'b')
+    -- end)
 end
 
 local function setup_advanced_keycommands()
