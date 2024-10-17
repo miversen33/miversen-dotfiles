@@ -83,6 +83,7 @@
   "onedark.nvim": { "branch": "master", "commit": "fae34f7c635797f4bf62fb00e7d0516efa8abe37" },
   "persisted.nvim": { "branch": "main", "commit": "3006e641e2892b58fe51511c31595515e1a7dc00" },
   "plenary.nvim": { "branch": "master", "commit": "2d9b06177a975543726ce5c73fca176cedbffe9d" },
+  "precognition.nvim": { "branch": "main", "commit": "35c402c19a10e524d5378c9c0a5151ff5d847b06" },
   "pretty_hover": { "branch": "master", "commit": "35579279ec7283f6f014dae24f1af19aaf93396b" },
   "quicker.nvim": { "branch": "master", "commit": "183041a46d6c908eefb1c23ea02cce9c8f41256e" },
   "ranger.nvim": { "branch": "main", "commit": "d3b032feee6b3b0cf923222f260523e2bd7f3ad3" },
