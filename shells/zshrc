@@ -216,7 +216,7 @@ function setup_base(){
 
   autoload -Uz compinit && compinit
   if [ -d "${AUTO_DIR}" ]; then
-    for auto in $(ls $AUTO_DIR/*.zsh); do
+    for auto in $(ls $AUTO_DIR/*.zsh $AUTO_DIR/*.sh); do
       debug "Executing auto complete zsh script: ${auto}"
       . "${auto}"
     done
@@ -397,8 +397,8 @@ if [ -z ${SKIP_CUSTOM+x} ]; then
     plugins+=("docker")
     plugins+=("docker-compose")
     alias "dcw"="docker compose up --abort-on-container-failure --watch"
-    alias "dcl"="docker compose logs --folow --timestamps --tail "0
-    alias "dcu"="docker compose up --detach --build && dcl"
+    alias "dcl"="docker compose logs --follow --timestamps --tail "0
+    alias "dcu"="docker compose up"
     alias "dcd"="docker compose down"
   fi
   plugins+=("dotenv")
@@ -419,10 +419,11 @@ if [ -z ${SKIP_CUSTOM+x} ]; then
   export SCREENDIR
   export LANG=en_US.UTF-8
   export LC_ALL=en_US.UTF-8
-  export whatsmyip
   export EDITOR
   export VIMRC
   export BAT_THEME="OneHalfDark"
+  
+  export whatsmyip
 
   [ $(command -v bat) ] && alias cat="bat" && debug "Found bat, setting alias of cat to bat"
   if [ $(command -v eza) ]; then
