@@ -241,12 +241,12 @@ local function setup_basic_keycommands()
     vim.keymap.set('n', 'Zz', 'zo', {silent = true}) -- Unfold
     vim.keymap.set({'n', 'i', 'v', 's', 'c', 'x'}, '<Esc>', do_exit,
                    {silent = true})
-    vim.keymap.set({'n', 'v'}, 'e',
-                   function() vim.fn.search(jump_to_next_word_pattern) end)
-    vim.keymap.set({'n', 'v'}, 'E', function()
-        -- (word) backwards
-        vim.fn.search(jump_to_next_word_pattern, 'b')
-    end)
+    -- vim.keymap.set({'n', 'v'}, 'e',
+    --                function() vim.fn.search(jump_to_next_word_pattern) end)
+    -- vim.keymap.set({'n', 'v'}, 'E', function()
+    --     -- (word) backwards
+    --     vim.fn.search(jump_to_next_word_pattern, 'b')
+    -- end)
 end
 
 local function setup_advanced_keycommands()
@@ -333,9 +333,11 @@ local function setup_advanced_keycommands()
         end
     end, {silent = true})
     vim.keymap.set('n', '<C-n>', ':tabnew<CR>', {silent = true})
-    vim.keymap.set({"n", "t", "v"}, "<M-h>", ":tabp<CR>", {silent = true})
+    vim.keymap.set({"n", "v"}, "<M-h>", ":tabp<CR>", {silent = true})
+    vim.keymap.set("t", "<M-h>", "<C-\\><C-n>:tabp<CR>", {silent = true})
     vim.keymap.set("i", "<M-h>", "<ESC>:tabp<CR>", {silent = true})
-    vim.keymap.set({"n", "t", "v"}, "<M-l>", ":tabn<CR>", {silent = true})
+    vim.keymap.set({"n", "v"}, "<M-l>", ":tabn<CR>", {silent = true})
+    vim.keymap.set("t", "<M-l>", "<C-\\><C-n>:tabn<CR>", {silent = true})
     vim.keymap.set("i", "<M-l>", "<ESC>:tabn<CR>", {silent = true})
     vim.keymap.set("n", '<A-Down>', ':MoveLine(1)<CR>', {silent = true})
     vim.keymap.set("n", '<A-Up>', ':MoveLine(-1)<CR>', {silent = true})
@@ -346,7 +348,6 @@ local function setup_advanced_keycommands()
     vim.keymap.set("n", "<C-Enter>", ":Glance definitions<CR>", {silent = true})
     vim.keymap.set("t", "<S-space>", "<space>", {silent = true})
     vim.keymap.set("t", "<S-BS>", "<BS>", {silent = true})
-    vim.keymap.set("n", "<S-b>", ":Telescope buffers<CR>")
     vim.api.nvim_set_keymap('n', 'n',
                             [[<Cmd>execute('normal! ' . v:count1 . 'n')<CR><Cmd>lua require('hlslens').start()<CR>]],
                             {noremap = true, silent = true})
