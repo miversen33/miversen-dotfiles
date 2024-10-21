@@ -1,3 +1,0 @@
-[submodule "terminals/wezterm"]
-	path = terminals/wezterm
-	url = https://github.com/miversen33/wezconf
