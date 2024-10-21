@@ -29,6 +29,18 @@ function debug(){
   echo -e "\033[0;30m$@\033[0m"
 }
 
+function __wezterm_set_user_var() {
+  if hash base64 2>/dev/null ; then
+    if [[ -z "${TMUX-}" ]] ; then
+      printf "\033]1337;SetUserVar=%s=%s\007" "$1" `echo -n "$2" | base64`
+    else
+      # <https://github.com/tmux/tmux/wiki/FAQ#what-is-the-passthrough-escape-sequence-and-how-do-i-use-it>
+      # Note that you ALSO need to add "set -g allow-passthrough on" to your tmux.conf
+      printf "\033Ptmux;\033\033]1337;SetUserVar=%s=%s\007\033\\" "$1" `echo -n "$2" | base64`
+    fi
+  fi
+}
+
 function whatsmyip(){
   dig @resolver4.opendns.com myip.opendns.com +short
 }
@@ -353,6 +365,22 @@ function tmux_rejoin(){
   tmux -2 a -t default || tmux -2 new -s default
 }
 
+function wezterm_rejoin(){
+  wezterm connect --new-tab unix
+}
+
+function clear_ssh_wezterm_vars(){
+  debug "Clearing out ssh WEZTERM settings"
+  __wezterm_set_user_var "WEZTERM_SSH_USER" ""
+  __wezterm_set_user_var "WEZTERM_SSH_HOST" ""
+  __wezterm_set_user_var "WEZTERM_SSH_HOST_OS" ""
+}
+
+function ssh(){
+  /usr/bin/ssh "${@}"
+  clear_ssh_wezterm_vars
+}
+
 function notify(){
   eval "$@"
   job="$@"
@@ -379,6 +407,10 @@ function notify(){
     -H "Priority: ${priority}" \
     -d "\"${job}\" completed" 2>/dev/null 1>/dev/null
 }
+
+# function preexec()
+# {
+# }
 
 if [ -z ${SKIP_CUSTOM+x} ]; then
   debug "Setting up base for zsh"
@@ -412,6 +444,18 @@ fi
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
+WEZTERM_HOST_OS=$(cat /etc/*release* | grep -E "^NAME=" | cut -b 6- | sed -E 's/"//g')
+debug "Setting WEZTERM_HOST_OS to ${WEZTERM_HOST_OS}"
+__wezterm_set_user_var "WEZTERM_HOST_OS" "${WEZTERM_HOST_OS}"
+if [ -z ${SSH_CONNECTION+x} ]; then
+  clear_ssh_wezterm_vars
+else
+  debug "Setting ssh wezterm "
+  __wezterm_set_user_var "WEZTERM_SSH_HOST" "$(hostname)"
+  __wezterm_set_user_var "WEZTERM_SSH_USER" "${USER}"
+  __wezterm_set_user_var "WEZTERM_SSH_HOST_OS" $(cat /etc/*release* | grep -E "^NAME=" | cut -b 6- | sed -E 's/"//g')
+fi
+
 if [ -z ${SKIP_CUSTOM+x} ]; then
   debug "Setting up aliases and exports"
   ######## Aliases/exports
@@ -424,6 +468,7 @@ if [ -z ${SKIP_CUSTOM+x} ]; then
   export BAT_THEME="OneHalfDark"
   
   export whatsmyip
+  export ssh
 
   [ $(command -v bat) ] && alias cat="bat" && debug "Found bat, setting alias of cat to bat"
   if [ $(command -v eza) ]; then

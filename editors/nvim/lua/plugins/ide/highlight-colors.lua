@@ -1,5 +1,4 @@
 local highlight_colors_opts = {
-    enable_tailwind = true
 }
 
 ---@module "lazy"
