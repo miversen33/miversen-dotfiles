@@ -58,7 +58,7 @@ end
 ---@param config table
 local function setup_font(config)
     local font_opts = {}
-    wezterm.font_with_fallback({'JetBrains Mono'}, font_opts)
+    wezterm.font_with_fallback({'JetBrains Mono', 'Fira Code', 'MesloLGS NF'}, font_opts)
     -- See if we can adjust the font size based on the program we are in?
     config.font_size = 14.0
 end
