@@ -377,7 +377,7 @@ function clear_ssh_wezterm_vars(){
 }
 
 function ssh(){
-  /sbin/ssh "${@}"
+  /usr/bin/ssh "${@}"
   clear_ssh_wezterm_vars
 }
 
