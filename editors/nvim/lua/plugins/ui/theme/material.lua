@@ -76,7 +76,7 @@ local material_opts = {
 vim.g.material_style = "deep ocean"
 
 -- Uncomment this if you want to set the theme to material
-vim.g.__miversen_set_theme('material')
+-- vim.g.__miversen_set_theme('material')
 
 ---@module "lazy"
 ---@type LazySpec
