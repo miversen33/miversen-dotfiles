@@ -396,6 +396,9 @@ setup_cursor(config)
 setup_keys(config)
 setup_command_palette()
 setup_ui(config)
+if wezterm.target_triple:find('windows') then
+    config.default_prog = { 'powershell.exe', '-NoLogo' }
+end
 config.audible_bell = "Disabled"
 config.scrollback_lines = 5000
 config.warn_about_missing_glyphs = false -- I don't care. Leave me alone
