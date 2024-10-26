@@ -368,6 +368,7 @@ local function setup_ui(config)
         brightness = 0.2
     }
     config.window_background_opacity = .9
+    config.prefer_egl = true
     -- wezterm.on("window-focus-changed", function()
     --     -- We should only do this if we are on KDE and X11, and even then it doesn't seem to work properly
     --     os.execute('xdotool search -classname org.wezfurlong.wezterm | xargs -I{} xprop -f _KDE_NET_WM_BLUR_BEHIND_REGION 32c -set _KDE_NET_WM_BLUR_BEHIND_REGION 0 -id {}')
