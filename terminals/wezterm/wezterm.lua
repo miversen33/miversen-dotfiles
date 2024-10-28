@@ -363,6 +363,7 @@ local function setup_ui(config)
     config.detect_password_input = true
     config.tab_bar_at_bottom = true
     config.color_scheme = THEME_NAME
+    config.win32_system_backdrop = 'Acrylic'
     config.inactive_pane_hsb = {
         saturation = 0.4,
         brightness = 0.2
