@@ -363,11 +363,13 @@ local function setup_ui(config)
     config.detect_password_input = true
     config.tab_bar_at_bottom = true
     config.color_scheme = THEME_NAME
+    config.win32_system_backdrop = 'Acrylic'
     config.inactive_pane_hsb = {
         saturation = 0.4,
         brightness = 0.2
     }
     config.window_background_opacity = .9
+    config.prefer_egl = true
     -- wezterm.on("window-focus-changed", function()
     --     -- We should only do this if we are on KDE and X11, and even then it doesn't seem to work properly
     --     os.execute('xdotool search -classname org.wezfurlong.wezterm | xargs -I{} xprop -f _KDE_NET_WM_BLUR_BEHIND_REGION 32c -set _KDE_NET_WM_BLUR_BEHIND_REGION 0 -id {}')
@@ -395,6 +397,9 @@ setup_cursor(config)
 setup_keys(config)
 setup_command_palette()
 setup_ui(config)
+if wezterm.target_triple:find('windows') then
+    config.default_prog = { 'powershell.exe', '-NoLogo' }
+end
 config.audible_bell = "Disabled"
 config.scrollback_lines = 5000
 config.warn_about_missing_glyphs = false -- I don't care. Leave me alone

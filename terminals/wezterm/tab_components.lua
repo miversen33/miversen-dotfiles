@@ -114,7 +114,7 @@ M.battery = function(opts)
     return function()
         local battery_info = wezterm.battery_info()
         -- Short circuit if we cant read the battery for some reason
-        if not battery_info or not next(battery_info) then return end
+        if not battery_info or not next(battery_info) then return '' end
         battery_info = battery_info[1]
         local current_charge_level = battery_info.state_of_charge
         local rounded_charge_level = math.floor(round_down_to_nearest(current_charge_level, .10) * 100)
