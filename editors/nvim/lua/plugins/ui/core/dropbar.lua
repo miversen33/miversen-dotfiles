@@ -15,7 +15,7 @@ local function dropbar_ignore_buffer(buf, win)
 end
 
 local dropbar_opts = {
-    general = {
+    bar = {
         enable = dropbar_ignore_buffer,
     },
     icons = {
