@@ -1,0 +1,220 @@
+version = 3
+final_space = true
+
+[palette]
+  # Variables
+  background = 'p:white-20'
+  foreground = 'p:white-60'
+  path = 'p:white-80'
+  git-modified = 'p:orange-60'
+  git-diverged = 'p:red-60'
+  git-ahead = 'p:green-70'
+  git-behind = 'p:yellow-50'
+
+  black = '#000000'
+  blue = '#0110e6'
+  blue-10 = '#000a1a'
+  blue-20 = '#001433'
+  blue-30 = '#001e4d'
+  blue-40 = '#002766'
+  blue-50 = '#003180'
+  blue-60 = '#003b99'
+  blue-70 = '#0045b3'
+  blue-80 = '#004ecc'
+  blue-90 = '#0058e6'
+  cyan = '#70EAFF'
+  cyan-10 = '#0B171A'
+  cyan-20 = '#162F33'
+  cyan-30 = '#22464D'
+  cyan-40 = '#2D5D66'
+  cyan-50 = '#387580'
+  cyan-60 = '#438C99'
+  cyan-70 = '#4FA4B3'
+  cyan-80 = '#5ABBCC'
+  cyan-90 = '#65D2E6'
+  green = '#2fff8d'
+  green-10 = '#051a0e'
+  green-20 = '#09331c'
+  green-30 = '#0e4d2a'
+  green-40 = '#136638'
+  green-50 = '#188047'
+  green-60 = '#1c9954'
+  green-70 = '#21b363'
+  green-80 = '#26cc70'
+  green-90 = '#2ae67f'
+  orange = '#ff8e03'
+  orange-10 = '#1a0e00'
+  orange-20 = '#331c01'
+  orange-30 = '#4d2b01'
+  orange-40 = '#663901'
+  orange-50 = '#804702'
+  orange-60 = '#995502'
+  orange-70 = '#b36302'
+  orange-80 = '#cc7102'
+  orange-90 = '#e68003'
+  purple = '#8800ff'
+  purple-10 = '#0e001a'
+  purple-20 = '#1b0033'
+  purple-30 = '#29004d'
+  purple-40 = '#360066'
+  purple-50 = '#440080'
+  purple-60 = '#520099'
+  purple-70 = '#5f00b3'
+  purple-80 = '#6d00cc'
+  purple-90 = '#7b00e6'
+  red = '#ff0026'
+  red-10 = '#1a0004'
+  red-20 = '#330008'
+  red-30 = '#4d000d'
+  red-40 = '#660011'
+  red-50 = '#800015'
+  red-60 = '#990019'
+  red-70 = '#b3001e'
+  red-80 = '#cc0022'
+  red-90 = '#e60023'
+  white = '#ffffff'
+  white-10 = '#1a1a1a'
+  white-20 = '#333333'
+  white-30 = '#4d4d4d'
+  white-40 = '#666666'
+  white-50 = '#808080'
+  white-60 = '#999999'
+  white-70 = '#b3b3b3'
+  white-80 = '#cccccc'
+  white-90 = '#e6e6e6'
+  yellow = '#ffd900'
+  yellow-10 = '#1a1600'
+  yellow-20 = '#332b00'
+  yellow-30 = '#4d4100'
+  yellow-40 = '#665700'
+  yellow-50 = '#806d00'
+  yellow-60 = '#998200'
+  yellow-70 = '#b39800'
+  yellow-80 = '#ccad00'
+  yellow-90 = '#e6c400'
+  # language colors
+  lang-go = '#00ADD8'
+  lang-java = '#ED8B00'
+  lang-node = '#66cc33'
+  lang-perl = '#4e5d85'
+  lang-python = '#377cb4'
+  lang-rust = '#CE422B'
+  lang-bun = '#ddd6c7'
+  lang-docker = '#1D63ED'
+
+[transient_prompt]
+  template = '{{ .PWD }} ─▶ '
+
+[[blocks]]
+  type = 'prompt'
+  alignment = 'left'
+
+  [[blocks.segments]]
+    style = 'plain'
+    template = '╭─'
+    type = 'text'
+
+  [[blocks.segments]]
+    style = 'powerline'
+    powerline_symbol = ''
+    type = 'shell'
+    foreground = 'p:path'
+    background = 'p:white-20'
+    template = '{{ if eq .Name "nu" }}nu{{ end }}'
+
+  [[blocks.segments]]
+    style = 'powerline'
+    leading_powerline_symbol = ''
+    powerline_symbol = ''
+    invert_powerline = true
+    type = 'path'
+    background = "p:white-20"
+    foreground = "p:path"
+    template = ' {{ .Path }} '
+
+    [blocks.segments.properties]
+      style = 'full'
+  
+  [[blocks.segments]]
+    style = 'powerline'
+    invert_powerline = true
+    powerline_symbol = ''
+    background = "p:white-30"
+    foreground = 'p:path'
+    template = ' {{ .HEAD }}{{ if .BranchStatus }}{{ .BranchStatus }}{{ end }}{{ if .Working.Changed }}  {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }}  {{ .Staging.String }}{{ end }}{{ if gt .StashCount 0 }}  {{ .StashCount }}{{ end }} on {{ .UpstreamIcon }} '
+    type = 'git'
+
+    [blocks.segments.properties]
+      fetch_status = true
+      fetch_upstream_icon = true
+      source = 'cli'
+
+[[blocks]]
+  type = 'prompt'
+  alignment = 'right'
+  filler = '<p:path>─'
+
+  [[blocks.segments]]
+    style = 'plain'
+    template = ' {{ .Name }}'
+    foreground = 'p:foreground'
+    type = 'project'
+
+  [[blocks.segments]]
+    style = 'plain'
+    template = ' ﳑ {{ .Major }}.{{ .Minor }} '
+    foreground = 'p:lang-go'
+    background = 'p:background'
+    type = 'go'
+
+  [[blocks.segments]]
+    style = 'plain'
+    template = '  {{ .Venv }} {{ .Major }}.{{ .Minor }} '
+    foreground = 'p:lang-python'
+    type = 'python'
+
+  [[blocks.segments]]
+    style = 'plain'
+    template = '  {{ .Major }}.{{ .Minor }} '
+    foreground = 'p:lang-java'
+    type = 'java'
+
+  [[blocks.segments]]
+    style = 'plain'
+    template = '  {{ .Major }}.{{ .Minor }} '
+    foreground = 'p:lang-node'
+    type = 'node'
+
+  [[blocks.segments]]
+    style = 'plain'
+    template = '  {{ .Major }}.{{ .Minor }} '
+    foreground = 'p:lang-perl'
+    type = 'perl'
+
+  [[blocks.segments]]
+    style = 'plain'
+    template = '─╮'
+    type = 'text'
+
+[[blocks]]
+  type = 'prompt'
+  alignment = 'left'
+  newline = true
+
+  [[blocks.segments]]
+    style = 'plain'
+    template = '╰─'
+    type = 'text'
+
+  [[blocks.segments]]
+    style = 'plain'
+    template = '─▶'
+    type = 'text'
+
+[[blocks]]
+  type = 'rprompt'
+
+  [[blocks.segments]]
+    style = 'plain'
+    template = '◀─{{ if ne .Code 0 }}<p:white-20>{{ .Code }}{{ end }}─╯'
+    type = 'text'
