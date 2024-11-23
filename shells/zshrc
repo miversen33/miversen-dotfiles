@@ -3,9 +3,20 @@ RC_PATH=$(readlink -f "${(%):-%x}")
 export SHELL_RC="${RC_PATH}"
 RC_DIR=$(dirname $(readlink -f $RC_PATH))
 
+export XDG_CONFIG_HOME="${HOME}/.config"
+export XDG_CACHE_HOME="${HOME}/.cache"
+export ZSH_CUSTOM="${HOME}/.local/share/zsh"
+mkdir -p "${XDG_CONFIG_HOME}" "${XDG_CACHE_HOME}"
+
+# You can set USE_OMZSH (to anything) to use ohmyzsh
+# USE_OMZSH=1
+
+# You can set USE_POSH (to anything) to use oh-my-posh instead of ohmyzsh
+USE_POSH=1
 # You can set the DEBUG_ZSH flag (to anything) to see debug output during setup of ZSHRC
 # You can set SKIP_CUSTOM flag (to anything) to bypass any custom changes made to the zshrc profile
 # SKIP_CUSTOM=${SKIP_CUSTOM-0}
+
 unalias ls 2>/dev/null
 if [ ! -z ${PREVIOUS_PATH+x} ]; then
   # Resetting the PATH variable to whatever it was before we manipulated it below
@@ -19,6 +30,10 @@ export PREVIOUS_PATH=${PREVIOUS_PATH-${PATH}}
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=()
+# This is the path to each custom plugin you want to use.
+# We will iterate over this and source each directory included.
+# This is used when not using ohmyzsh for your shell
+custom_plugins=()
 
 function error(){
   echo -e "\033[1;31m$@\033[0m"
@@ -68,7 +83,7 @@ function install(){
       ln -s $RC_PATH ~/.zshrc
     fi
   fi
-  if [ -f $RC_DIR/p10k.zsh ]; then
+  if [ -f $RC_DIR/p10k.zsh ] && [ ! -z ${USE_OMZSH+x} ]; then
     debug "Checking if p10k is linked correctly"
     if [ ! -f ~/.p10k.zsh ]; then
       debug "No p10k.zsh found."
@@ -89,11 +104,11 @@ function install(){
     return
   fi
   plugins+=("git")
-  if [ ! -d $HOME/.oh-my-zsh ]; then
+  if [ ! -d $HOME/.oh-my-zsh ] && [ ! -z ${USE_OMZSH+x} ]; then
     echo "Installing oh my zsh"
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
   fi
-  if [ ! -f $HOME/.p10k.zsh ]; then
+  if [ ! -f $HOME/.p10k.zsh ] && [ ! -z ${USE_OMZSH+x} ]; then
     curl -fsSL -o $HOME/.p10k.zsh https://raw.githubusercontent.com/miversen33/miversen-dotfiles/master/shells/p10k.zsh
   fi
   if [ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting ]; then
@@ -108,9 +123,11 @@ function install(){
   # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
   # Initialization code that may require console input (password prompts, [y/n]
   # confirmations, etc.) must go above this block; everything else may go below.
-  if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]] && [ ! -z ${USE_OMZSH+x} ]; then
     source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
   fi
+  custom_plugins+=("${ZSH_CUSTOM}/plugins/zsh-autosuggestions")
+  custom_plugins+=("${ZSH_CUSTOM}/plugins/zsh-syntax-highlighting")
 }
 
 EDITOR="vim"
@@ -439,10 +456,14 @@ if [ -z ${SKIP_CUSTOM+x} ]; then
   [ $(command -v virtualenv) ] && plugins+=("virtualenv")
 fi
 
-[ -f $ZSH/oh-my-zsh.sh ] && source $ZSH/oh-my-zsh.sh
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+if [ ! -z ${USE_POSH+x} ]; then
+  eval "$(oh-my-posh init zsh --config ~/.dotfiles/shells/oh-my-posh.toml)"
+  mkdir -p "${ZSH_CUSTOM}"
+else
+  [ -f $ZSH/oh-my-zsh.sh ] && source $ZSH/oh-my-zsh.sh
+  # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+  [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+fi
 
 WEZTERM_HOST_OS=$(cat /etc/*release* | grep -E "^NAME=" | cut -b 6- | sed -E 's/"//g')
 debug "Setting WEZTERM_HOST_OS to ${WEZTERM_HOST_OS}"
@@ -479,5 +500,11 @@ if [ -z ${SKIP_CUSTOM+x} ]; then
   alias lsa="ls -lah"
   alias less="less -r"
   alias ZSHRC="${EDITOR} ~/.zshrc && reload"
+
+  if [ -z ${USE_OMZSH+x} ]; then
+    for plugin in "${custom_plugins[@]}"; do
+      debug "Loading zsh plugin: ${plugin}"
+    done
+  fi
 fi
 # miversen33 zshrc
