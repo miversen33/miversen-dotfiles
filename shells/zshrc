@@ -456,7 +456,7 @@ if [ -z ${SKIP_CUSTOM+x} ]; then
   [ $(command -v virtualenv) ] && plugins+=("virtualenv")
 fi
 
-if [ ! -z ${USE_POSH+x} ]; then
+if [ ! -z ${USE_POSH+x} ] && [ $(command -v oh-my-posh) ]; then
   eval "$(oh-my-posh init zsh --config ~/.dotfiles/shells/oh-my-posh.toml)"
   mkdir -p "${ZSH_CUSTOM}"
 else
