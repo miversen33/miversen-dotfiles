@@ -1,6 +1,8 @@
 local minimap_opts = {}
 
 local init = function()
+    ---@module "neominimap.config.meta"
+    ---@type Neominimap.UserConfig
     vim.g.neominimap = {
         click = {
             enabled = true,
@@ -8,7 +10,8 @@ local init = function()
         },
         mark = {
             enabled = true
-        }
+        },
+        auto_enable = false
     }
 end
 
@@ -18,5 +21,5 @@ return {
     "Isrothy/neominimap.nvim",
     opts = minimap_opts,
     init = init,
-    event = "VeryLazy"
+    lazy = false,
 }
