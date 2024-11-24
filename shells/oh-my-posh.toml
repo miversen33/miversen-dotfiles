@@ -116,14 +116,6 @@ final_space = true
 
   [[blocks.segments]]
     style = 'powerline'
-    powerline_symbol = ''
-    type = 'shell'
-    foreground = 'p:path'
-    background = 'p:white-20'
-    template = '{{ if eq .Name "nu" }}nu{{ end }}'
-
-  [[blocks.segments]]
-    style = 'powerline'
     leading_powerline_symbol = ''
     powerline_symbol = ''
     invert_powerline = true
@@ -193,7 +185,7 @@ final_space = true
 
   [[blocks.segments]]
     style = 'plain'
-    template = '─╮'
+    template = '─{{ if eq .Shell "nu" }} {{else}}╮{{ end }}'
     type = 'text'
 
 [[blocks]]
@@ -208,7 +200,7 @@ final_space = true
 
   [[blocks.segments]]
     style = 'plain'
-    template = '─▶'
+    template = '─{{ if eq .Shell "nu" }}󰰒 {{ else }} {{ end }}▶'
     type = 'text'
 
 [[blocks]]
@@ -216,5 +208,5 @@ final_space = true
 
   [[blocks.segments]]
     style = 'plain'
-    template = '◀─{{ if ne .Code 0 }}<p:white-20>{{ .Code }}{{ end }}─╯'
+    template = '{{ if ne .Shell "nu" }}◀─{{ if ne .Code 0 }}<p:white-20>{{ .Code }}{{ end }}─╯{{ end }}'
     type = 'text'
