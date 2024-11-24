@@ -65,10 +65,13 @@ local treesitter_config = {
         "vim",
         "vimdoc",
         "xml",
+        "nu"
     },
 }
 
-local treesitter_dependencies = {}
+local treesitter_dependencies = {
+    { "nushell/tree-sitter-nu", build = ":TSUpdate nu"}
+}
 
 ---@module "lazy"
 ---@type LazySpec

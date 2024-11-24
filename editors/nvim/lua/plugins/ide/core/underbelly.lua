@@ -33,11 +33,16 @@ local required_bricks = {
     "prettier", "shfmt", "clang-format"
 }
 
+local manual_bricks = {
+    "nushell"
+}
+
 local lsp_settings = {
     svelte = { filetypes = { "svelte" } },
     html = { filetypes = { "html", "svelte" } },
     emmet_language_server = { filetypes = { "html", "svelte" } },
     ruff = {},
+    nushell = {},
     jdtls = {
         settings = {
             -- https://github.com/eclipse-jdtls/eclipse.jdt.ls/wiki/Running-the-JAVA-LS-server-from-the-command-line#initialize-request
@@ -276,6 +281,10 @@ local mason_lsp = {
                 -- instead
             end
         } )
+        for _, brick in ipairs(manual_bricks) do
+            local mortar = lsp_settings[brick] or {}
+            lspconfig.nushell.setup(mortar)
+        end
     end
 }
 
