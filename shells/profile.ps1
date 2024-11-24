@@ -106,3 +106,5 @@ function Dev-Env
     $run_args = "run --label dev_env --rm -it $port_arg $mount_arg miversen33/dev_env:latest $domains_opt_arg $nameservers_opt_arg"
     Start-Process -Wait -NoNewWindow -FilePath "docker.exe" -ArgumentList $run_args
 }
+
+oh-my-posh init pwsh --config ~/git/miversen-dotfiles/shells/oh-my-posh.toml | Invoke-Expression

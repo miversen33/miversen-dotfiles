@@ -198,7 +198,7 @@ final_space = true
 
   [[blocks.segments]]
     style = 'plain'
-    template = '─{{ if eq .Shell "nu" }}󰰒 {{ else if eq .Shell "powershell"}}󰨊 {{ else }} {{ end }}▶'
+    template = '─{{ if eq .Shell "nu" }}󰰒 {{ else if eq .Shell "pwsh"}}󰨊 {{ else }} {{ end }}▶'
     type = 'text'
 
 [[blocks]]
