@@ -117,8 +117,7 @@ final_space = true
   [[blocks.segments]]
     style = 'powerline'
     leading_powerline_symbol = ''
-    powerline_symbol = ''
-    invert_powerline = true
+    powerline_symbol = ''
     type = 'path'
     background = "p:white-20"
     foreground = "p:path"
@@ -129,8 +128,7 @@ final_space = true
   
   [[blocks.segments]]
     style = 'powerline'
-    invert_powerline = true
-    powerline_symbol = ''
+    powerline_symbol = ''
     background = "p:white-30"
     foreground = 'p:path'
     template = ' {{ .HEAD }}{{ if .BranchStatus }}{{ .BranchStatus }}{{ end }}{{ if .Working.Changed }}  {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }}  {{ .Staging.String }}{{ end }}{{ if gt .StashCount 0 }}  {{ .StashCount }}{{ end }} on {{ .UpstreamIcon }} '
