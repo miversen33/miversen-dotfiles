@@ -108,7 +108,7 @@ function Dev-Env
 }
 
 function nuc {
-     Start-Process -Wait -NoNewWindow -FilePath "nu.exe" -ArgumentList "--config C:\Users\miver\git\miversen-dotfiles\shells\nushell\config.nu --env-config C:\Users\miver\git\miversen-dotfiles\shells\nushell\env.nu"
+     Start-Process -Wait -NoNewWindow -FilePath "nu.exe" -ArgumentList "--config $env:USERPROFILE\git\miversen-dotfiles\shells\nushell\config.nu --env-config $env:USERPROFILE\git\miversen-dotfiles\shells\nushell\env.nu"
 }
 
 oh-my-posh init pwsh --config ~/git/miversen-dotfiles/shells/oh-my-posh.toml | Invoke-Expression
