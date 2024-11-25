@@ -398,7 +398,7 @@ setup_keys(config)
 setup_command_palette()
 setup_ui(config)
 if wezterm.target_triple:find('windows') then
-    config.default_prog = { 'pwsh', '-NoLogo', '-NoExit', '-File', 'C:\\users\\miver\\git\\miversen-dotfiles\\shells\\profile.ps1' }
+    config.default_prog = { 'pwsh', '-NoLogo', '-NoExit', '-File', wezterm.home_dir .. '\\git\\miversen-dotfiles\\shells\\profile.ps1' }
 end
 config.audible_bell = "Disabled"
 config.scrollback_lines = 5000
