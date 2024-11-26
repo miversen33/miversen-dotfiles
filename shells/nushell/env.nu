@@ -1,5 +1,5 @@
 $env.HOME = $"($nu.home-path)"
-$env.BIN_DIR = $"($nu.home-path)/.local/bin"
+$env.BIN_DIR = (which nu | get path | get 0 | path dirname)
 $env.DOTFILES = $"($nu.home-path)/git/miversen-dotfiles"
 if ( sys host | get name ) == 'Windows' {
     $env.OS = "windows"

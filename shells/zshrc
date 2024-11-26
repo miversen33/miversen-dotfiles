@@ -117,7 +117,19 @@ function install(){
   if [ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions ]; then
     git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
   fi
-  if [ ! -d ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k ]; then
+  if [ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-vi-mode ]; then
+    git clone https://github.com/jeffreytse/zsh-vi-mode ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-vi-mode
+  fi
+  if [ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-history-substring-search ]; then
+    git clone https://github.com/zsh-users/zsh-history-substring-search ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-history-substring-search
+  fi
+  if [ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autocomplete ]; then
+    git clone https://github.com/marlonrichert/zsh-autocomplete ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autocomplete
+  fi
+  if [ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-completions ]; then
+    git clone https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-completions
+  fi
+  if [ ! -d ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k ] && [ ! -z ${USE_OMZSH+x} ]; then
     git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
   fi
   # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
@@ -126,8 +138,12 @@ function install(){
   if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]] && [ ! -z ${USE_OMZSH+x} ]; then
     source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
   fi
-  custom_plugins+=("${ZSH_CUSTOM}/plugins/zsh-autosuggestions")
-  custom_plugins+=("${ZSH_CUSTOM}/plugins/zsh-syntax-highlighting")
+  custom_plugins+=("${ZSH_CUSTOM}/plugins/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh")
+  custom_plugins+=("${ZSH_CUSTOM}/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh")
+  custom_plugins+=("${ZSH_CUSTOM}/plugins/zsh-completions/zsh-completions.plugin.zsh")
+  custom_plugins+=("${ZSH_CUSTOM}/plugins/zsh-vi-mode/zsh-vi-mode.plugin.zsh")
+  custom_plugins+=("${ZSH_CUSTOM}/plugins/zsh-history-substring-search/zsh-history-substring-search.plugin.zsh")
+
 }
 
 EDITOR="vim"
@@ -162,6 +178,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # zstyle ':omz:update' mode disabled  # disable automatic updates
 # zstyle ':omz:update' mode auto      # update automatically without asking
 zstyle ':omz:update' mode reminder  # just remind me to update when it's time
+# zstyle ':omz:update' mode reminder  # just remind me to update when it's time
 
 # Uncomment the following line to change how often to auto-update (in days).
 # zstyle ':omz:update' frequency 13
@@ -504,6 +521,7 @@ if [ -z ${SKIP_CUSTOM+x} ]; then
   if [ -z ${USE_OMZSH+x} ]; then
     for plugin in "${custom_plugins[@]}"; do
       debug "Loading zsh plugin: ${plugin}"
+      source "${plugin}"
     done
   fi
 fi
