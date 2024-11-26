@@ -177,7 +177,6 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Uncomment one of the following lines to change the auto-update behavior
 # zstyle ':omz:update' mode disabled  # disable automatic updates
 # zstyle ':omz:update' mode auto      # update automatically without asking
-zstyle ':omz:update' mode reminder  # just remind me to update when it's time
 # zstyle ':omz:update' mode reminder  # just remind me to update when it's time
 
 # Uncomment the following line to change how often to auto-update (in days).
@@ -253,6 +252,7 @@ function setup_base(){
   setopt no_nomatch
   bindkey "^[[1;5C" forward-word
   bindkey "^[[1;5D" backward-word
+  zstyle ':completion:::::default' menu yes select
   [ -f /etc/profile ] && source /etc/profile
   [ ! -d $SCREENDIR ] && mkdir -p $SCREENDIR
   [ -d "${HOME}/.luarocks" ] && PATH="${PATH}:${HOME}/.luarocks/bin"
