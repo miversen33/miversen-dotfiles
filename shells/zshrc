@@ -251,6 +251,8 @@ function setup_base(){
   debug "Setting up base for zsh profile"
   debug "Disabling glob match"
   setopt no_nomatch
+  bindkey "^[[1;5C" forward-word
+  bindkey "^[[1;5D" backward-word
   [ -f /etc/profile ] && source /etc/profile
   [ ! -d $SCREENDIR ] && mkdir -p $SCREENDIR
   [ -d "${HOME}/.luarocks" ] && PATH="${PATH}:${HOME}/.luarocks/bin"
