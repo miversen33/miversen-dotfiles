@@ -1,5 +1,3 @@
-local minimap_opts = {}
-
 local init = function()
     ---@module "neominimap.config.meta"
     ---@type Neominimap.UserConfig
@@ -19,7 +17,6 @@ end
 ---@type LazySpec
 return {
     "Isrothy/neominimap.nvim",
-    opts = minimap_opts,
     init = init,
     lazy = false,
 }

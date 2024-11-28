@@ -4,9 +4,9 @@ if ($env.config? | is-not-empty) {
 }
 
 $env.POWERLINE_COMMAND = 'oh-my-posh'
-$env.POSH_THEME = (echo "/home/miversen/.dotfiles/shells/oh-my-posh.toml")
+$env.POSH_THEME = (echo "/home/miversen/git/miversen-dotfiles/shells/oh-my-posh.toml")
 $env.PROMPT_INDICATOR = ""
-$env.POSH_SESSION_ID = (echo "9f97a393-606a-4597-bb23-77204005b53e")
+$env.POSH_SESSION_ID = (echo "bd2dc721-6025-46d0-877b-a74142804d44")
 $env.POSH_SHELL = "nu"
 $env.POSH_SHELL_VERSION = (version | get version)
 
