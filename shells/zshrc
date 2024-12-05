@@ -250,6 +250,10 @@ function setup_base(){
   debug "Setting up base for zsh profile"
   debug "Disabling glob match"
   setopt no_nomatch
+  HISTFILE=~/.zsh_history
+  HISTSIZE=10000
+  SAVEHIST=10000
+  setopt INC_APPEND_HISTORY_TIME
   bindkey "^[[1;5C" forward-word
   bindkey "^[[1;5D" backward-word
   zstyle ':completion:::::default' menu yes select
