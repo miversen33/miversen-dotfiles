@@ -116,6 +116,11 @@ local keys = {
                     choices = workspaces
                 } ), pane )
             end )
+    },
+    {
+        key = "|",
+        mods = "CTRL|SHIFT",
+        action = wezterm.action.ActivateCopyMode
     }
 }
 
