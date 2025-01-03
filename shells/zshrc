@@ -138,6 +138,9 @@ function install(){
   if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]] && [ ! -z ${USE_OMZSH+x} ]; then
     source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
   fi
+  for plugin in $RC_DIR/plugins/*.plugin.zsh; do
+    custom_plugins+=("${plugin}")
+  done
   custom_plugins+=("${ZSH_CUSTOM}/plugins/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh")
   custom_plugins+=("${ZSH_CUSTOM}/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh")
   custom_plugins+=("${ZSH_CUSTOM}/plugins/zsh-completions/zsh-completions.plugin.zsh")
