@@ -471,7 +471,9 @@ if [ -z ${SKIP_CUSTOM+x} ]; then
     alias "dcw"="docker compose up --abort-on-container-failure --watch"
     alias "dcl"="docker compose logs --follow --timestamps --tail "0
     alias "dcu"="docker compose up"
+    alias "dcb"="docker compose build"
     alias "dcd"="docker compose down"
+    alias "ds"="docker container start -a "
   fi
   plugins+=("dotenv")
   [ $(command -v rustc) ] && plugins+=("rust")
