@@ -1,3 +1,5 @@
+---@module "lazy"
+---@type LazySpec
 return {
     "ziontee113/icon-picker.nvim",
     dependencies = {

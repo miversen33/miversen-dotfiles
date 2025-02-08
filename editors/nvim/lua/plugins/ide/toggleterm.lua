@@ -79,11 +79,11 @@ local toggleterm_opts = {
     }
 }
 
-local toggleterm = {
+---@module "lazy"
+---@type LazySpec
+return {
     "akinsho/toggleterm.nvim",
     init = register_user_funcs,
     opts = toggleterm_opts,
     event = "VeryLazy"
 }
-
-return toggleterm

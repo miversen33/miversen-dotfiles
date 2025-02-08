@@ -4,9 +4,9 @@ local init = function ()
     vim.g.unception_block_while_host_edits = true
 end
 
-local unception = {
+---@module "lazy"
+---@type LazySpec
+return {
     "samjwill/nvim-unception",
     init = init
 }
-
-return unception
