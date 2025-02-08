@@ -277,9 +277,9 @@ _r_: Starts/Restarts DAP
 _R_: Rerun last dap configuration
 ^
 -----------Navigation-----------
-_k_: Step **OUT** of code block
+_u_: Step **OUT** of code block
 _o_: Step **OVER** code block
-_j_: Step **INTO** code block
+_p_: Step **INTO** code block
 ^
 -----------Breakpoint-----------
 _d_: Toggle Breakpoint
@@ -389,7 +389,7 @@ _q_: Quit Mode
                 }
             },
             {
-                "k",
+                "u",
                 function()
                     require("dap").step_out()
                 end,
@@ -413,7 +413,7 @@ _q_: Quit Mode
                 }
             },
             {
-                "j",
+                "p",
                 function()
                     require("dap").step_into()
                 end,
