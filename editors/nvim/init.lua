@@ -179,6 +179,10 @@ local function vim_settings()
     _G.__miversen_border_color = "#806d9c"
     _G.__miversen_augroup = "miversen_config_augroup"
     vim.api.nvim_create_augroup(_G.__miversen_augroup, {clear = true})
+    vim.api.nvim_create_autocmd({'FocusGained', 'BufEnter', 'VimResume'}, {
+        command = "checktime",
+        pattern = "*"
+    })
 end
 
 local function setup_basic_keycommands()
