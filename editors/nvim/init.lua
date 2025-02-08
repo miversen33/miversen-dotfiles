@@ -394,7 +394,7 @@ local function setup_plugins()
         "dap-repl", "toggleterm", "neo-tree", "ImportManager", "aerial",
         "TelescopePrompt", "TelescopeResults", "NetmanLogs", "neo-tree-popup", "",
         "dapui_scopes", "dapui_breakpoints", "dapui_stacks", "dapui_watches", "dap-repl", 
-        "dapui_console"
+        "dapui_console", "neo-tree-popup"
     }
     local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
     -- local lazypath = "/tmp/lazy/lazy.nvim"
