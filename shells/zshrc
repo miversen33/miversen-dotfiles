@@ -316,6 +316,10 @@ function setup_base(){
     # Add stupid node modules to path
     [ -d ~/node_modules/live-server ] && alias "live-server"="~/node_modules/live-server/live-server.js"
   fi
+  if [ ! -z ${VIRTUAL_ENV+x} ]; then
+    debug "Sourcing selected python virtual environment"
+    source "${VIRTUAL_ENV}/bin/activate"
+  fi
   debug "Disabling nomatch"
   setopt nomatch
 }
