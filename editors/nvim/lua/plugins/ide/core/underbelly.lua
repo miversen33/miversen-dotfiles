@@ -253,11 +253,11 @@ local dap_ui = {
 
 local mason_lsp = {
     "williamboman/mason-lspconfig.nvim",
-    dependencies = { mason, lsp, "hrsh7th/cmp-nvim-lsp" },
+    dependencies = { mason, lsp, "saghen/blink.cmp" },
     opts = { automatic_installation = true },
     init = function()
         local lsp_capabilities =
-            require( "cmp_nvim_lsp" ).default_capabilities()
+            require( "blink.cmp" ).get_lsp_capabilities()
         lsp_capabilities.textDocument.completion.completionItem.snippetSupport =
             true
 
