@@ -210,8 +210,6 @@ local function setup_basic_keycommands()
         if success then specs.show_specs() end
         success, _ = pcall(require, "fidget")
         if success then pcall(vim.cmd, 'Fidget clear') end
-        success, cmp = pcall(require, 'cmp')
-        if success then cmp.close() end
         local key = vim.api.nvim_replace_termcodes('<ESC>', true, false, true)
         vim.api.nvim_feedkeys(key, 'n', false)
     end
