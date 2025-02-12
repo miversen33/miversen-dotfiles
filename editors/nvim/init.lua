@@ -394,6 +394,10 @@ local function setup_plugins()
         "dapui_scopes", "dapui_breakpoints", "dapui_stacks", "dapui_watches", "dap-repl", 
         "dapui_console", "neo-tree-popup"
     }
+    _G.__miversen_config_excluded_filetypes_as_table = {}
+    for _, exclusion in ipairs(_G.__miversen_config_excluded_filetypes_array) do
+        _G.__miversen_config_excluded_filetypes_as_table[exclusion] = true
+    end
     local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
     -- local lazypath = "/tmp/lazy/lazy.nvim"
     local lazyurl = "https://github.com/folke/lazy.nvim.git"
