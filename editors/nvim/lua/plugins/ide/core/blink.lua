@@ -42,7 +42,7 @@ vim.api.nvim_set_hl(0, "BlinkCmpKindTypeParameter", { fg = "#58B5A8" })
 ---@type LazySpec
 return {
     'saghen/blink.cmp',
-    dependencies = {'rafamadriz/friendly-snippets'},
+    dependencies = {'rafamadriz/friendly-snippets', "xzbdmw/colorful-menu.nvim", "Saghen/blink.compat" },
     version = '*',
 
     ---@module 'blink.cmp'
@@ -50,20 +50,24 @@ return {
     opts = {
         keymap = {
             preset = 'default',
-            ["<C-Space>"] = { 
+            ["<C-Space>"] = {
                 ---@module 'blink.cmp'
                 ---@param cmp blink.cmp.API
                 function(cmp)
-                    if cmp.is_menu_visible() then
+                    local supermaven = require("supermaven-nvim.completion_preview")
+                    if supermaven.has_suggestion() then
+                        cmp.cancel()
+                        vim.schedule(function()
+                            supermaven.on_accept_suggestion()
+                        end)
+                    elseif cmp.is_menu_visible() then
                         cmp.select_and_accept()
                     else
                         cmp.show()
                     end
-                -- "select_and_accept", "fallback",
 
                 end
             },
-                
             ["<C-Up>"] = {
                 ---@module 'blink.cmp'
                 ---@param cmp blink.cmp.API
@@ -109,8 +113,12 @@ return {
             enabled = true
         },
         sources = {
-            default = {'lsp', 'path', 'snippets', 'buffer' },
+            default = {'lsp', 'path', 'snippets', 'buffer', "lazydev", "supermaven"},
             providers = {
+                supermaven = {
+                    name = "supermaven",
+                    module = "blink.compat.source"
+                },
                 lazydev = {
                     name = "LazyDev",
                     module = "lazydev.integrations.blink",
