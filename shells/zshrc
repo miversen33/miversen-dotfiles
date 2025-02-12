@@ -247,6 +247,8 @@ AUTO_DIR="${RC_DIR}/auto"
 SCREENDIR=$HOME/.cache/screen
 
 function setup_base(){
+  debug "Sourcing home .env file"
+  [ -f ~/.env ] && source ~/.env
   debug "Setting up base for zsh profile"
   debug "Disabling glob match"
   setopt no_nomatch

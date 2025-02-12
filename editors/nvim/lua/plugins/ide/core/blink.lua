@@ -54,13 +54,7 @@ return {
                 ---@module 'blink.cmp'
                 ---@param cmp blink.cmp.API
                 function(cmp)
-                    local supermaven = require("supermaven-nvim.completion_preview")
-                    if supermaven.has_suggestion() then
-                        cmp.cancel()
-                        vim.schedule(function()
-                            supermaven.on_accept_suggestion()
-                        end)
-                    elseif cmp.is_menu_visible() then
+                    if cmp.is_menu_visible() then
                         cmp.select_and_accept()
                     else
                         cmp.show()
