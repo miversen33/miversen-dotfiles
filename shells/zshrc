@@ -249,6 +249,8 @@ SCREENDIR=$HOME/.cache/screen
 function setup_base(){
   debug "Sourcing home .env file"
   [ -f ~/.env ] && source ~/.env
+  debug "Creating basic directories"
+  mkdir -p ~/.local/{programs,appimages}
   debug "Setting up base for zsh profile"
   debug "Disabling glob match"
   setopt no_nomatch
@@ -262,9 +264,11 @@ function setup_base(){
   [ -f /etc/profile ] && source /etc/profile
   [ ! -d $SCREENDIR ] && mkdir -p $SCREENDIR
   [ -d "${HOME}/.luarocks" ] && PATH="${PATH}:${HOME}/.luarocks/bin"
+  # This should grab _any_ directory that is under ${HOME}/.local/programs/*/current
   [ -d "${HOME}/.local/programs/neovim/current" ] && PATH="${HOME}/.local/programs/neovim/current/bin:$PATH"
   [ -d "${HOME}/.local/programs/node/current" ] && PATH="${HOME}/.local/programs/node/current/bin:$PATH"
   [ -d "${HOME}/.local/bin" ] && PATH="${HOME}/.local/bin:$PATH"
+  [ -d "${HOME}/.local/appimages" ] && PATH="${HOME}/.local/appimages:${PATH}"
   [ -d "${HOME}/.cargo/bin" ] && PATH="${HOME}/.cargo/bin:$PATH"
   [ -d "${HOME}/.local/share/nvim/mason/bin" ] && PATH="${HOME}/.local/share/nvim/mason/bin:$PATH" # Adding mason modules to path
 
@@ -538,6 +542,7 @@ if [ -z ${SKIP_CUSTOM+x} ]; then
       source "${plugin}"
     done
   fi
+
 fi
 
 # miversen33 zshrc
