@@ -2,7 +2,8 @@ $env.config = {
     show_banner: false,
     shell_integration: {
         osc133: false
-    }
+    },
+    footer_mode: 20
 }
 
 let core_plugins = [
