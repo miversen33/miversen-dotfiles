@@ -111,11 +111,11 @@ function install(){
   if [ ! -f $HOME/.p10k.zsh ] && [ ! -z ${USE_OMZSH+x} ]; then
     curl -fsSL -o $HOME/.p10k.zsh https://raw.githubusercontent.com/miversen33/miversen-dotfiles/master/shells/p10k.zsh
   fi
-  if [ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting ]; then
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-  fi
   if [ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions ]; then
     git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+  fi
+  if [ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting ]; then
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
   fi
   if [ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-history-substring-search ]; then
     git clone https://github.com/zsh-users/zsh-history-substring-search ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-history-substring-search
@@ -125,6 +125,9 @@ function install(){
   fi
   if [ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-completions ]; then
     git clone https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-completions
+  fi
+  if [ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-vi-mode ]; then
+    git clone https://github.com/softmoth/zsh-vim-mode ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-vi-mode
   fi
   if [ ! -d ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k ] && [ ! -z ${USE_OMZSH+x} ]; then
     git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
@@ -141,14 +144,15 @@ function install(){
   if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]] && [ ! -z ${USE_OMZSH+x} ]; then
     source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
   fi
-  for plugin in $RC_DIR/plugins/*.plugin.zsh; do
-    custom_plugins+=("${plugin}")
-  done
-
   custom_plugins+=("${ZSH_CUSTOM}/plugins/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh")
   custom_plugins+=("${ZSH_CUSTOM}/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh")
   custom_plugins+=("${ZSH_CUSTOM}/plugins/zsh-completions/zsh-completions.plugin.zsh")
   custom_plugins+=("${ZSH_CUSTOM}/plugins/zsh-history-substring-search/zsh-history-substring-search.plugin.zsh")
+  custom_plugins+=("${ZSH_CUSTOM}/plugins/zsh-vi-mode/zsh-vi-mode.plugin.zsh")
+  for plugin in $RC_DIR/plugins/*.plugin.zsh; do
+    custom_plugins+=("${plugin}")
+  done
+
 
 }
 
@@ -270,6 +274,7 @@ function setup_base(){
   setopt HIST_IGNORE_SPACE
   setopt HIST_FIND_NO_DUPS
   setopt HIST_SAVE_NO_DUPS
+  bindkey -v # Enable vi-mode
   bindkey "^[[1;5C" forward-word
   bindkey "^[[1;5D" backward-word
   zstyle ':completion:::::default' menu yes select
@@ -551,8 +556,12 @@ if [ -z ${SKIP_CUSTOM+x} ]; then
 
   if [ -z ${USE_OMZSH+x} ]; then
     for plugin in "${custom_plugins[@]}"; do
-      debug "Loading zsh plugin: ${plugin}"
-      source "${plugin}"
+      if [ -f "${plugin}" ]; then
+        debug "Loading zsh plugin: ${plugin}"
+        source "${plugin}"
+      else
+        debug "Failed to load ${plugin}: Plugin not found"
+      fi
     done
   fi
 
