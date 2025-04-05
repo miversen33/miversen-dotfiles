@@ -258,6 +258,12 @@ function setup_base(){
   HISTSIZE=10000
   SAVEHIST=10000
   setopt INC_APPEND_HISTORY_TIME
+  setopt HIST_EXPIRE_DUPS_FIRST
+  setopt HIST_IGNORE_DUPS
+  setopt HIST_IGNORE_ALL_DUPS
+  setopt HIST_IGNORE_SPACE
+  setopt HIST_FIND_NO_DUPS
+  setopt HIST_SAVE_NO_DUPS
   bindkey "^[[1;5C" forward-word
   bindkey "^[[1;5D" backward-word
   zstyle ':completion:::::default' menu yes select
