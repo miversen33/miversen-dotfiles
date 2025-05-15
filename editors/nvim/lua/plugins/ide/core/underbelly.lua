@@ -20,6 +20,13 @@ vim.fn.sign_define( "DiagnosticSignHint", {
     texthl = "DiagnosticSignHint"
 } )
 
+-- There is probably a better way to do this but whatever
+if vim.diagnostic and vim.diagnostic.config then
+    vim.diagnostic.config({
+            virtual_lines = { current_line = true },
+    })
+end
+
 local lsp_handlers = {
     ["textDocument/hover"] = vim.lsp.with( vim.lsp.handlers.hover,
                                            { border = "rounded" } ),
