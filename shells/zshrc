@@ -132,7 +132,7 @@ function install(){
   if [ ! -d ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k ] && [ ! -z ${USE_OMZSH+x} ]; then
     git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
   fi
-  if [ ! -d ~/.local/bin/fzf ]; then
+  if [ ! -f ~/.local/bin/fzf ]; then
     readonly fzf_version="0.61.0"
     debug "Installing fzf"
     curl -fsL "https://github.com/junegunn/fzf/releases/download/v${fzf_version}/fzf-${fzf_version}-linux_amd64.tar.gz" | tar -C ~/.local/bin -xz
