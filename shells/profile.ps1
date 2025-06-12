@@ -108,7 +108,26 @@ function Dev-Env
 }
 
 function nuc {
-     Start-Process -Wait -NoNewWindow -FilePath "nu.exe" -ArgumentList "--config $env:USERPROFILE\git\miversen-dotfiles\shells\nushell\config.nu --env-config $env:USERPROFILE\git\miversen-dotfiles\shells\nushell\env.nu"
+    Start-Process -Wait -NoNewWindow -FilePath "nu.exe" -ArgumentList "--config $env:USERPROFILE\git\miversen-dotfiles\shells\nushell\config.nu --env-config $env:USERPROFILE\git\miversen-dotfiles\shells\nushell\env.nu"
 }
 
-oh-my-posh init pwsh --config ~/git/miversen-dotfiles/shells/oh-my-posh.toml | Invoke-Expression
+# Very cool, thanks Doctor Scripto
+# https://devblogs.microsoft.com/scripting/use-a-powershell-function-to-see-if-a-command-exists/
+Function Test-CommandExists {
+    Param ($command)
+    $oldPreference = $ErrorActionPreference
+    $ErrorActionPreference = ‘stop’
+    try {
+        if(Get-Command $command){“$command exists”}
+    }
+    Catch {}
+    Finally {
+        $ErrorActionPreference=$oldPreference
+    }
+}
+
+$env:SUPERMAVEN_DISABLED = "true"
+
+if(Test-CommandExists oh-my-posh) {
+    oh-my-posh init pwsh --config ~/git/miversen-dotfiles/shells/oh-my-posh.toml | Invoke-Expression
+}
