@@ -530,6 +530,8 @@ else
     debug "Installing oh my zsh"
     # https://ohmyz.sh/#install
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    rm ~/.zshrc
+    ln -s $RC_PATH ~/.zshrc
   fi
 
   [ -f $ZSH/oh-my-zsh.sh ] && source $ZSH/oh-my-zsh.sh
