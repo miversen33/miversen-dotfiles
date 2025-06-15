@@ -116,6 +116,8 @@ function install(){
   if [ ! -d $HOME/.oh-my-zsh ] && [ ! -z ${USE_OMZSH+x} ]; then
     echo "Installing oh my zsh"
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    rm ~/.zshrc
+    ln -s $RC_PATH ~/.zshrc
   fi
   if [ ! -f $HOME/.p10k.zsh ] && [ ! -z ${USE_OMZSH+x} ]; then
     curl -fsSL -o $HOME/.p10k.zsh https://raw.githubusercontent.com/miversen33/miversen-dotfiles/master/shells/p10k.zsh
@@ -525,15 +527,6 @@ if [ ! -z ${USE_POSH+x} ] && [ $(command -v oh-my-posh) ]; then
   eval "$(oh-my-posh init zsh --config ~/.dotfiles/shells/oh-my-posh.toml)"
   mkdir -p "${ZSH_CUSTOM}"
 else
-  # If oh my zsh isn't installed, we should install it
-  if [ ! -f $ZSH/oh-my-zsh.sh ]; then
-    debug "Installing oh my zsh"
-    # https://ohmyz.sh/#install
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-    rm ~/.zshrc
-    ln -s $RC_PATH ~/.zshrc
-  fi
-
   [ -f $ZSH/oh-my-zsh.sh ] && source $ZSH/oh-my-zsh.sh
   # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
   [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
