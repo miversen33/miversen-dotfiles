@@ -257,11 +257,14 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 AUTO_DIR="${RC_DIR}/auto"
 SCREENDIR=$HOME/.cache/screen
 
+# This needs to be outside the setup_base function because otherwise
+# install will fail
+debug "Creating basic directories"
+mkdir -p ~/.local/{programs,appimages,bin}
+
 function setup_base(){
   debug "Sourcing home .env file"
   [ -f ~/.env ] && source ~/.env
-  debug "Creating basic directories"
-  mkdir -p ~/.local/{programs,appimages,bin}
   debug "Setting up base for zsh profile"
   debug "Disabling glob match"
   setopt no_nomatch
@@ -347,6 +350,7 @@ function setup_base(){
   fi
   debug "Disabling nomatch"
   setopt nomatch
+
   alias paru-clean="paru -Sccd"
 }
 
