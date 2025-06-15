@@ -531,11 +531,6 @@ else
     # https://ohmyz.sh/#install
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
   fi
-  if [ ! -f $ZSH/p10k.zsh ]; then
-    debug "Installing p10k"
-    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"
-    ln -s ~/.dotfiles/shells/p10k.zsh ~/.p10k.zsh
-  fi
 
   [ -f $ZSH/oh-my-zsh.sh ] && source $ZSH/oh-my-zsh.sh
   # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
