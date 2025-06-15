@@ -149,6 +149,15 @@ function install(){
     curl -fsL "https://github.com/junegunn/fzf/releases/download/v${fzf_version}/fzf-${fzf_version}-linux_amd64.tar.gz" | tar -C ~/.local/bin -xz
     chmod +x ~/.local/bin/fzf
   fi
+  if [ ! -d ~/.local/bin/nvim ]; then
+    debug "Installing neovim"
+    curl -fsL "https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz" | tar -C ~/.local/programs -xz
+    ln -s ~/.local/programs/nvim-linux-x86_64/bin/nvim ~/.local/bin/nvim
+  fi
+  if [ ! -d ~/.config/nvim ]; then
+    debug "Installing neovim config"
+    ln -s $RC_DIR/../editors/nvim ~/.config/nvim
+  fi
   # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
   # Initialization code that may require console input (password prompts, [y/n]
   # confirmations, etc.) must go above this block; everything else may go below.
