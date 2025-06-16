@@ -45,55 +45,80 @@ local manual_bricks = {
 }
 
 local lsp_settings = {
-    svelte = { filetypes = { "svelte" } },
-    html = { filetypes = { "html", "svelte" } },
-    emmet_language_server = { filetypes = { "html", "svelte" } },
-    ruff = {},
-    nushell = {},
+    svelte = {
+        settings = { filetypes = { "svelte" } },
+        enabled = true
+    },
+    html = {
+        settings = { filetypes = { "html", "svelte" } },
+        enabled = true
+    },
+    emmet_language_server = {
+        settings = { filetypes = { "html", "svelte" } },
+        enabled = true
+    },
+    ruff = {
+        enabled = true
+    },
+    nushell = {
+        enabled = true
+    },
     jdtls = {
         settings = {
-            -- https://github.com/eclipse-jdtls/eclipse.jdt.ls/wiki/Running-the-JAVA-LS-server-from-the-command-line#initialize-request
-            java = { inlayHints = { parameterNames = { enabled = true } } }
-        }
+            settings = {
+                -- https://github.com/eclipse-jdtls/eclipse.jdt.ls/wiki/Running-the-JAVA-LS-server-from-the-command-line#initialize-request
+                java = { inlayHints = { parameterNames = { enabled = true } } }
+            }
+        },
+        enabled = true
     },
     lua_ls = {
         settings = {
-            -- https://luals.github.io/wiki/settings/
-            Lua = { hint = { enable = true, setType = true } }
-        }
+            settings = {
+                -- https://luals.github.io/wiki/settings/
+                Lua = { hint = { enable = true, setType = true } }
+            }
+        },
+        enabled = true
     },
     tailwindcss = {
-        filetypes = {
-            "aspnetcorerazor", "astro", "astro-markdown", "blade", "clojure",
-            "django-html", "htmldjango", "edge", "eelixir", "elixir", "ejs",
-            "erb", "eruby", "gohtml", "gohtmltmpl", "haml", "handlebars", "hbs",
-            "html", "htmlangular", "html-eex", "heex", "jade", "leaf", "liquid",
-            "mdx", "mustache", "njk", "nunjucks", "php", "razor", "slim",
-            "twig", "css", "less", "postcss", "sass", "scss", "stylus",
-            "sugarss", "javascript", "javascriptreact", "reason", "rescript",
-            "typescript", "typescriptreact", "vue", "svelte", "templ"
-        }
+        settings = {
+            filetypes = {
+                "aspnetcorerazor", "astro", "astro-markdown", "blade", "clojure",
+                "django-html", "htmldjango", "edge", "eelixir", "elixir", "ejs",
+                "erb", "eruby", "gohtml", "gohtmltmpl", "haml", "handlebars", "hbs",
+                "html", "htmlangular", "html-eex", "heex", "jade", "leaf", "liquid",
+                "mdx", "mustache", "njk", "nunjucks", "php", "razor", "slim",
+                "twig", "css", "less", "postcss", "sass", "scss", "stylus",
+                "sugarss", "javascript", "javascriptreact", "reason", "rescript",
+                "typescript", "typescriptreact", "vue", "svelte", "templ"
+            }
+        },
+        enabled = true
     },
     basedpyright = {
         settings = {
-            basedpyright = {
-                -- https://docs.basedpyright.com/#/configuration
-                analysis = {
-                    typeCheckingMode = "standard",
-                    diagnosticSeverityOverrides = {
-                        reportAssignmentType = false,
-                        reportArgumentType = "information",
-                        reportUnusedFunction = "information",
-                        reportOptionalMemberAccess = "information",
-                        reportRedeclaration = "information",
-                        reportImplicitOverride = false,
-                        reportAny = false
-                    }
-                },
-                venvPath = "./venv"
+            settings = {
+                basedpyright = {
+                    -- https://docs.basedpyright.com/#/configuration
+                    analysis = {
+                        typeCheckingMode = "standard",
+                        diagnosticSeverityOverrides = {
+                            reportAssignmentType = false,
+                            reportArgumentType = "information",
+                            reportUnusedFunction = "information",
+                            reportOptionalMemberAccess = "information",
+                            reportRedeclaration = "information",
+                            reportImplicitOverride = false,
+                            reportAny = false
+                        }
+                    },
+                    venvPath = "./venv"
+                }
             }
-        }
-    }
+        },
+        enabled = true
+    },
 }
 
 local conform = {
@@ -156,6 +181,8 @@ local conform = {
 
 }
 
+
+
 local mason = {
     "williamboman/mason.nvim",
     lazy = false,
@@ -173,6 +200,42 @@ local lsp = {
     config = function()
         require( "lspconfig.ui.windows" ).default_options.border = "rounded"
     end
+}
+
+local neotest = {
+    "nvim-neotest/neotest",
+    dependencies = {
+        { "nvim-neotest/nvim-nio" },
+        { "nvim-lua/plenary.nvim" },
+        { "antoinemadec/FixCursorHold.nvim" },
+        { "nvim-treesitter/nvim-treesitter" },
+        { "nvim-neotest/neotest-python" },
+        -- { "fredrikaverpil/neotest-golang" },
+        -- { "rcasia/neotest-java" },
+        -- { "marilari88/neotest-vitest" },
+        -- { "mrcjkb/rustaceanvim" }, -- This is unnecessary, rustaceanvim is already installed in plugins.ide.languages.rust
+        -- { "rcasia/neotest-bash" },
+        -- { "alfaix/neotest-gtest" }, -- c++ testing
+        -- { "lawrence-laz/neotest-zig" },
+        -- { "mrcjkb/neotest-haskell" },
+   },
+   config = function()
+       -- We have to use config here to prevent failure on loading as the various
+       -- neotest adapters are not downloaded/loaded
+       require("neotest").setup({
+           adapters = {
+               require( "neotest-python" ),
+               -- require( "neotest-golang" ),
+               -- require( "neotest-java" ),
+               -- require( "neotest-vitest" ),
+               -- require( "neotest-bash" ),
+               -- require( "neotest-gtest" ),
+               -- require( "neotest-zig" ),
+               -- require( "rustaceanvim.neotest"),
+               -- require( "neotest-haskell" ),
+           }
+       })
+   end
 }
 
 local dap = { "mfussenegger/nvim-dap" }
@@ -269,25 +332,6 @@ local mason_lsp = {
             true
 
         local lspconfig = require( "lspconfig" )
-        local mason_lspconfig = require( "mason-lspconfig" )
-        mason_lspconfig.setup_handlers( {
-            function( lsp_server )
-                local lsp_setting = lsp_settings[lsp_server] or {}
-                local _ = lsp_setting.on_attach
-                local lsp_on_attach = function( client, bufnr )
-                    vim.lsp.inlay_hint.enable( true, { bufnr = bufnr } )
-                    if _ then _( client, bufnr ) end
-                end
-                lsp_setting.on_attach = lsp_on_attach
-                lsp_setting.capabilities = lsp_capabilities
-                lsp_setting.handles = lsp_handlers
-                lspconfig[lsp_server].setup( lsp_setting )
-            end,
-            ["rust_analyzer"] = function()
-                -- Purposely stubbing rust_analyzer out so rustaceanvim can do what it does
-                -- instead
-            end
-        } )
         for _, brick in ipairs(manual_bricks) do
             local mortar = lsp_settings[brick] or {}
             lspconfig.nushell.setup(mortar)
@@ -324,8 +368,67 @@ local mason_installer_opts = {
 
 local mason_installer = {
     "WhoIsSethDaniel/mason-tool-installer.nvim",
-    dependencies = { mason_lsp, mason_dap, mason_conform, mason_java },
+    dependencies = { mason_lsp, mason_dap, mason_conform, mason_java, neotest },
     opts = mason_installer_opts
 }
 
+
+for lsp_name, lsp_setting in pairs(lsp_settings) do
+    vim.lsp.config(lsp_name, lsp_setting.settings or {})
+    if lsp_setting.enabled then
+        vim.lsp.enable(lsp_name)
+    end
+end
+
+vim.lsp.inlay_hint.enable(true)
+
+-- vim.keymap.set(
+--     'n',
+--     '\\', 
+-- function()
+--         local cursor_position = vim.api.nvim_win_get_cursor(0)
+--         local line_num = cursor_position[1]
+--         local buffer = vim.api.nvim_get_current_buf()
+--         local diag = vim.diagnostic.get(buffer, {lnum = line_num})
+--         if #diag == 0 then
+--             print(diag)
+--         end
+--     end,
+--     {silent = true})
+--
+-- vim.api.nvim_create_autocmd('CursorHold', {
+--     callback = function()
+--         vim.diagnostic.open_float({ source = "if_many" })
+--     end,
+-- })
+
+-- vim.api.nvim_create_autocmd("LspAttach", {
+--     group = _G.__miversen_augroup,
+--     callback = function(args)
+--         local client = vim.lsp.get_client_by_id(args.data.client_id)
+--         if not client then
+--             vim.log.debug("LSP client not found for attached buffer")
+--             return
+--         end
+--         -- vim.lsp.inlay_hint.enable(true, {bufnr = args.buf})
+-- --     function( lsp_server )
+--         --         local lsp_setting = lsp_settings[lsp_server] or {}
+--         --         local _ = lsp_setting.on_attach
+--         --         local lsp_on_attach = function( client, bufnr )
+--         --             vim.lsp.inlay_hint.enable( true, { bufnr = bufnr } )
+--         --             if _ then _( client, bufnr ) end
+--         --         end
+--         --         lsp_setting.on_attach = lsp_on_attach
+--         --         lsp_setting.capabilities = lsp_capabilities
+--         --         lsp_setting.handles = lsp_handlers
+--         --         lspconfig[lsp_server].setup( lsp_setting )
+--         --     end,
+--         --     ["rust_analyzer"] = function()
+--         --         -- Purposely stubbing rust_analyzer out so rustaceanvim can do what it does
+--         --         -- instead
+--         --     end
+--         -- if client_settings and client_settings.enabled then
+--
+--     end
+-- })
 return mason_installer

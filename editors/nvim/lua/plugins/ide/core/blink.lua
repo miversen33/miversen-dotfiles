@@ -107,12 +107,8 @@ return {
             enabled = true
         },
         sources = {
-            default = {'lsp', 'path', 'snippets', 'buffer', "lazydev", "supermaven"},
+            default = {'lsp', 'path', 'snippets', 'buffer', "lazydev",},
             providers = {
-                supermaven = {
-                    name = "supermaven",
-                    module = "blink.compat.source"
-                },
                 lazydev = {
                     name = "LazyDev",
                     module = "lazydev.integrations.blink",

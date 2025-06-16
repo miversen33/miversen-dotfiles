@@ -6,6 +6,7 @@ RC_DIR=$(dirname $(readlink -f $RC_PATH))
 export XDG_CONFIG_HOME="${HOME}/.config"
 export XDG_CACHE_HOME="${HOME}/.cache"
 export ZSH_CUSTOM="${HOME}/.local/share/zsh"
+export PROGRAMS="${HOME}/.local/programs"
 mkdir -p "${XDG_CONFIG_HOME}" "${XDG_CACHE_HOME}"
 
 # You can set USE_OMZSH (to anything) to use ohmyzsh
@@ -43,6 +44,13 @@ function debug(){
   [ -z ${DEBUG_ZSH+x} ] && return 0
   echo -e "\033[0;30m$@\033[0m"
 }
+
+  if [ ! -z ${USE_POSH+x} ] && [ ! $(command -v oh-my-posh) ]; then
+    # we want to use oh-my-posh, but it isn't installed
+    debug "Cannot locate oh-my-posh, switching to oh-my-zsh"
+    USE_OMZSH=1
+    unset USE_POSH
+  fi
 
 function __wezterm_set_user_var() {
   if hash base64 2>/dev/null ; then
@@ -103,10 +111,13 @@ function install(){
     error "Missing git! Please install git"
     return
   fi
+
   plugins+=("git")
   if [ ! -d $HOME/.oh-my-zsh ] && [ ! -z ${USE_OMZSH+x} ]; then
     echo "Installing oh my zsh"
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    rm ~/.zshrc
+    ln -s $RC_PATH ~/.zshrc
   fi
   if [ ! -f $HOME/.p10k.zsh ] && [ ! -z ${USE_OMZSH+x} ]; then
     curl -fsSL -o $HOME/.p10k.zsh https://raw.githubusercontent.com/miversen33/miversen-dotfiles/master/shells/p10k.zsh
@@ -138,6 +149,15 @@ function install(){
     curl -fsL "https://github.com/junegunn/fzf/releases/download/v${fzf_version}/fzf-${fzf_version}-linux_amd64.tar.gz" | tar -C ~/.local/bin -xz
     chmod +x ~/.local/bin/fzf
   fi
+  if [ ! -f ~/.local/bin/nvim ]; then
+    debug "Installing neovim"
+    curl -fsL "https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz" | tar -C ~/.local/programs -xz
+    ln -s ~/.local/programs/nvim-linux-x86_64/bin/nvim ~/.local/bin/nvim
+  fi
+  if [ ! -d ~/.config/nvim ]; then
+    debug "Installing neovim config"
+    ln -s $RC_DIR/../editors/nvim ~/.config/nvim
+  fi
   # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
   # Initialization code that may require console input (password prompts, [y/n]
   # confirmations, etc.) must go above this block; everything else may go below.
@@ -152,8 +172,6 @@ function install(){
   for plugin in $RC_DIR/plugins/*.plugin.zsh; do
     custom_plugins+=("${plugin}")
   done
-
-
 }
 
 EDITOR="vim"
@@ -256,11 +274,14 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 AUTO_DIR="${RC_DIR}/auto"
 SCREENDIR=$HOME/.cache/screen
 
+# This needs to be outside the setup_base function because otherwise
+# install will fail
+debug "Creating basic directories"
+mkdir -p ~/.local/{programs,appimages,bin}
+
 function setup_base(){
   debug "Sourcing home .env file"
   [ -f ~/.env ] && source ~/.env
-  debug "Creating basic directories"
-  mkdir -p ~/.local/{programs,appimages}
   debug "Setting up base for zsh profile"
   debug "Disabling glob match"
   setopt no_nomatch
@@ -281,13 +302,13 @@ function setup_base(){
   [ -f /etc/profile ] && source /etc/profile
   [ ! -d $SCREENDIR ] && mkdir -p $SCREENDIR
   [ -d "${HOME}/.luarocks" ] && PATH="${PATH}:${HOME}/.luarocks/bin"
-  # This should grab _any_ directory that is under ${HOME}/.local/programs/*/current
-  [ -d "${HOME}/.local/programs/neovim/current" ] && PATH="${HOME}/.local/programs/neovim/current/bin:$PATH"
-  [ -d "${HOME}/.local/programs/node/current" ] && PATH="${HOME}/.local/programs/node/current/bin:$PATH"
+  # This should grab _any_ directory that is under ${PROGRAMS}/*/current
+  [ -d "${PROGRAMS}/neovim/current" ] && PATH="${PROGRAMS}/neovim/current/bin:$PATH"
+  [ -d "${PROGRAMS}/node/current" ] && PATH="${PROGRAMS}/node/current/bin:$PATH"
   [ -d "${HOME}/.local/bin" ] && PATH="${HOME}/.local/bin:$PATH"
   [ -d "${HOME}/.local/appimages" ] && PATH="${HOME}/.local/appimages:${PATH}"
   [ -d "${HOME}/.cargo/bin" ] && PATH="${HOME}/.cargo/bin:$PATH"
-  [ -d "${HOME}/.local/programs/go/bin" ] && PATH="${HOME}/.local/programs/go/bin:$PATH"
+  [ -d "${PROGRAMS}/go/bin" ] && PATH="${PROGRAMS}/go/bin:$PATH"
   [ -d "${HOME}/.local/share/nvim/mason/bin" ] && PATH="${HOME}/.local/share/nvim/mason/bin:$PATH" # Adding mason modules to path
 
   autoload -Uz compinit && compinit
@@ -346,6 +367,8 @@ function setup_base(){
   fi
   debug "Disabling nomatch"
   setopt nomatch
+
+  alias paru-clean="paru -Sccd"
 }
 
 ##### Adding nvm handling
