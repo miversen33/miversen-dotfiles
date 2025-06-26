@@ -31,7 +31,7 @@ cyan = '#51617d'
 white = '#9aa7bd'
 
 [env]
-TERM = "alacritty"
+TERM = "xterm-256color"
 
 [selection]
 save_to_clipboard = true
