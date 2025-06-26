@@ -1,40 +1,10 @@
 #!/bin/zsh
-RC_PATH=$(readlink -f "${(%):-%x}")
-export SHELL_RC="${RC_PATH}"
-RC_DIR=$(dirname $(readlink -f $RC_PATH))
 
-export XDG_CONFIG_HOME="${HOME}/.config"
-export XDG_CACHE_HOME="${HOME}/.cache"
-export ZSH_CUSTOM="${HOME}/.local/share/zsh"
-export PROGRAMS="${HOME}/.local/programs"
-mkdir -p "${XDG_CONFIG_HOME}" "${XDG_CACHE_HOME}"
-
-# You can set USE_OMZSH (to anything) to use ohmyzsh
-# USE_OMZSH=1
-
-# You can set USE_POSH (to anything) to use oh-my-posh instead of ohmyzsh
-USE_POSH=1
 # You can set the DEBUG_ZSH flag (to anything) to see debug output during setup of ZSHRC
+# DEBUG_ZSH=1
+
 # You can set SKIP_CUSTOM flag (to anything) to bypass any custom changes made to the zshrc profile
-# SKIP_CUSTOM=${SKIP_CUSTOM-0}
-
-unalias ls 2>/dev/null
-if [ ! -z ${PREVIOUS_PATH+x} ]; then
-  # Resetting the PATH variable to whatever it was before we manipulated it below
-  PATH=$PREVIOUS_PATH
-fi
-export PREVIOUS_PATH=${PREVIOUS_PATH-${PATH}}
-
-# Which plugins would you like to load?
-# Standard plugins can be found in $ZSH/plugins/
-# Custom plugins may be added to $ZSH_CUSTOM/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-plugins=()
-# This is the path to each custom plugin you want to use.
-# We will iterate over this and source each directory included.
-# This is used when not using ohmyzsh for your shell
-custom_plugins=()
+# SKIP_CUSTOM=1
 
 function error(){
   echo -e "\033[1;31m$@\033[0m"
@@ -45,38 +15,50 @@ function debug(){
   echo -e "\033[0;30m$@\033[0m"
 }
 
-  if [ ! -z ${USE_POSH+x} ] && [ ! $(command -v oh-my-posh) ]; then
-    # we want to use oh-my-posh, but it isn't installed
-    debug "Cannot locate oh-my-posh, switching to oh-my-zsh"
-    USE_OMZSH=1
-    unset USE_POSH
-  fi
+RC_PATH=$(readlink -f "${(%):-%x}")
+export SHELL_RC="${RC_PATH}"
+RC_DIR=$(dirname $(readlink -f $RC_PATH))
+## User added junk
+AUTO_DIR="${RC_DIR}/auto"
+export SCREENDIR=$HOME/.cache/screen
 
-function __wezterm_set_user_var() {
-  if hash base64 2>/dev/null ; then
-    if [[ -z "${TMUX-}" ]] ; then
-      printf "\033]1337;SetUserVar=%s=%s\007" "$1" `echo -n "$2" | base64`
-    else
-      # <https://github.com/tmux/tmux/wiki/FAQ#what-is-the-passthrough-escape-sequence-and-how-do-i-use-it>
-      # Note that you ALSO need to add "set -g allow-passthrough on" to your tmux.conf
-      printf "\033Ptmux;\033\033]1337;SetUserVar=%s=%s\007\033\\" "$1" `echo -n "$2" | base64`
-    fi
-  fi
-}
+export XDG_CONFIG_HOME="${HOME}/.config"
+export XDG_CACHE_HOME="${HOME}/.cache"
+export ZSH_CUSTOM="${HOME}/.local/share/zsh"
+export PROGRAMS="${HOME}/.local/programs"
+debug "Creating basic directories"
+mkdir -p "${XDG_CONFIG_HOME}" "${XDG_CACHE_HOME}" ~/.local/{programs,appimages,bin}
 
-function whatsmyip(){
-  dig @resolver4.opendns.com myip.opendns.com +short
-}
 
-function reload(){
-  debug "Attempting to reload zshrc"
-  if [ -n "${SHELL_RC+set}" ]; then
-    debug "Reloading ${SHELL_RC}"
-    source $SHELL_RC
-  fi
-}
+if [ ! -z ${PREVIOUS_PATH+x} ]; then
+  # Resetting the PATH variable to whatever it was before we manipulated it below
+  debug "Restoring path to what it was before"
+  # Is there a better way to "reload"?
+  PATH=$PREVIOUS_PATH
+fi
+
+debug "Backing up Path variable to \$PREVIOUS_PATH"
+export PREVIOUS_PATH=${PREVIOUS_PATH-${PATH}}
+
+debug "Setting up Oh My ZSH"
+export ZSH="$HOME/.oh-my-zsh"
+
+# Set name of the theme to load --- if set to "random", it will
+# load a random theme each time oh-my-zsh is loaded, in which case,
+# to know which specific one was loaded, run: echo $RANDOM_THEME
+# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+ZSH_THEME="powerlevel10k/powerlevel10k"
 
 function install(){
+  if [ ! $(command -v curl) ]; then
+    error "Missing curl! Please install curl"
+    return
+  fi
+  if [ ! $(command -v git) ]; then
+    error "Missing git! Please install git"
+    return
+  fi
+
   cur_date=$(date +%Y%m%d-%H%M%S)
   if [ -f $RC_PATH ]; then
     debug "Checking if zshrc is linked correctly"
@@ -103,44 +85,19 @@ function install(){
       ln -s $RC_DIR/p10k.zsh ~/.p10k.zsh
     fi
   fi
-  if [ ! $(command -v curl) ]; then
-    error "Missing curl! Please install curl"
-    return
-  fi
-  if [ ! $(command -v git) ]; then
-    error "Missing git! Please install git"
-    return
-  fi
+
 
   plugins+=("git")
-  if [ ! -d $HOME/.oh-my-zsh ] && [ ! -z ${USE_OMZSH+x} ]; then
+  if [ ! -d "${HOME}/.oh-my-zsh" ]; then
     echo "Installing oh my zsh"
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
     rm ~/.zshrc
     ln -s $RC_PATH ~/.zshrc
   fi
-  if [ ! -f $HOME/.p10k.zsh ] && [ ! -z ${USE_OMZSH+x} ]; then
+  if [ ! -f $HOME/.p10k.zsh ]; then
     curl -fsSL -o $HOME/.p10k.zsh https://raw.githubusercontent.com/miversen33/miversen-dotfiles/master/shells/p10k.zsh
   fi
-  if [ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions ]; then
-    git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-  fi
-  if [ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting ]; then
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-  fi
-  if [ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-history-substring-search ]; then
-    git clone https://github.com/zsh-users/zsh-history-substring-search ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-history-substring-search
-  fi
-  if [ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autocomplete ]; then
-    git clone https://github.com/marlonrichert/zsh-autocomplete ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autocomplete
-  fi
-  if [ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-completions ]; then
-    git clone https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-completions
-  fi
-  if [ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-vi-mode ]; then
-    git clone https://github.com/softmoth/zsh-vim-mode ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-vi-mode
-  fi
-  if [ ! -d ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k ] && [ ! -z ${USE_OMZSH+x} ]; then
+  if [ ! -d ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k ]; then
     git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
   fi
   if [ ! -f ~/.local/bin/fzf ]; then
@@ -154,130 +111,53 @@ function install(){
     curl -fsL "https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz" | tar -C ~/.local/programs -xz
     ln -s ~/.local/programs/nvim-linux-x86_64/bin/nvim ~/.local/bin/nvim
   fi
+  if [ ! -f ~/.local/bin/direnv ]; then
+    plugins+=("direnv")
+    readonly direnv_version="v2.36.0"
+    debug "Installing direnv version: ${direnv_version}"
+    curl -fsL -o $HOME/.local/bin/direnv "https://github.com/direnv/direnv/releases/download/${direnv_version}/direnv.linux-amd64"
+    chmod +x ~/.local/bin/direnv
+  fi
+  if [ ! -f ~/.local/bin/yazi ]; then
+    readonly yazi_version="v25.5.31"
+    debug "Installing yazi version: ${yazi_version}"
+    tmp_dir="/tmp/.miversen-dotfiles-$(date +%Y%m%d%H%M%S)"
+    mkdir -p "${tmp_dir}"
+    pushd "${tmp_dir}" >/dev/null 2>&1
+    curl -fsL -o "${tmp_dir}/yazi.zip" "https://github.com/sxyazi/yazi/releases/download/${yazi_version}/yazi-x86_64-unknown-linux-gnu.zip"
+    unzip -qq "${tmp_dir}/yazi.zip" >/dev/null 2>&1
+    mv ${tmp_dir}/yazi-*/ya "${HOME}/.local/bin/ya"
+    mv ${tmp_dir}/yazi-*/yazi "${HOME}/.local/bin/yazi"
+    chmod +x "${HOME}/.local/bin/yazi"
+    popd >/dev/null 2>&1
+    rm -rf "${tmp_dir}"
+  fi
+  if [ ! -f "${XDG_CONFIG_HOME}/direnv/config.toml" ]; then
+    debug "Installing direnv config"
+    mkdir -p "${XDG_CONFIG_HOME}/direnv"
+    ln -s "${RC_DIR}/direnv.toml" "${XDG_CONFIG_HOME}/direnv/config.toml"
+  fi
   if [ ! -d ~/.config/nvim ]; then
     debug "Installing neovim config"
     ln -s $RC_DIR/../editors/nvim ~/.config/nvim
   fi
+  # Maybe some day
+  # if [ ! -f ~/.local/bin/zellij ]; then
+  #   readonly zellij_version="v0.42.2"
+  #   debug "Installing zellij version: ${zellij_version}"
+  #   curl -fsL "https://github.com/zellij-org/zellij/releases/download/${zellij_version}/zellij-x86_64-unknown-linux-musl.tar.gz" | tar -C ~/.local/bin -xz
+  #   chmod +x ~/.local/bin/zellij
+  #   $(zellij setup --generate-completion zsh)
+  # fi
+
+
   # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
   # Initialization code that may require console input (password prompts, [y/n]
   # confirmations, etc.) must go above this block; everything else may go below.
   if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]] && [ ! -z ${USE_OMZSH+x} ]; then
     source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
   fi
-  custom_plugins+=("${ZSH_CUSTOM}/plugins/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh")
-  custom_plugins+=("${ZSH_CUSTOM}/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh")
-  custom_plugins+=("${ZSH_CUSTOM}/plugins/zsh-completions/zsh-completions.plugin.zsh")
-  custom_plugins+=("${ZSH_CUSTOM}/plugins/zsh-history-substring-search/zsh-history-substring-search.plugin.zsh")
-  custom_plugins+=("${ZSH_CUSTOM}/plugins/zsh-vi-mode/zsh-vi-mode.plugin.zsh")
-  for plugin in $RC_DIR/plugins/*.plugin.zsh; do
-    custom_plugins+=("${plugin}")
-  done
 }
-
-EDITOR="vim"
-
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
-
-# Path to your oh-my-zsh installation.
-export ZSH="$HOME/.oh-my-zsh"
-
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time oh-my-zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-#ZSH_THEME="robbyrussell"
-ZSH_THEME="powerlevel10k/powerlevel10k"
-
-# Set list of themes to pick from when loading at random
-# Setting this variable when ZSH_THEME=random will cause zsh to load
-# a theme from this variable instead of looking in $ZSH/themes/
-# If set to an empty array, this variable will have no effect.
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
-
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
-
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
-
-# Uncomment one of the following lines to change the auto-update behavior
-# zstyle ':omz:update' mode disabled  # disable automatic updates
-# zstyle ':omz:update' mode auto      # update automatically without asking
-# zstyle ':omz:update' mode reminder  # just remind me to update when it's time
-
-# Uncomment the following line to change how often to auto-update (in days).
-# zstyle ':omz:update' frequency 13
-
-# Uncomment the following line if pasting URLs and other text is messed up.
-# DISABLE_MAGIC_FUNCTIONS="true"
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-# You can also set it to another string to have that shown instead of the default red dots.
-# e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
-# Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
-# COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# You can set one of the optional three formats:
-# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# or set a custom format using the strftime function format specifications,
-# see 'man strftime' for details.
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# User configuration
-
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
-
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-
-## User added junk
-AUTO_DIR="${RC_DIR}/auto"
-SCREENDIR=$HOME/.cache/screen
-
-# This needs to be outside the setup_base function because otherwise
-# install will fail
-debug "Creating basic directories"
-mkdir -p ~/.local/{programs,appimages,bin}
 
 function setup_base(){
   debug "Sourcing home .env file"
@@ -312,12 +192,12 @@ function setup_base(){
   [ -d "${HOME}/.local/share/nvim/mason/bin" ] && PATH="${HOME}/.local/share/nvim/mason/bin:$PATH" # Adding mason modules to path
 
   autoload -Uz compinit && compinit
-  if [ -d "${AUTO_DIR}" ]; then
-    for auto in $(ls $AUTO_DIR/*.zsh $AUTO_DIR/*.sh); do
-      debug "Executing auto complete zsh script: ${auto}"
-      . "${auto}"
-    done
-  fi
+  # if [ -d "${AUTO_DIR}" ]; then
+  #   for auto in $(ls $AUTO_DIR/*.zsh $AUTO_DIR/*.sh); do
+  #     debug "Executing auto complete zsh script: ${auto}"
+  #     . "${auto}"
+  #   done
+  # fi
 
   if [ -d /snap/ ]; then
     for dir in /snap/*; do
@@ -341,15 +221,15 @@ function setup_base(){
     alias NVIMRC="${EDITOR} ~/.config/nvim"
     [ -f $HOME/.config/nvim/init.lua ] && VIMRC=$HOME/.config/nvim/init.lua
     alias nvim_repro="pushd /tmp 2>&1 1>/dev/null; nvim --clean -u ~/.dotfiles/editors/nvim/repro.lua; popd 2>&1 1>/dev/null"
-    
+
     export function debug_nvim() {
-     if [ -n "${DEBUG_NEOVIM_CONFIG+set}" ]; then
-       echo "Disabling Debug Neovim Flag"
-       unset DEBUG_NEOVIM_CONFIG
-     else
-       echo "Setting Debug Neovim Flag"
-       export DEBUG_NEOVIM_CONFIG=1
-     fi
+      if [ -n "${DEBUG_NEOVIM_CONFIG+set}" ]; then
+        echo "Disabling Debug Neovim Flag"
+        unset DEBUG_NEOVIM_CONFIG
+      else
+        echo "Setting Debug Neovim Flag"
+        export DEBUG_NEOVIM_CONFIG=1
+      fi
     }
   fi
   if [ $(command -v rsync ) ]; then
@@ -368,31 +248,7 @@ function setup_base(){
   debug "Disabling nomatch"
   setopt nomatch
 
-  alias paru-clean="paru -Sccd"
-}
-
-##### Adding nvm handling
-export NVM_DIR="${HOME}/.nvm"
-function lazy_setup_node(){
-  debug "Setting up nvm lazy handling"
-  # This nastiness is thanks to https://github.com/nvm-sh/nvm/issues/1277#issuecomment-1165225621
-  # Really cool bogdanu, thanks for making node less shitty
-  function init_nvm(){
-    debug "Removing lazy alias for ${1}"
-    nvm_dir="${NVM_DIR}"
-    [ ! -d $nvm_dir ] && [ -d /usr/share/nvm ] && nvm_dir=/usr/share/nvm
-    [ -f "${nvm_dir}/nvm.sh" ] && source "${nvm_dir}/nvm.sh"
-    [ -f "${nvm_dir}/bash_completion" ] && source "${nvm_dir}/bash_completion"
-    [ -f "${nvm_dir}/install-nvm-exec" ] && source "${nvm_dir}/install-nvm-exec"
-  }
-  lazy_aliases=(node npm npx yarn corepack)
-  for a in "${lazy_aliases[@]}"; do
-    alias "${a}"="command -v node || { init-nvm ${a} && unalias $*; } && $a \"\$@\""
-  done
-  if [ -f /usr/share/nvm/init-nvm.sh ]; then
-    debug "Sourcing init-nvm"
-    source /usr/share/nvm/init-nvm.sh
-  fi
+  # alias paru-clean="paru -Sccd"
 }
 
 ##### Fzf goodies
@@ -409,7 +265,7 @@ function setup_fzf(){
 
   # Options to fzf command
   export FZF_COMPLETION_OPTS='--layout=reverse --border=rounded --info=inline-right --prompt=" " --marker="綠" --pointer="▶"'
-  
+
   # Use fd (https://github.com/sharkdp/fd) for listing path candidates.
   # - The first argument to the function ($1) is the base path to start traversal
   # - See the source code (completion.{bash,zsh}) for the details.
@@ -452,56 +308,61 @@ function setup_fzf(){
   }
 }
 
+##### Adding nvm handling
+export NVM_DIR="${HOME}/.nvm"
+function lazy_setup_node(){
+  debug "Setting up nvm lazy handling"
+  # This nastiness is thanks to https://github.com/nvm-sh/nvm/issues/1277#issuecomment-1165225621
+  # Really cool bogdanu, thanks for making node less shitty
+  function init_nvm(){
+    debug "Removing lazy alias for ${1}"
+    nvm_dir="${NVM_DIR}"
+    [ ! -d $nvm_dir ] && [ -d /usr/share/nvm ] && nvm_dir=/usr/share/nvm
+    [ -f "${nvm_dir}/nvm.sh" ] && source "${nvm_dir}/nvm.sh"
+    [ -f "${nvm_dir}/bash_completion" ] && source "${nvm_dir}/bash_completion"
+    [ -f "${nvm_dir}/install-nvm-exec" ] && source "${nvm_dir}/install-nvm-exec"
+  }
+lazy_aliases=(node npm npx yarn corepack)
+for a in "${lazy_aliases[@]}"; do
+  alias "${a}"="command -v node || { init-nvm ${a} && unalias $*; } && $a \"\$@\""
+done
+if [ -f /usr/share/nvm/init-nvm.sh ]; then
+  debug "Sourcing init-nvm"
+  source /usr/share/nvm/init-nvm.sh
+fi
+}
+
+function whatsmyip(){
+  dig @resolver4.opendns.com myip.opendns.com +short
+}
+
+function reload(){
+  debug "Attempting to reload zshrc"
+  if [ -n "${SHELL_RC+set}" ]; then
+    debug "Reloading ${SHELL_RC}"
+    source $SHELL_RC
+  fi
+}
+
 function tmux_rejoin(){
   tmux -2 a -t default || tmux -2 new -s default
 }
 
-function wezterm_rejoin(){
-  wezterm connect --new-tab unix
+# Function to reset cursor to beam
+function reset_cursor() {
+    printf '\033[6 q'  # Set cursor to beam/bar
 }
 
-function clear_ssh_wezterm_vars(){
-  debug "Clearing out ssh WEZTERM settings"
-  __wezterm_set_user_var "WEZTERM_SSH_USER" ""
-  __wezterm_set_user_var "WEZTERM_SSH_HOST" ""
-  __wezterm_set_user_var "WEZTERM_SSH_HOST_OS" ""
+# Reset cursor on shell startup
+reset_cursor
+
+# Reset cursor before each prompt (if needed)
+precmd() {
+    reset_cursor
 }
 
-function ssh(){
-  /usr/bin/ssh "${@}"
-  clear_ssh_wezterm_vars
-}
-
-function notify(){
-  eval "$@"
-  job="$@"
-  exit_code=$?
-  if [ -z "${LONG_JOB_NOTIFICATION_TOKEN}" ]; then
-    return $exit_code;
-  fi
-  priority="default"
-  emoji="✔️"
-  job_status="Successfully"
-  if [ ! $exit_code ]; then
-    priority="urgent"
-    emoji="🔥"
-    job_status="Unsuccessfully"
-  fi
-  notify_url="https://notify.iserver.me/${LONG_JOB_NOTIFICATION_QUEUE}"
-  notify_token="Authorization: Bearer ${LONG_JOB_NOTIFICATION_TOKEN}"
-  curl -X POST \
-    --location "${notify_url}" \
-    -H "${notify_token}" \
-    -H "Icon: https://raw.githubusercontent.com/miversen33/miversen-dotfiles/master/resources/job-100.png" \
-    -H "Title: Long Job Completed ${job_status}" \
-    -H "Tags: ${emoji}" \
-    -H "Priority: ${priority}" \
-    -d "\"${job}\" completed" 2>/dev/null 1>/dev/null
-}
-
-# function preexec()
-# {
-# }
+# Trap to reset cursor on shell exit
+trap reset_cursor EXIT
 
 if [ -z ${SKIP_CUSTOM+x} ]; then
   debug "Setting up base for zsh"
@@ -511,6 +372,7 @@ if [ -z ${SKIP_CUSTOM+x} ]; then
   lazy_setup_node
   unset install
   unset setup_base
+  unset setup_fzf
   unset lazy_setup_node
 
   plugins+=("zsh-syntax-highlighting")
@@ -526,32 +388,14 @@ if [ -z ${SKIP_CUSTOM+x} ]; then
     alias "dcd"="docker compose down"
     alias "ds"="docker container start -a "
   fi
-  plugins+=("dotenv")
+  # plugins+=("dotenv")
   [ $(command -v rustc) ] && plugins+=("rust")
-  [ $(command -v pipenv) ] && plugins+=("pipenv")
   [ $(command -v virtualenv) ] && plugins+=("virtualenv")
 fi
 
-if [ ! -z ${USE_POSH+x} ] && [ $(command -v oh-my-posh) ]; then
-  eval "$(oh-my-posh init zsh --config ~/.dotfiles/shells/oh-my-posh.toml)"
-  mkdir -p "${ZSH_CUSTOM}"
-else
-  [ -f $ZSH/oh-my-zsh.sh ] && source $ZSH/oh-my-zsh.sh
-  # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-  [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-fi
-
-WEZTERM_HOST_OS=$(cat /etc/*release* | grep -E "^NAME=" | cut -b 6- | sed -E 's/"//g')
-debug "Setting WEZTERM_HOST_OS to ${WEZTERM_HOST_OS}"
-__wezterm_set_user_var "WEZTERM_HOST_OS" "${WEZTERM_HOST_OS}"
-if [ -z ${SSH_CONNECTION+x} ]; then
-  clear_ssh_wezterm_vars
-else
-  debug "Setting ssh wezterm "
-  __wezterm_set_user_var "WEZTERM_SSH_HOST" "$(hostname)"
-  __wezterm_set_user_var "WEZTERM_SSH_USER" "${USER}"
-  __wezterm_set_user_var "WEZTERM_SSH_HOST_OS" $(cat /etc/*release* | grep -E "^NAME=" | cut -b 6- | sed -E 's/"//g')
-fi
+[ -f $ZSH/oh-my-zsh.sh ] && source $ZSH/oh-my-zsh.sh
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 if [ -z ${SKIP_CUSTOM+x} ]; then
   debug "Setting up aliases and exports"
@@ -563,9 +407,8 @@ if [ -z ${SKIP_CUSTOM+x} ]; then
   export EDITOR
   export VIMRC
   export BAT_THEME="OneHalfDark"
-  
+
   export whatsmyip
-  export ssh
 
   [ $(command -v bat) ] && alias cat="bat" && debug "Found bat, setting alias of cat to bat"
   if [ $(command -v eza) ]; then
@@ -576,18 +419,6 @@ if [ -z ${SKIP_CUSTOM+x} ]; then
   alias lsa="ls -lah"
   alias less="less -r"
   alias ZSHRC="${EDITOR} ~/.zshrc && reload"
-
-  if [ -z ${USE_OMZSH+x} ]; then
-    for plugin in "${custom_plugins[@]}"; do
-      if [ -f "${plugin}" ]; then
-        debug "Loading zsh plugin: ${plugin}"
-        source "${plugin}"
-      else
-        debug "Failed to load ${plugin}: Plugin not found"
-      fi
-    done
-  fi
-
 fi
 
 # miversen33 zshrc
