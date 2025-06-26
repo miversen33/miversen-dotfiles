@@ -141,6 +141,10 @@ function install(){
     debug "Installing neovim config"
     ln -s $RC_DIR/../editors/nvim ~/.config/nvim
   fi
+  if [ ! -f "${HOME}/.tmux.conf" ]; then
+      debug "Adding tmux configuration"
+      ln -s "${RC_DIR}/tmux/tmux.conf" "${HOME}/.tmux.conf"
+  fi
   # Maybe some day
   # if [ ! -f ~/.local/bin/zellij ]; then
   #   readonly zellij_version="v0.42.2"
