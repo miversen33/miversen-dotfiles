@@ -132,6 +132,13 @@ function install(){
     popd >/dev/null 2>&1
     rm -rf "${tmp_dir}"
   fi
+  if [ ! -d ~/.config/yazi ]; then
+    debug "Configuring Yazi"
+    mkdir -p ~/.config/yazi
+    ln -s "${RC_DIR}/yazi/init.lua" ~/.config/yazi
+    ln -s ${RC_DIR}/yazi/*.toml ~/.config/yazi
+    ~/.local/bin/ya pkg add yazi-rs/flavors:catppuccin-mocha > /dev/null 2>&1
+  fi
   if [ ! -f "${XDG_CONFIG_HOME}/direnv/config.toml" ]; then
     debug "Installing direnv config"
     mkdir -p "${XDG_CONFIG_HOME}/direnv"

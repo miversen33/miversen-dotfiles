@@ -1,0 +1,13 @@
+[mgr]
+sort_by = "natural"
+sort_sensitive = false
+sort_dir_first = false
+sort_translit = true
+linemode = "custom_linemode"
+show_hidden = true
+show_symlink = false # We should already see its a symlink and that should be good enough
+
+[preview]
+wrap = "no"
+tab_size = 4
+
