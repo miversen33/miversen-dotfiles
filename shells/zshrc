@@ -187,13 +187,13 @@ function setup_base(){
   [ ! -d $SCREENDIR ] && mkdir -p $SCREENDIR
   [ -d "${HOME}/.luarocks" ] && PATH="${PATH}:${HOME}/.luarocks/bin"
   # This should grab _any_ directory that is under ${PROGRAMS}/*/current
-  [ -d "${PROGRAMS}/neovim/current" ] && PATH="${PROGRAMS}/neovim/current/bin:$PATH"
   [ -d "${PROGRAMS}/node/current" ] && PATH="${PROGRAMS}/node/current/bin:$PATH"
   [ -d "${HOME}/.local/bin" ] && PATH="${HOME}/.local/bin:$PATH"
   [ -d "${HOME}/.local/appimages" ] && PATH="${HOME}/.local/appimages:${PATH}"
   [ -d "${HOME}/.cargo/bin" ] && PATH="${HOME}/.cargo/bin:$PATH"
   [ -d "${PROGRAMS}/go/bin" ] && PATH="${PROGRAMS}/go/bin:$PATH"
   [ -d "${HOME}/.local/share/nvim/mason/bin" ] && PATH="${HOME}/.local/share/nvim/mason/bin:$PATH" # Adding mason modules to path
+  [ -d "${PROGRAMS}/neovim/current" ] && PATH="${PROGRAMS}/neovim/current/bin:$PATH"
 
   autoload -Uz compinit && compinit
   # if [ -d "${AUTO_DIR}" ]; then
@@ -252,7 +252,18 @@ function setup_base(){
   debug "Disabling nomatch"
   setopt nomatch
 
-  # alias paru-clean="paru -Sccd"
+  alias paru-clean="paru -Sccd"
+  # Reset cursor on shell startup
+  reset_cursor
+
+  # Reset cursor before each prompt (if needed)
+  precmd() {
+      reset_cursor
+  }
+
+  # Trap to reset cursor on shell exit
+  trap reset_cursor EXIT
+
 }
 
 ##### Fzf goodies
@@ -356,17 +367,6 @@ function tmux_rejoin(){
 function reset_cursor() {
     printf '\033[6 q'  # Set cursor to beam/bar
 }
-
-# Reset cursor on shell startup
-reset_cursor
-
-# Reset cursor before each prompt (if needed)
-precmd() {
-    reset_cursor
-}
-
-# Trap to reset cursor on shell exit
-trap reset_cursor EXIT
 
 if [ -z ${SKIP_CUSTOM+x} ]; then
   debug "Setting up base for zsh"
