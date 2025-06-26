@@ -293,7 +293,7 @@ local function setup_plugins()
         ui = {border = 'rounded'},
         spec = {
            {import = "plugins.ui.theme"},
-           -- {import = "plugins.ui"},
+           {import = "plugins.ui"},
            {import = "plugins.ide"},
            ---------------------------------------------
             -- {import = "plugins.ui.theme"},
