@@ -183,6 +183,11 @@ local function vim_settings()
         command = "checktime",
         pattern = "*"
     })
+    vim.api.nvim_create_autocmd("ExitPre", {
+        group = vim.api.nvim_create_augroup("Exit", { clear = true }),
+        command = "set guicursor=a:ver90",
+        desc = "Set cursor back to beam when leaving Neovim."
+    })
 end
 
 local function setup_basic_keycommands()
