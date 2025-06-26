@@ -8,7 +8,7 @@ elif [ -f /sys/class/power_supply/BAT0/capacity ]; then
 elif [ -f /sys/class/power_supply/BAT1/capacity ]; then
     battery=$(cat /sys/class/power_supply/BAT1/capacity)
 else
-    echo "󰂑"; exit 0
+    echo ""; exit 0
 fi
 
 battery=${battery:-0}
