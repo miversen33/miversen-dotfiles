@@ -378,7 +378,7 @@ if [ -z ${SKIP_CUSTOM+x} ]; then
   plugins+=("zsh-syntax-highlighting")
   plugins+=("zsh-autosuggestions")
   [ $(command -v svn) ] && plugins+=("svn")
-  if [ $(command -v docker) ]; then
+  if command -v docker > /dev/null 2>&1; then
     plugins+=("docker")
     plugins+=("docker-compose")
     alias "dcw"="docker compose up --abort-on-container-failure --watch"
