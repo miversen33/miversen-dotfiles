@@ -1,11 +1,3 @@
--- Known dependencies
--- gcc/c compiler (clang gud)
--- ripgrep: https://github.com/BurntSushi/ripgrep
---
-
-vim.g.neo_tree_remove_legacy_commands = 1
-vim.g.__miversen_config = {}
--- Setting Basic Vim Settings
 local function vim_settings()
     vim.g.__miversen_theme = "default"
     -- Local variable used to dictate the theme of neovim
@@ -128,7 +120,8 @@ local function vim_settings()
     -- Session options for resuming neovim where I was before. Use whatever the session plugin you are using recommends
     -- NOTE: You don't need to use a plugin for session management, I just chose to because I am lazy
     vim.opt.sessionoptions =
-        "blank,buffers,curdir,folds,tabpages,winsize,winpos,terminal,localoptions,options,resize"
+            "blank,buffers,curdir,folds,globals,localoptions,help,tabpages,terminal"
+        -- "blank,buffers,curdir,folds,tabpages,winsize,winpos,terminal,localoptions,options,resize"
     for _, group in ipairs(vim.fn.getcompletion("@lsp", "highlight")) do
         vim.api.nvim_set_hl(0, group, {})
     end
@@ -185,7 +178,7 @@ local function vim_settings()
     })
     vim.api.nvim_create_autocmd("ExitPre", {
         group = vim.api.nvim_create_augroup("Exit", { clear = true }),
-        command = "set guicursor=a:ver90",
+        command = "set guicursor=a:ver100",
         desc = "Set cursor back to beam when leaving Neovim."
     })
 end
@@ -246,140 +239,7 @@ local function setup_basic_keycommands()
     vim.keymap.set({"n", "i", "v"}, "<C-s>", save, {silent = true})
     vim.keymap.set('n', 'zz', 'zc', {silent = true}) -- Fold
     vim.keymap.set('n', 'Zz', 'zo', {silent = true}) -- Unfold
-    vim.keymap.set({'n', 'i', 'v', 's', 'c', 'x'}, '<Esc>', do_exit,
-                   {silent = true})
-    -- vim.keymap.set({'n', 'v'}, 'e',
-    --                function() vim.fn.search(jump_to_next_word_pattern) end)
-    -- vim.keymap.set({'n', 'v'}, 'E', function()
-    --     -- (word) backwards
-    --     vim.fn.search(jump_to_next_word_pattern, 'b')
-    -- end)
-end
-
-local function setup_advanced_keycommands()
-    local success, hydra = pcall(require, "hydra")
-    if not success then
-        print("Unable to locate hydra!")
-        return
-    end
-
-    vim.keymap.set('n', '<C-t>', ':CFloatTerm<CR>', {silent = true})
-    vim.keymap.set({'n', 'v'}, '<C-f>', function()
-        require("telescope").extensions.live_grep_args.live_grep_args()
-    end, {silent = true})
-    vim.keymap.set({"n", "v", "i", "t"}, "<C-S-o>", function()
-        require("telescope.command").load_command("builtin",
-                                                  "layout_config={width=0.95,height=0.9}")
-    end, {silent = true})
-    vim.keymap.set('t', '<C-t>', '<C-\\><C-n>:CFloatTerm<CR>', {silent = true})
-    vim.keymap.set('n', '<C-p>', ':CSplitTerm vertical<CR>', {silent = true})
-    vim.keymap.set('t', '<C-p>', '<C-\\><C-n>:CSplitTerm vertical<CR>',
-                   {silent = true})
-    vim.keymap.set('n', '<C-u>', ':CSplitTerm horizontal<CR>', {silent = true})
-    vim.keymap.set('t', '<C-u>', '<C-\\><C-n>:CSplitTerm horizontal<CR>',
-                   {silent = true})
-    vim.keymap.set('n', '<C-_>',
-                   ':lua require("Comment.api").toggle.linewise()<CR>',
-                   {silent = true})
-    vim.keymap.set('i', '<C-_>',
-                   '<ESC>:lua require("Comment.api").toggle.linewise()<CR>i',
-                   {silent = true})
-    vim.keymap.set('x', '<C-_>',
-                   '<ESC>:lua require("Comment.api").toggle.linewise(vim.fn.visualmode())<CR>',
-                   {silent = true})
-    vim.keymap.set('n', '<C-h>',
-                   ":lua require('smart-splits').move_cursor_left()<CR>",
-                   {silent = true})
-    vim.keymap.set('n', '<C-j>',
-                   ":lua require('smart-splits').move_cursor_down()<CR>",
-                   {silent = true})
-    vim.keymap.set('n', '<C-k>',
-                   ":lua require('smart-splits').move_cursor_up()<CR>",
-                   {silent = true})
-    vim.keymap.set('n', "<C-l>",
-                   ":lua require('smart-splits').move_cursor_right()<CR>",
-                   {silent = true})
-    vim.keymap.set('t', '<C-h>',
-                   "<C-\\><C-n>:lua require('smart-splits').move_cursor_left()<CR><ESC>",
-                   {silent = true})
-    vim.keymap.set('t', '<C-j>',
-                   "<C-\\><C-n>:lua require('smart-splits').move_cursor_down()<CR><ESC>",
-                   {silent = true})
-    vim.keymap.set('t', '<C-k>',
-                   "<C-\\><C-n>:lua require('smart-splits').move_cursor_up()<CR><ESC>",
-                   {silent = true})
-    vim.keymap.set('t', "<C-l>",
-                   "<C-\\><C-n>:lua require('smart-splits').move_cursor_right()<CR><ESC>",
-                   {silent = true})
-    -- vim.keymap.set({'n', 'x'}, '<C-d>', '<Cmd>MultipleCursorsAddJumpNextMatch<CR>', {silent = true})
-    -- vim.keymap.set({'n', 'x', 'i'}, '<C-Up>', '<Cmd>MultipleCursorsAddUp<CR>', {silent = true})
-    -- vim.keymap.set({'n', 'x', 'i'}, '<C-Down>', '<Cmd>MultipleCursorsAddDown<CR>', {silent = true})
-
-    vim.keymap.set('n', '<C-q>', function()
-        local success, cokeline = pcall(require, 'cokeline.tabs')
-        if not success then
-            local close_success = pcall(vim.cmd, 'tabclose')
-            if not close_success then
-                vim.notify('Cannot close last tab!', vim.log.levels.ERROR)
-                return
-            end
-            return
-        end
-        for _, tabpage in ipairs(cokeline.get_tabs()) do
-            if tabpage.is_active and #tabpage.windows > 0 then
-                vim.ui.input({
-                    prompt = 'This tabpage has open windows still, are you sure you want to close it?'
-                }, function(answer)
-                    if not answer or not answer:lower():match('^y[es]?') then
-                        vim.notify('Canceling tab closure', vim.log.levels.WARN)
-                        return
-                    end
-                    tabpage:close()
-                end)
-            end
-        end
-    end, {silent = true})
-    vim.keymap.set('n', '<C-n>', ':tabnew<CR>', {silent = true})
-    vim.keymap.set({"n", "v"}, "<M-l>", ":tabn<CR>", {silent = true})
-    vim.keymap.set("t", "<M-l>", "<C-\\><C-n>:tabn<CR>", {silent = true})
-    vim.keymap.set("i", "<M-l>", "<ESC>:tabn<CR>", {silent = true})
-    vim.keymap.set({"n", "v"}, "<M-h>", ":tabp<CR>", {silent = true})
-    vim.keymap.set("t", "<M-h>", "<C-\\><C-n>:tabp<CR>", {silent = true})
-    vim.keymap.set("i", "<M-h>", "<ESC>:tabp<CR>", {silent = true})
-    vim.keymap.set("n", '<A-Down>', ':MoveLine(1)<CR>', {silent = true})
-    vim.keymap.set("n", '<A-Up>', ':MoveLine(-1)<CR>', {silent = true})
-    vim.keymap.set("i", '<A-Up>', '<ESC>:MoveLine(-1)<CR>i', {silent = true})
-    vim.keymap.set("i", '<A-Down>', '<ESC>:MoveLine(1)<CR>i', {silent = true})
-    vim.keymap.set("v", '<A-Down>', ':MoveBlock(1)<CR>', {silent = true})
-    vim.keymap.set("v", '<A-Up>', ':MoveBlock(-1)<CR>', {silent = true})
-    vim.keymap.set("n", "<C-Enter>", ":Glance definitions<CR>", {silent = true})
-    vim.keymap.set("t", "<S-space>", "<space>", {silent = true})
-    vim.keymap.set("t", "<S-BS>", "<BS>", {silent = true})
-    vim.api.nvim_set_keymap('n', 'n',
-                            [[<Cmd>execute('normal! ' . v:count1 . 'n')<CR><Cmd>lua require('hlslens').start()<CR>]],
-                            {noremap = true, silent = true})
-    vim.api.nvim_set_keymap('n', 'N',
-                            [[<Cmd>execute('normal! ' . v:count1 . 'N')<CR><Cmd>lua require('hlslens').start()<CR>]],
-                            {noremap = true, silent = true})
-    vim.api.nvim_set_keymap('n', '*',
-                            [[*<Cmd>lua require('hlslens').start()<CR>]],
-                            {noremap = true, silent = true})
-    vim.api.nvim_set_keymap('n', '#',
-                            [[#<Cmd>lua require('hlslens').start()<CR>]],
-                            {noremap = true, silent = true})
-    vim.api.nvim_set_keymap('n', 'g*',
-                            [[g*<Cmd>lua require('hlslens').start()<CR>]],
-                            {noremap = true, silent = true})
-    vim.api.nvim_set_keymap('n', 'g#',
-                            [[g#<Cmd>lua require('hlslens').start()<CR>]],
-                            {noremap = true, silent = true})
-    -- vim.keymap.set("n", '/',     ':lua require("searchbox").incsearch({modifier = "disabled"})<CR>', {silent = true})
-    -- vim.keymap.set("n", 'r',     ':lua require("searchbox").replace({confirm = "menu"})<CR>', {silent = true})
-    vim.api.nvim_create_user_command('Ls', ':Telescope buffers', {})
-end
-
-local function setup_config_watcher()
-    -- TODO: Mike, setup a series of watcher for the entire configuration directory for neovim
+    vim.keymap.set({'n', 'i', 'v', 's', 'c', 'x'}, '<Esc>', do_exit, {silent = true})
 end
 
 local function check_if_debug()
@@ -399,12 +259,14 @@ local function setup_plugins()
         "dapui_scopes", "dapui_breakpoints", "dapui_stacks", "dapui_watches", "dap-repl", 
         "dapui_console", "neo-tree-popup"
     }
+
     _G.__miversen_config_excluded_filetypes_as_table = {}
     for _, exclusion in ipairs(_G.__miversen_config_excluded_filetypes_array) do
         _G.__miversen_config_excluded_filetypes_as_table[exclusion] = true
     end
-    local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-    -- local lazypath = "/tmp/lazy/lazy.nvim"
+
+    local lazypath = "/dev/shm/lazy.nvim"
+    -- local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
     local lazyurl = "https://github.com/folke/lazy.nvim.git"
     local lazybranch = "stable"
     if not vim.loop.fs_stat(lazypath) then
@@ -430,21 +292,24 @@ local function setup_plugins()
         change_detection = {enabled = false, notify = true},
         ui = {border = 'rounded'},
         spec = {
-            {import = "plugins.ui.theme"},
-            {import = "plugins.ui"},
-            {import = "plugins.ui.core"},
-            {import = "plugins.ide"},
-            {import = "plugins.ide.core"},
-            {import = "plugins.ide.languages.hex" },
-            {import = "plugins.ide.languages.glsl"},
-            {import = "plugins.ide.languages.haskell"},
-            {import = "plugins.ide.languages.java"},
-            {import = "plugins.ide.languages.neovim"},
-            {import = "plugins.ide.languages.python"},
-            {import = "plugins.ide.languages.rust"},
-            {import = "plugins.ide.languages.svelte"},
-            {import = "plugins.ide.languages.markdown"},
-            -- { import = "plugins.ide.sql" },
+           {import = "plugins.ui.theme"},
+           -- {import = "plugins.ui"},
+           {import = "plugins.ide"},
+           ---------------------------------------------
+            -- {import = "plugins.ui.theme"},
+            -- {import = "plugins.ui"},
+            -- {import = "plugins.ui.core"},
+            -- {import = "plugins.ide"},
+            -- {import = "plugins.ide.core"},
+            -- {import = "plugins.ide.languages.hex" },
+            -- {import = "plugins.ide.languages.glsl"},
+            -- {import = "plugins.ide.languages.haskell"},
+            -- {import = "plugins.ide.languages.java"},
+            -- {import = "plugins.ide.languages.neovim"},
+            -- {import = "plugins.ide.languages.python"},
+            -- {import = "plugins.ide.languages.rust"},
+            -- {import = "plugins.ide.languages.svelte"},
+            -- {import = "plugins.ide.languages.markdown"},
         }
     }
     lazy.setup(lazy_opts)
@@ -454,25 +319,15 @@ local function setup_plugins()
     vim.api.nvim_set_hl(0, "PmenuSel", {bg = "#004b72", fg = "NONE"})
     vim.api.nvim_set_hl(0, "Pmenu", {fg = "#C5CDD9", bg = "NONE"})
     vim.api.nvim_set_hl(0, "FloatBorder", {fg = _G.__miversen_border_color})
-    vim.api.nvim_set_hl(0, "TelescopePromptBorder", {fg = _G.__miversen_border_color})
-    vim.api.nvim_set_hl(0, "TelescopeResultsBorder", {fg = _G.__miversen_border_color})
-    vim.api.nvim_set_hl(0, "TelescopePreviewBorder", {fg = _G.__miversen_border_color})
-    vim.api.nvim_set_hl(0, "TelescopeBorder", {fg = _G.__miversen_border_color})
-
     vim.api.nvim_set_hl(0, "NormalFloat", {fg = "NONE", bg = "NONE"})
 end
 
-local cleanup = function()
-    vim.g.__miversen_set_theme = nil
-end
+-- Actually do setup
 
 vim_settings()
 setup_basic_keycommands()
-setup_config_watcher()
 check_if_debug()
 if not vim.g.__miversen_debug_config then
     setup_plugins()
-    setup_advanced_keycommands()
 end
-require("scripts")
-cleanup()
+
