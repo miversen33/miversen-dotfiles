@@ -58,6 +58,10 @@ function install(){
     error "Missing git! Please install git"
     return
   fi
+  if [ ! $(command -v unzip) ]; then
+    error "Missing unzip! Please install unzip"
+    return
+  fi
 
   cur_date=$(date +%Y%m%d-%H%M%S)
   if [ -f $RC_PATH ]; then
@@ -151,6 +155,14 @@ function install(){
   if [ ! -f "${HOME}/.tmux.conf" ]; then
       debug "Adding tmux configuration"
       ln -s "${RC_DIR}/tmux/tmux.conf" "${HOME}/.tmux.conf"
+  fi
+  if [ ! -d "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting" ]; then
+      debug "Downloading zsh-syntax-highlighting"
+      git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+  fi
+  if [ ! -d "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions" ]; then
+      debug "Downloading zsh-autosuggestions"
+      git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
   fi
   # Maybe some day
   # if [ ! -f ~/.local/bin/zellij ]; then
