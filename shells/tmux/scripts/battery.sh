@@ -12,14 +12,22 @@ else
 fi
 
 battery=${battery:-0}
-if [ "$battery" -ge 90 ]; then echo "󰁹"
-elif [ "$battery" -ge 80 ]; then echo "󰂂"
-elif [ "$battery" -ge 70 ]; then echo "󰂁"
-elif [ "$battery" -ge 60 ]; then echo "󰂀"
-elif [ "$battery" -ge 50 ]; then echo "󰁿"
-elif [ "$battery" -ge 40 ]; then echo "󰁾"
-elif [ "$battery" -ge 30 ]; then echo "󰁽"
-elif [ "$battery" -ge 20 ]; then echo "󰁼"
-elif [ "$battery" -ge 10 ]; then echo "󰁻"
-else echo "󰁺"
+battery_icon="󰁺"
+charging_icon="󱐋"
+if [ "$battery" -ge 90 ]; then battery_icon="󰁹"
+elif [ "$battery" -ge 80 ]; then battery_icon="󰂂"
+elif [ "$battery" -ge 70 ]; then battery_icon="󰂁"
+elif [ "$battery" -ge 60 ]; then battery_icon="󰂀"
+elif [ "$battery" -ge 50 ]; then battery_icon="󰁿"
+elif [ "$battery" -ge 40 ]; then battery_icon="󰁾"
+elif [ "$battery" -ge 30 ]; then battery_icon="󰁽"
+elif [ "$battery" -ge 20 ]; then battery_icon="󰁼"
+elif [ "$battery" -ge 10 ]; then battery_icon="󰁻"
+else battery_icon="󰁺"
 fi
+charging_state=$(cat /sys/class/power_supply/BAT0/status)
+if [ "${charging_state}" == "Charging" ]; then
+    charging_icon="󱐋"
+fi
+
+echo "${battery_icon}${charging_icon}"
