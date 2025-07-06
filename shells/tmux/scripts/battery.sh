@@ -13,7 +13,7 @@ fi
 
 battery=${battery:-0}
 battery_icon="󰁺"
-charging_icon="󱐋"
+charging_icon=""
 if [ "$battery" -ge 90 ]; then battery_icon="󰁹"
 elif [ "$battery" -ge 80 ]; then battery_icon="󰂂"
 elif [ "$battery" -ge 70 ]; then battery_icon="󰂁"
