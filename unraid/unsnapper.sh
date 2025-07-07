@@ -22,6 +22,9 @@ Usage: $0 [OPTIONS]
 If no options are provided, this script will create new snapshots and then clean lingering ones
 
 NOTE: Currently this does not support snapshotting shares that have a cache pool in front of them
+NOTE: If you are planning on mounting the SHARE_MOUNTPOINT in a docker container, you will need to ensure
+      the mountpoint is mounted with the ":shared" flag. EG --volume /mnt/.user:/shares:shared
+      See: https://docs.docker.com/engine/storage/bind-mounts/#configure-bind-propagation for details
 
 OPTIONS:
     -v, --verbose    Enable debug/verbose output
