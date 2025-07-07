@@ -300,12 +300,16 @@ function update_latest(){
             debug "Would have executed 'mkdir -p \"${SHARE_MOUNTPOINT}/${share}/${most_recent_snapshot}\"'"
         fi
         _merge_snapshots "${share}" "${most_recent_snapshot}"
-        if [ ! -d "${SHARE_MOUNTPOINT}/${share}/latest" ]; then
+        if [ -L "${SHARE_MOUNTPOINT}/${share}/latest" ]; then
+            # We need to remove the symlink
             if [ "${DRY_RUN}" != true ]; then
-                mkdir -p "${SHARE_MOUNTPOINT}/${share}/latest" 2>/dev/null
+                debug "Removing previous latest symlink"
+                rm "${SHARE_MOUNTPOINT}/${share}/latest"
             else
-                debug "Would have executed 'mkdir -p \"${SHARE_MOUNTPOINT}/${share}/latest\"'"
+                debug "Would have executed 'rm \"${SHARE_MOUNTPOINT}/${share}/latest"
             fi
+        fi
+        if [ ! -d "${SHARE_MOUNTPOINT}/${share}/latest" ]; then
             if mount | grep -q "${SHARE_MOUNTPOINT}/${share}/latest"; then
                 # We need to unmount the latest share
                 debug "Previous latest snapshot of ${share} is still mounted, attempting to unmount it"
@@ -320,10 +324,12 @@ function update_latest(){
         if [ "${DRY_RUN}" != true ]; then
             # I would prefer bind mounting but I guess we have to do symlinking
             #mount --bind -o ro, "${SHARE_MOUNTPOINT}/${share}/${most_recent_snapshot}" "${SHARE_MOUNTPOINT}/${share}/latest"
-            ln -s "${SHARE_MOUNTPOINT}/${share}/${most_recent_snapshot}" "${SHARE_MOUNTPOINT}/${share}/latest"
+            pushd "${SHARE_MOUNTPOINT}/${share}" 2>/dev/null 1>/dev/null
+            ln -s "${most_recent_snapshot}" "${SHARE_MOUNTPOINT}/${share}/latest"
+            popd 2>/dev/null 1>/dev/null
         else
             #debug "Would have executed 'mount --bind -o ro, \"${SHARE_MOUNTPOINT}/${share}/${most_recent_snapshot}\" \"${SHARE_MOUNTPOINT}/${share}/latest\"'"
-            "Would have executed 'ln -s \"${SHARE_MOUNTPOINT}/${share}/${most_recent_snapshot}\" \"${SHARE_MOUNTPOINT}/${share}/latest\"'"
+            debug "Would have executed 'ln -s \"${SHARE_MOUNTPOINT}/${share}/${most_recent_snapshot}\" \"${SHARE_MOUNTPOINT}/${share}/latest\"'"
         fi
     done
 }
