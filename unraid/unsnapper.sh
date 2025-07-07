@@ -88,26 +88,10 @@ function _delete_btrfs_snapshot(){
         debug "Removing expired BTRFS snapshot ${snapshot}"
         if [ -d "${SHARE_MOUNTPOINT}/${share}/${snapshot}" ]; then
             local mount_point="${SHARE_MOUNTPOINT}/${share}/${snapshot}"
-            if mountpoint -q "${mount_point}"; then
-                # Try normal unmount first
-                local unmount_attempts=0
-                local max_attempts=10
-
-                while mountpoint -q "${mount_point}" && [ $unmount_attempts -lt $max_attempts ]; do
-                    debug "Unmount attempt $((unmount_attempts + 1)) for ${mount_point}"
-                    umount "${mount_point}" 2>/dev/null
-                    [ $unmount_attempts -gt 0 ] && sleep 0.5  # Brief pause after first attempt
-                    ((unmount_attempts++))
-                done
-
-                if mountpoint -q "${mount_point}"; then
-                    debug "ERROR: Failed to unmount ${mount_point} after $max_attempts attempts"
-                    continue  # Skip this snapshot
-                fi
-            fi
             debug "Unmounting snapshot before destroying it"
             if [ "${DRY_RUN}" != true ]; then
-                rmdir "${SHARE_MOUNTPOINT}/${share}/${snapshot}"
+                umount "${mount_point}"
+                rmdir "${mount_point}"
             else
                 debug "Would have executed 'umount \"${SHARE_MOUNTPOINT}/${share}/${snapshot}\"'"
                 debug "Would have executed 'rmdir \"${SHARE_MOUNTPOINT}/${share}/${snapshot}\"'"
@@ -148,27 +132,9 @@ function _delete_zfs_snapshot(){
         if [ -d "${SHARE_MOUNTPOINT}/${share}/${snapshot}" ]; then
             debug "Unmounting snapshot before destroying it"
             local mount_point="${SHARE_MOUNTPOINT}/${share}/${snapshot}"
-            if mountpoint -q "${mount_point}"; then
-                # Try normal unmount first
-                local unmount_attempts=0
-                local max_attempts=10
-
-                # Look, I know you don't like looking at this. But we cannot trust the kernel's
-                # lies. We must try several times over to ensure the orphaned snaphots were deleted
-                while mountpoint -q "${mount_point}" && [ $unmount_attempts -lt $max_attempts ]; do
-                    debug "Unmount attempt $((unmount_attempts + 1)) for ${mount_point}"
-                    umount "${mount_point}" 2>/dev/null
-                    [ $unmount_attempts -gt 0 ] && sleep 0.5  # Brief pause after first attempt
-                    ((unmount_attempts++))
-                done
-
-                if mountpoint -q "${mount_point}"; then
-                    debug "ERROR: Failed to unmount ${mount_point} after $max_attempts attempts"
-                    continue  # Skip this snapshot
-                fi
-            fi
             if [ "${DRY_RUN}" != true ]; then
-                rmdir "${SHARE_MOUNTPOINT}/${share}/${snapshot}"
+                umount "${mount_point}"
+                rmdir "${mount_point}"
             else
                 debug "Would have executed 'umount \"${SHARE_MOUNTPOINT}/${share}/${snapshot}\"'"
                 debug "Would have executed 'rmdir \"${SHARE_MOUNTPOINT}/${share}/${snapshot}\"'"
@@ -312,7 +278,7 @@ function update_latest(){
                 debug "Would have executed 'rm \"${SHARE_MOUNTPOINT}/${share}/latest"
             fi
         fi
-        if [ ! -d "${SHARE_MOUNTPOINT}/${share}/latest" ]; then
+        if [ -d "${SHARE_MOUNTPOINT}/${share}/latest" ]; then
             if mount | grep -q "${SHARE_MOUNTPOINT}/${share}/latest"; then
                 # We need to unmount the latest share
                 debug "Previous latest snapshot of ${share} is still mounted, attempting to unmount it"
@@ -325,14 +291,11 @@ function update_latest(){
         fi
         log "Mounting latest snapshot of ${share}"
         if [ "${DRY_RUN}" != true ]; then
-            # I would prefer bind mounting but I guess we have to do symlinking
-            #mount --bind -o ro, "${SHARE_MOUNTPOINT}/${share}/${most_recent_snapshot}" "${SHARE_MOUNTPOINT}/${share}/latest"
-            pushd "${SHARE_MOUNTPOINT}/${share}" 2>/dev/null 1>/dev/null
-            ln -s "${most_recent_snapshot}" "${SHARE_MOUNTPOINT}/${share}/latest"
-            popd 2>/dev/null 1>/dev/null
+            mkdir -p "${SHARE_MOUNTPOINT}/${share}/latest"
+            mount --bind -o ro, "${SHARE_MOUNTPOINT}/${share}/${most_recent_snapshot}" "${SHARE_MOUNTPOINT}/${share}/latest"
         else
-            #debug "Would have executed 'mount --bind -o ro, \"${SHARE_MOUNTPOINT}/${share}/${most_recent_snapshot}\" \"${SHARE_MOUNTPOINT}/${share}/latest\"'"
-            debug "Would have executed 'ln -s \"${SHARE_MOUNTPOINT}/${share}/${most_recent_snapshot}\" \"${SHARE_MOUNTPOINT}/${share}/latest\"'"
+            debug "Would have executed 'mkdir \"${SHARE_MOUNTPOINT}/${share}/latest\"'"
+            debug "Would have executed 'mount --bind -o ro, \"${SHARE_MOUNTPOINT}/${share}/${most_recent_snapshot}\" \"${SHARE_MOUNTPOINT}/${share}/latest\"'"
         fi
     done
 }
