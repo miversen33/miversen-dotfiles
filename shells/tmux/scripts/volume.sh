@@ -16,7 +16,7 @@ fi
 # Check if audio is muted
 is_muted=$(pactl get-sink-mute "$sink" | awk '{print $2}')
 if [ "$is_muted" == "yes" ]; then
-  echo " "
+  echo "  "
   exit 0
 fi
 
@@ -32,7 +32,7 @@ elif [ "$volume" -le 30 ]; then
 elif [ "$volume" -le 60 ]; then
   volume_icon="󰕾 "
 else
-  volume_icon=" "
+  volume_icon="  "
 fi
 
 echo "${volume_icon}"
