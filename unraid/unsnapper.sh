@@ -60,9 +60,9 @@ function _snapshot_btrfs_disk(){
     if [ ! -d "${disk}/.snapshots" ]; then
         debug "Creating hidden snapshot directory in ${disk} so we can mount our snapshot there"
         if [ "${DRY_RUN}" != true ]; then
-            mkdir -p "${disk}/.snapshots" 2>/dev/null
+            btrfs subvolume create "${disk}/.snapshots" 2>/dev/null
         else
-            debug "Would have executed 'mkdir -p \"${disk}/.snapshots\"'"
+            debug "Would have executed 'btrfs subvolume create \"${disk}/.snapshots\" 2>/dev/null'"
         fi
     fi
     local snapshot_name="${now}"
@@ -72,10 +72,10 @@ function _snapshot_btrfs_disk(){
     fi
     if [ "${DRY_RUN}" != true ]; then
         mkdir -p "${disk}/.snapshots" 2>/dev/null
-        btrfs subvolume snapshot -r "${share}" "${disk}/.snapshots/${snapshot_name}"
+        btrfs subvolume snapshot -r "${disk}" "${disk}/.snapshots/${snapshot_name}"
     else
         debug "Would have executed 'mkdir -p \"${disk}/.snapshots/${snapshot_name}\"'"
-        debug "Would have executed 'btrfs subvolume snapshot -r \"${share}\" \"${disk}/.snapshots/${snapshot_name}\"'"
+        debug "Would have executed 'btrfs subvolume snapshot -r \"${disk}\" \"${disk}/.snapshots/${snapshot_name}\"'"
     fi
 }
 
@@ -171,7 +171,7 @@ function _snapshot_share(){
             [ -z "${clean_only}" ] && _snapshot_zfs_pool "${zfs_disk}"
             _delete_zfs_snapshot "${zfs_disk}" "${share}"
         elif [ "${disk_fs_type}" == "btrfs" ]; then
-            [ -z "${clean_only}" ] && _snapshot_btrfs_disk "${backing_disk}" "${share}"
+            [ -z "${clean_only}" ] && _snapshot_btrfs_disk "${backing_disk}"
             _delete_btrfs_snapshot "${backing_disk}" "${share}"
         else
             error "Filesystem \"${disk_fs_type}\" does not support snapshotting"
@@ -276,7 +276,7 @@ function update_latest(){
                 debug "Removing previous latest symlink"
                 rm "${SHARE_MOUNTPOINT}/${share}/latest"
             else
-                debug "Would have executed 'rm \"${SHARE_MOUNTPOINT}/${share}/latest"
+                debug "Would have executed 'rm \"${SHARE_MOUNTPOINT}/${share}/latest\"'"
             fi
         fi
         if [ -d "${SHARE_MOUNTPOINT}/${share}/latest" ]; then
