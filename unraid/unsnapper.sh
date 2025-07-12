@@ -55,6 +55,7 @@ function log(){
 
 function _snapshot_btrfs_disk(){
     local disk="${1}"
+    local share="${2}"
     debug "Creating BTRFS snapshot of disk ${disk}"
     if [ ! -d "${disk}/.snapshots" ]; then
         debug "Creating hidden snapshot directory in ${disk} so we can mount our snapshot there"
@@ -71,10 +72,10 @@ function _snapshot_btrfs_disk(){
     fi
     if [ "${DRY_RUN}" != true ]; then
         mkdir -p "${disk}/.snapshots" 2>/dev/null
-        btrfs subvolume snapshot -r "${disk}" "${disk}/.snapshots/${snapshot_name}"
+        btrfs subvolume snapshot -r "${share}" "${disk}/.snapshots/${snapshot_name}"
     else
         debug "Would have executed 'mkdir -p \"${disk}/.snapshots/${snapshot_name}\"'"
-        debug "Would have executed 'btrfs subvolume snapshot -r \"${disk}\" \"${disk}/.snapshots/${snapshot_name}\"'"
+        debug "Would have executed 'btrfs subvolume snapshot -r \"${share}\" \"${disk}/.snapshots/${snapshot_name}\"'"
     fi
 }
 
@@ -170,7 +171,7 @@ function _snapshot_share(){
             [ -z "${clean_only}" ] && _snapshot_zfs_pool "${zfs_disk}"
             _delete_zfs_snapshot "${zfs_disk}" "${share}"
         elif [ "${disk_fs_type}" == "btrfs" ]; then
-            [ -z "${clean_only}" ] && _snapshot_btrfs_disk "${backing_disk}"
+            [ -z "${clean_only}" ] && _snapshot_btrfs_disk "${backing_disk}" "${share}"
             _delete_btrfs_snapshot "${backing_disk}" "${share}"
         else
             error "Filesystem \"${disk_fs_type}\" does not support snapshotting"
