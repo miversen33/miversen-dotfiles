@@ -109,28 +109,27 @@ local blink_opts = {
                 border = "rounded"
             }
         },
-        completion = {
-            menu = {
-                draw = {
-                    components = {
-                        kind_icon = {
-                            text = function(ctx)
-                                local kind_icon, _, _ = require('mini.icons').get('lsp', ctx.kind)
-                                return kind_icon
-                            end,
-                            -- (optional) use highlights from mini.icons
-                            highlight = function(ctx)
-                                local _, hl, _ = require('mini.icons').get('lsp', ctx.kind)
-                                return hl
-                            end,
-                        },
-                        kind = {
-                            -- (optional) use highlights from mini.icons
-                            highlight = function(ctx)
-                                local _, hl, _ = require('mini.icons').get('lsp', ctx.kind)
-                                return hl
-                            end,
-                        }
+        menu = {
+            border = "rounded",
+            draw = {
+                components = {
+                    kind_icon = {
+                        text = function(ctx)
+                            local kind_icon, _, _ = require('mini.icons').get('lsp', ctx.kind)
+                            return kind_icon
+                        end,
+                        -- (optional) use highlights from mini.icons
+                        highlight = function(ctx)
+                            local _, hl, _ = require('mini.icons').get('lsp', ctx.kind)
+                            return hl
+                        end,
+                    },
+                    kind = {
+                        -- (optional) use highlights from mini.icons
+                        highlight = function(ctx)
+                            local _, hl, _ = require('mini.icons').get('lsp', ctx.kind)
+                            return hl
+                        end,
                     }
                 }
             }
@@ -179,8 +178,11 @@ local blink_opts = {
 ---@type LazySpec
 local blink = {
     'saghen/blink.cmp',
-    -- optional: provides snippets for the snippet source
-    dependencies = { 'rafamadriz/friendly-snippets' },
+    dependencies = {
+        -- optional: provides snippets for the snippet source
+        'rafamadriz/friendly-snippets',
+        'echasnovski/mini.nvim',
+    },
 
     -- use a release tag to download pre-built binaries
     version = '1.*',
