@@ -444,4 +444,6 @@ if [ -z ${SKIP_CUSTOM+x} ]; then
   alias ZSHRC="${EDITOR} ~/.zshrc && reload"
 fi
 
+. "$HOME/.local/share/../bin/env"
+
 # miversen33 zshrc
