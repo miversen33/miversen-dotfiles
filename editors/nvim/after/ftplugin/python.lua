@@ -1,49 +1,39 @@
 if _G.__miversen_lsp_python_setup then
-    -- Nothing to do here
     return
 end
-local uv = vim.uv or vim.loop
+
 local jit = require("jit")
 local editor_dir = string.format("%s/miversen", vim.fn.stdpath("data"))
 local editor_venv = string.format("%s/miversen/venv", vim.fn.stdpath('data'))
 
 local project_root_markers = {
-    "pyproject.toml",
-    "requirements.txt",
-    ".vscode",
-    ".nvim",
-    ".venv",
-    ".git"
+    "pyproject.toml", "requirements.txt", ".vscode", ".nvim", ".venv", ".git"
 }
 
-local known_venvs = {
-    '.venv',
-    'venv'
-}
+local known_venvs = { '.venv', 'venv' }
 
-local defaults = {
+-- LSPs that should be installed at the editor level (fallback)
+local default_lsps = {
     basedpyright = {
         cmd = {"%BIN_PATH-langserver", "--stdio"},
         settings = {
-            settings = {
-                basedpyright = {
-                    -- https://docs.basedpyright.com/#/configuration
-                    analysis = {
-                        typeCheckingMode = "standard",
-                        diagnosticSeverityOverrides = {
-                            reportAssignmentType = false,
-                            reportArgumentType = "information",
-                            reportUnusedFunction = "information",
-                            reportOptionalMemberAccess = "information",
-                            reportRedeclaration = "information",
-                            reportImplicitOverride = false,
-                            reportAny = false
-                        }
-                    },
-                    venvPath = "%VENV_PATH"
-                }
+            basedpyright = {
+                analysis = {
+                    typeCheckingMode = "standard",
+                    diagnosticSeverityOverrides = {
+                        reportAssignmentType = false,
+                        reportArgumentType = "information",
+                        reportUnusedFunction = "information",
+                        reportOptionalMemberAccess = "information",
+                        reportRedeclaration = "information",
+                        reportImplicitOverride = false,
+                        reportAny = false
+                    }
+                },
+                venvPath = "%VENV_PATH"
             }
         },
+        _is_lsp = true
     },
     ruff = {
         cmd = {"%BIN_PATH", "server"},
@@ -53,335 +43,207 @@ local defaults = {
     },
 }
 
-local lsps = {
+-- All available LSP configurations (includes project-only LSPs)
+local lsp_configs = vim.tbl_extend("force", default_lsps, {
     pyrefly = {
         cmd = {"%BIN_PATH", "lsp"},
         root_markers = project_root_markers,
         filetypes = { "python" },
         settings = {},
         _is_lsp = true,
-    },
-    ruff = defaults.ruff,
-    basedpyright = defaults.basedpyright,
-}
+    }
+})
 
-local function install_local_lsp(_success_callback)
-    local python_path = jit.os == "Windows" 
-        and string.format("%s/Scripts/python.exe", editor_venv)
-        or string.format("%s/bin/python", editor_venv)
+-- Helper function to get cross-platform paths
+local function get_bin_path(venv_path, executable)
+    local bin_dir = jit.os == "Windows" and "Scripts" or "bin"
+    local ext = jit.os == "Windows" and ".exe" or ""
+    return string.format("%s/%s/%s%s", venv_path, bin_dir, executable, ext)
+end
 
-    local package_manager_map = {
-        pip = {
-            venv = function(success_callback, error_callback)
-                success_callback = success_callback or function() end -- stub out success and error
-                error_callback = error_callback or function(result)
-                    vim.notify(string.format("Error occured while initializing editor venv \"%s\". Error Code: %i, Error: %s", editor_venv, result.code, result.stderr))
-                    return
-                end
+local function get_python_path(venv_path)
+    return get_bin_path(venv_path, "python")
+end
 
-                local command = {"python3", "-m", "venv", editor_venv}
-                vim.system(command, {}, function(result)
-                    if result.code > 0 then
-                        error_callback(result)
-                    else
-                        success_callback()
-                    end
- 
-                end)
-            end,
-            install = function(success_callback, error_callback, packages)
-                success_callback = success_callback() or function() end -- stub out success and error
-                error_callback = error_callback or function(result)
-                    vim.notify(string.format("Error occured while installing %s. Error Code: %i, Error: %s", table.concat(packages, ' '), result.code, result.stderr))
-                    return
-                end
-
-                local command = {string.format("%s/bin/python", editor_venv), "-m", "pip", "install", packages}
-                vim.system(command, {}, function(result)
-                    if result.code > 0 then
-                        error_callback(result)
-                    else
-                        success_callback()
-                    end
-
-                end)
-            end
-        },
-        uv = {
-            venv = function(success_callback, error_callback)
-                success_callback = success_callback or function() end -- stub out success and error
-                error_callback = error_callback or function(result)
-                    vim.notify(string.format("Error occured while initializing editor venv \"%s\". Error Code: %i, Error: %s", editor_venv, result.code, result.stderr))
-                    return
-                end
-
-                local command = {"uv", "venv", editor_venv}
-                vim.system(command, {}, function(result)
-                    if result.code > 0 then
-                        error_callback(result)
-                    else
-                        success_callback()
-                    end
-                end)
-            end,
-            install = function(success_callback, error_callback, packages)
-                success_callback = success_callback or function() end -- stub out success and error
-                error_callback = error_callback or function(result)
-                    vim.notify(string.format("Error occured while installing %s. Error Code: %i, Error: %s", table.concat(packages, ' '), result.code, result.stderr))
-                    return
-                end
-                local command = {"uv", "pip", "install", "--python", python_path, "--native-tls"}
-                for _, package in ipairs(packages) do
-                    table.insert(command, package)
-                end
-                vim.system(command, {}, function(result)
-                    if result.code > 0 then
-                        error_callback(result)
-                    else
-                        success_callback()
-                    end
-                end)
+-- Simplified package manager interface
+local function get_package_manager()
+    local python_path = get_python_path(editor_venv)
+    
+    if vim.fn.executable('uv') == 1 then
+        return {
+            name = "uv",
+            create_venv = function() return {"uv", "venv", editor_venv} end,
+            install_packages = function(packages) 
+                local cmd = {"uv", "pip", "install", "--python", python_path, "--native-tls"}
+                vim.list_extend(cmd, packages)
+                return cmd
             end
         }
-    }
-    
-    local package_manager = 
-        vim.fn.executable('uv') == 1 and package_manager_map.uv
-        or vim.fn.executable('pip') == 1 and package_manager_map.pip
+    elseif vim.fn.executable('pip') == 1 then
+        return {
+            name = "pip", 
+            create_venv = function() return {"python3", "-m", "venv", editor_venv} end,
+            install_packages = function(packages)
+                local cmd = {python_path, "-m", "pip", "install"}
+                vim.list_extend(cmd, packages)
+                return cmd
+            end
+        }
+    end
+    return nil
+end
 
-    if not package_manager then
-        -- If we cannot find a valid package manager, give up
-        if vim.g.__miversen_warned_python_package_manager then
-            vim.notify('Unable to locate a valid python package manager!', vim.log.levels.WARNING, {})
+-- Execute command with proper error handling
+local function execute_command(cmd, success_msg, error_msg, callback)
+    vim.system(cmd, {}, function(result)
+        if result.code == 0 then
+            if success_msg then vim.notify(success_msg, vim.log.levels.DEBUG) end
+            if callback then callback() end
+        else
+            vim.notify(string.format("%s. Exit code: %d, Error: %s", 
+                error_msg, result.code, result.stderr or "Unknown error"), 
+                vim.log.levels.ERROR)
+        end
+    end)
+end
+
+-- Check what default packages need to be installed (editor-level only)
+local function get_missing_packages()
+    local missing = {}
+    for lsp_name, _ in pairs(default_lsps) do
+        local lsp_path = get_bin_path(editor_venv, lsp_name)
+        if vim.fn.filereadable(lsp_path) == 0 then
+            table.insert(missing, lsp_name)
+        end
+    end
+    return missing
+end
+
+-- Install missing LSPs to editor venv
+local function install_editor_lsps(callback)
+    local pm = get_package_manager()
+    if not pm then
+        if not vim.g.__miversen_warned_python_package_manager then
+            vim.notify('Unable to locate a valid python package manager!', vim.log.levels.WARNING)
             vim.g.__miversen_warned_python_package_manager = true
         end
         return
     end
 
     vim.fn.mkdir(editor_dir, 'p')
-
-    local needs_venv = true
-    local needed_packages = {}
-    -- Lets check to see what packages we need to install
-    for lsp, _ in pairs(defaults) do
-        if vim.fn.isdirectory(editor_venv) == 1 then
-            needs_venv = false
-            local lsp_path = string.format("%s/bin/%s", editor_venv, lsp)
-            if vim.fn.filereadable(lsp_path) == 0 then
-                table.insert(needed_packages, lsp)
-            end
-        else
-            table.insert(needed_packages, lsp)
-        end
-    end
-    if #needed_packages == 0 then
-        -- Nothing to do, everything is already installed
-        _success_callback()
+    
+    local missing_packages = get_missing_packages()
+    if #missing_packages == 0 then
+        if callback then callback() end
         return
     end
-    
-    local _install = function(success_callback)
-        vim.notify(string.format("Installing %s", table.concat(needed_packages, ' ')), vim.log.levels.DEBUG, {})
-        package_manager.install(success_callback, nil, needed_packages)
+
+    local install_packages = function()
+        vim.notify(string.format("Installing %s with %s", 
+            table.concat(missing_packages, ', '), pm.name), vim.log.levels.INFO)
+        execute_command(
+            pm.install_packages(missing_packages),
+            "Successfully installed LSP packages",
+            "Failed to install LSP packages",
+            callback
+        )
     end
 
-    if needs_venv then
-        vim.notify(string.format("Creating venv \"%s\" for editor specific packages", editor_venv))
-        package_manager.venv(
-            function()
-                _install(_success_callback)
-            end
+    -- Create venv if it doesn't exist, then install packages
+    if vim.fn.isdirectory(editor_venv) == 0 then
+        vim.notify(string.format("Creating editor venv with %s", pm.name), vim.log.levels.INFO)
+        execute_command(
+            pm.create_venv(),
+            "Successfully created editor venv",
+            "Failed to create editor venv",
+            install_packages
         )
     else
-        _install(_success_callback)
+        install_packages()
     end
 end
 
-local project_root = vim.fs.root(0, project_root_markers)
-local python_lsps = {}
--- If we find an lsp we have marked with _is_lsp, then we will set this to true
--- and we won't consider loading up the system lsp (if its available)
-local found_geniune_lsp = false
-
-if project_root then
-    vim.notify(string.format("Python project root located at %s", project_root), vim.log.levels.DEBUG, {})
-else
-    vim.notify("Unable to locate python project root", vim.log.levels.DEBUG, {})
+-- Replace template variables in LSP config
+local function apply_config_variables(config, variables)
+    local function replace_recursive(obj)
+        if type(obj) == "table" then
+            for k, v in pairs(obj) do
+                obj[k] = replace_recursive(v)
+            end
+        elseif type(obj) == "string" then
+            for pattern, replacement in pairs(variables) do
+                obj = string.gsub(obj, pattern, replacement)
+            end
+        end
+        return obj
+    end
+    return replace_recursive(vim.deepcopy(config))
 end
 
-local venv_root = vim.fs.root(0, known_venvs)
-
-local venv = ""
-for _, known_venv in ipairs(known_venvs) do
-    local search_path = string.format("%s/**", venv_root)
-    vim.notify(string.format("Searching for %s in %s", known_venv, search_path), vim.log.levels.DEBUG)
-    local _venv = vim.fn.finddir(known_venv, search_path)
-    if _venv then
-        venv = _venv
-        break
+-- Activate LSPs
+local function activate_lsps(lsp_names, bin_dir, venv_path)
+    for _, lsp_name in ipairs(lsp_names) do
+        local config = apply_config_variables(lsp_configs[lsp_name], {
+            ["%%BIN_PATH"] = string.format("%s/%s", bin_dir, lsp_name),
+            ["%%VENV_PATH"] = venv_path or ""
+        })
+        _G.__miversen_config.lsp.activate(lsp_name, config)
     end
 end
 
+-- Main logic
+local function setup_python_lsps()
+    local project_root = vim.fs.root(0, project_root_markers)
+    local project_lsps = {}
+    local found_genuine_lsp = false
 
-local function replace_variables_in_lsp_config(lsp_config, variables)
-    for key, value in pairs(variables) do
-        for lsp_config_key, lsp_config_value in pairs(lsp_config) do
-            if type(lsp_config_value) == 'table' then
-                replace_variables_in_lsp_config(lsp_config_value, variables)
-            else if type(lsp_config_value) == 'string' and string.match(lsp_config_value, value.pattern) then
-                    lsp_config[lsp_config_key] = string.gsub(lsp_config_value, value.pattern, value.replacement)
+    -- Try to find project-specific LSPs first
+    if project_root then
+        vim.notify(string.format("Python project root: %s", project_root), vim.log.levels.DEBUG)
+        
+        -- Find project venv
+        local venv_root = vim.fs.root(0, known_venvs)
+        if venv_root then
+            for _, venv_name in ipairs(known_venvs) do
+                local venv_path = vim.fn.finddir(venv_name, venv_root .. "/**")
+                if venv_path and venv_path ~= "" then
+                    vim.notify(string.format("Found project venv: %s", venv_path), vim.log.levels.DEBUG)
+                    
+                    local bin_dir = string.format("%s/%s/bin", project_root, venv_path)
+                    for lsp_name, lsp_config in pairs(lsp_configs) do
+                        local lsp_path = string.format("%s/%s", bin_dir, lsp_name)
+                        if vim.fn.filereadable(lsp_path) == 1 then
+                            table.insert(project_lsps, lsp_name)
+                            if lsp_config._is_lsp then
+                                found_genuine_lsp = true
+                            end
+                        end
+                    end
+                    
+                    if #project_lsps > 0 then
+                        local full_venv_path = string.format("%s/%s", project_root, venv_path)
+                        vim.schedule(function() 
+                            activate_lsps(project_lsps, bin_dir, full_venv_path) 
+                        end)
+                    end
+                    break
                 end
             end
         end
     end
-end
 
-local function activate_lsps(_lsps)
-    for _, lsp_name in ipairs(_lsps) do
-        _G.__miversen_config.lsp.activate(lsp_name, lsps[lsp_name])
+    -- Fall back to editor LSPs if no genuine project LSP found
+    if not found_genuine_lsp then
+        vim.notify("Setting up editor LSPs", vim.log.levels.DEBUG)
+        install_editor_lsps(function()
+            local editor_lsps = vim.tbl_keys(default_lsps) -- Only install default LSPs
+            local editor_bin_dir = get_bin_path(editor_venv, ""):sub(1, -2) -- Remove trailing /
+            vim.schedule(function() 
+                activate_lsps(editor_lsps, editor_bin_dir, nil) 
+            end)
+        end)
     end
 end
 
-
-if venv:len() > 0 then
-    vim.notify(string.format("Found venv %s", venv), vim.log.levels.DEBUG, {})
-    local bin_path = string.format("%s/bin", venv)
-
-    -- Lets check to see if there are any known lsps in the virtual environment
-    for lsp_name, lsp_config in pairs(lsps) do
-        local lsp = string.format("%s/%s/%s", project_root, bin_path, lsp_name)
-        vim.notify(string.format("Checking %s to see if %s exists", lsp, lsp_name), vim.log.levels.DEBUG, {})
-        if vim.fn.filereadable(lsp) == 1 then
-            local replacement_vars = {
-                BIN_PATH = {
-                    pattern = '%%BIN_PATH',
-                    replacement = lsp
-                },
-                VENV_PATH = {
-                    pattern = '%%VENV_PATH',
-                    replacement = string.format("%s/%s", project_root, venv)
-                }
-            }
-            replace_variables_in_lsp_config(lsps[lsp_name], replacement_vars)
-            if lsp_config._is_lsp then
-                found_geniune_lsp = true
-            end
-            table.insert(python_lsps, lsp_name)
-        end
-    end
-    vim.schedule(function() activate_lsps(python_lsps) end)
-end
-
-if not found_geniune_lsp then
-    vim.notify("Unable to locate lsp in project, setting up system lsp", vim.log.levels.DEBUG, {})
-    local function complete()
-        local _lsps = {}
-        for lsp_name, _ in pairs(defaults) do
-            local replacement_vars = {
-                BIN_PATH = {
-                    pattern = '%%BIN_PATH',
-                    replacement = string.format("%s/bin/%s", editor_venv, lsp_name)
-                },
-                VENV_PATH = {
-                    pattern = '%%VENV_PATH',
-                    replacement = string.format("%s/%s", project_root, venv)
-                }
-            }
-            replace_variables_in_lsp_config(lsps[lsp_name], replacement_vars)
-            table.insert(_lsps, lsp_name)
-        end
-        vim.schedule(function() activate_lsps(_lsps) end)
-    end
-    install_local_lsp(complete)
-end
-
-
+setup_python_lsps()
 _G.__miversen_lsp_python_setup = true
-
--- if venv:len() == 0 then
---     -- We should probably complain that we can't find a venv for this project
---     -- It is probably worth checking if there is a global lsp we can use
---     return
--- end
-
-
--- local local_dir = jit.os ~= 'Windows' and '.local/bin/lsps' or 'AppData/local/bin/lsps'
--- local python_language_servers = string.format("%s/%s/python_language_servers", uv.os_homedir(), local_dir)
---
--- local os_map = {
---     Linux = 'linux',
---     darwin = 'darwin',
---     Windows = 'win32'
--- }
---
---
---
--- -- -- We should see if the project root we are in contains a virtual environment already and just use that if it does exist
--- -- --
--- -- local package_manager_map = {
--- --     pip = {
--- --         venv = function()
--- --             local command = {"python3", "-m", "venv", pyrefly_venv}
--- --             vim.system(command, {}, function(result)
--- --
--- --             end)
--- --         end,
--- --         install = function()
--- --
--- --         end
--- --     },
--- --     uv = {
--- --         venv = function()
--- --             local command = {"uv", "venv", pyrefly_venv}
--- --             vim.system(command, {}, function(result)
--- --
--- --             end)
--- --         end,
--- --         install = function()
--- --             local command = {"source", pyrefly_venv, "&&", "uv", "pip", "install", "--native-tls", "pyrefly"}
--- --         end
--- --     }
--- -- }
--- --
--- -- local pyrefly_parent = string.format("%s/pyrefly/", python_language_servers)
--- --
--- -- local package_manager = 
--- --     vim.fn.executable('uv') == 1 and package_manager_map.uv
--- --     or vim.fn.executable('pip') == 1 and package_manager_map.pip
--- --
--- -- if not package_manager and not vim.g.__miversen_warned_python_package_manager then
--- --     vim.notify('Unable to locate a valid python package manager!', vim.log.levels.WARNING, {})
--- --     vim.g.__miversen_warned_python_package_manager = true
--- -- end
--- --
--- -- local needs_install = false
--- --
--- -- if vim.fn.isdirectory(python_language_servers) == 0 then
--- --     vim.fn.mkdir(python_language_servers, 'p')
--- --     needs_install = true
--- -- end
--- --
--- -- if vim.fn.isdirectory(pyrefly_parent) == 0 then
--- --     vim.fn.mkdir(pyrefly_parent, 'p')
--- --     needs_install = true
--- -- end
--- --
--- -- if needs_install and not vim.g.__miversen_installing_pyrefly then
--- --     vim.notify('Installing pyrefly', vim.log.levels.INFO, {})
--- --     package_manager.venv()
--- --     package_manager.install('pyrefly')
--- -- end
--- --
--- --
--- --
--- -- -- -- Check to see if pyrefly's venv is setup
--- -- -- if vim.fn.isdirectory(pyrefly_venv) == 0 and not vim.g.__miversen_setup_pyrefly then
--- -- --     vim.g.__miversen_setup_pyrefly = true
--- -- --     vim.notify("Pyrefly not found, setting it up now", vim.log.levels.INFO, {})
--- -- --     local pyrefly_parent = string.format("%s/../", pyrefly_venv)
--- -- --     if vim.fn.isdirectory(pyrefly_parent) == 0 then
--- -- --         vim.fn.mkdir(pyrefly_parent, 'p')
--- -- --     end
--- -- --     package_manage.venv()
--- -- -- end
-
