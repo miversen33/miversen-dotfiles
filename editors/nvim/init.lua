@@ -126,6 +126,7 @@ local function vim_settings()
         vim.api.nvim_set_hl(0, group, {})
     end
     local _print = _G.print
+
     local clean_string = function(...)
         local args = {n = select("#", ...), ...}
         local formatted_args = {}
@@ -140,7 +141,7 @@ local function vim_settings()
             end
             table.insert(formatted_args, item)
         end
-        vim.notify(table.concat(formatted_args, ' '), vim.log.levels.INFO)
+        return table.concat(formatted_args, ' ')
     end
     _G.print = function(...) _print(clean_string(...)) end
     vim.g.__miversen_set_theme = function(new_theme, lualine_theme)
