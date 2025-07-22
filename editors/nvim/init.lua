@@ -332,11 +332,11 @@ local function setup_plugins()
 end
 
 -- Actually do setup
-
 vim_settings()
 setup_basic_keycommands()
 check_if_debug()
 if not vim.g.__miversen_debug_config then
+    require("scripts")
     setup_plugins()
 end
 
