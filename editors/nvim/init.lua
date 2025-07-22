@@ -182,6 +182,14 @@ local function vim_settings()
         command = "set guicursor=a:ver100",
         desc = "Set cursor back to beam when leaving Neovim."
     })
+
+    local symbols = { Error = "󰅙 ", Info = "󰋼 ", Hint = "󰌵 ", Warn = " " }
+
+    for name, icon in pairs(symbols) do
+        local hl = "DiagnosticSign" .. name
+        vim.fn.sign_define(hl, { text = icon, numhl = hl, texthl = hl })
+    end
+
 end
 
 local function setup_basic_keycommands()
