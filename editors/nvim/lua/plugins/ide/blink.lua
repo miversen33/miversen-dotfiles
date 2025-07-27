@@ -107,7 +107,15 @@ local blink_opts = {
             auto_show_delay_ms = 500,
             window = {
                 border = "rounded"
-            }
+            },
+            draw = function(opts)
+                if opts.item and opts.item.documentation then
+                    local out = require("pretty_hover.parser").parse(opts.item.documentation.value)
+                    opts.item.documentation.value = out:string()
+                end
+
+                opts.default_implementation(opts)
+            end
         },
         menu = {
             border = "rounded",
@@ -175,6 +183,7 @@ local blink_opts = {
 }
 
 
+---@module "lazy"
 ---@type LazySpec
 local blink = {
     'saghen/blink.cmp',
