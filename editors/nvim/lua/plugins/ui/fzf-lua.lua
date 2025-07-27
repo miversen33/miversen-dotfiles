@@ -1,12 +1,18 @@
-
-
+---@module "lazy"
 ---@type LazySpec
 local fzf = {
     "ibhagwan/fzf-lua",
     dependencies = {
         "echasnovski/mini.icons"
     },
-    opts = {}
+    opts = {
+        winopts = {
+            border = "rounded",
+        },
+    },
+    config = function()
+        require("fzf-lua").register_ui_select()
+    end
 }
 
 return fzf
