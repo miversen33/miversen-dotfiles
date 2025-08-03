@@ -336,10 +336,13 @@ local function setup_plugins()
     -- Setting up some basic highlight groups
     -- vim.api.nvim_set_hl(0, "ColorColumn", {fg = "#97E004"})
     _G.set_theme(vim.g.__miversen_theme)
-    vim.api.nvim_set_hl(0, "PmenuSel", {bg = "#004b72", fg = "NONE"})
-    vim.api.nvim_set_hl(0, "Pmenu", {fg = "#C5CDD9", bg = "NONE"})
-    vim.api.nvim_set_hl(0, "FloatBorder", {fg = _G.__miversen_border_color})
-    vim.api.nvim_set_hl(0, "NormalFloat", {fg = "NONE", bg = "NONE"})
+    vim.api.nvim_set_hl(0, "PmenuSel", { bg = "#004b72", fg = "NONE" })
+    vim.api.nvim_set_hl(0, "Pmenu", { fg = "#C5CDD9", bg = "NONE" })
+    vim.api.nvim_set_hl(0, "FloatBorder", { fg = _G.__miversen_border_color })
+    vim.api.nvim_set_hl(0, "FzfLuaBorder", { fg = _G.__miversen_border_color })
+    vim.api.nvim_set_hl(0, "NormalFloat", { fg = "NONE", bg = "NONE" })
+end
+
 end
 
 -- Actually do setup
