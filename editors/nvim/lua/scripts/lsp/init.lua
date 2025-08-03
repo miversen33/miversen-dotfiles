@@ -4,14 +4,16 @@
 
 ---@class Lsp
 ---@field name string The name of the lsp
----@field enable boolean Should this lsp be enabled?
+---@field enable boolean? Should this lsp be enabled? Default is true
+---@field required boolean? If provided, should we install this lsp? Default is false. Can be used with enable=false to ensure installation but not enablement of lsp. Useful if your lsp is managed by plugins
 ---@field pin string? If provided, we will tell the installer to only use this version and prevent update checks
 ---@field get_binary_path fun(): string A function we can call to retrieve the path to the binary for this LSP
 ---@field version fun(): string A function to call to get current version of this LSP
----@field latest_version fun(): string A function to call to get the most recent version of this LSP
+---@field latest_version fun(callback: fun(version: string?)) A function to call to get the most recent version of this LSP
 ---@field config vim.lsp.Config The valid lsp configuration to use for this LSP
 ---@field needs_install fun(): boolean A function that we can call to check if the LSP needs to be installed
----@field needs_update fun(): boolean A function that we can call to check if an update is available for this LSP
+---@field needs_update fun(callback: fun(needs_update: boolean)) A function that we can call to check if an update is available for this LSP
+---@filed get_editor_venv fun()? A function that can be called to get the venv for the editor for this lsp
 ---@field install fun(success_callback: fun(), error_callback: fun(error: string, exit_code: number), opts: LspInstallOpts?) A function to call to install the LSP
 
 ---@class LspDetails
@@ -21,6 +23,7 @@
 ---@field last_install_check number The last time we asked the user if they want to install this LSP.
 ---@field next_install_check number The next time we should as the user if they want to install thie LSP. Useful if the user told us to shut the fuck up
 
+vim.lsp.inlay_hint.enable(true)
 local EDITOR_DIR = string.format("%s/miversen/lsps", vim.fn.stdpath("data"))
 local BACKING_FILE = string.format("%s/lsp_details.json", EDITOR_DIR)
 if vim.fn.isdirectory(EDITOR_DIR) ~= 1 then
@@ -135,12 +138,14 @@ function lsp.register(languages, new_lsp)
         end)
         complete()
     end
-    if (new_lsp.needs_install() and lsp_details.next_install_check > os.time()) or new_lsp.enable == false then
+
+    if (new_lsp.needs_install() and lsp_details.next_install_check > os.time()) then
         -- We have nothing to do, we were told to go away
         complete()
         return
     end
-    if new_lsp.needs_install() and lsp_details.next_install_check <= os.time() then
+
+    if new_lsp.needs_install() and lsp_details.next_install_check <= os.time() and (new_lsp.enable ~= false or new_lsp.required == true) then
         lsp_details.last_install_check = os.time()
         local yes_callback = function()
             local error_callback = function(error, _)
@@ -167,7 +172,11 @@ function lsp.register(languages, new_lsp)
         end, 1000)
         return
     end
-    if (new_lsp.version() ~= new_lsp.pin or new_lsp.needs_update()) and (lsp_details.next_update_check <= os.time()) then
+    activate_lsp()
+
+    -- TODO: Do we add another item for "install" so that we can have an lsp disabled but still require install so other tools can work?
+    if (new_lsp.pin and new_lsp.version() ~= new_lsp.pin) and lsp_details.next_update_check <= os.time() and new_lsp.enable ~= false then
+        -- Preliminary check passed, lets actually check if an update is available
         lsp_details.last_update_check = os.time()
         local yes_callback = function()
             local error_callback = function(error, _exit_code)
@@ -181,12 +190,6 @@ function lsp.register(languages, new_lsp)
             end
 
             lsp._install(new_lsp.name, activate_lsp, error_callback, true)
-            -- local update_version = new_lsp.pin and new_lsp.pin or new_lsp.latest_version()
-            -- -- Lets try to install the LSP
-            -- local success_callback = function()
-            --     activate_lsp()
-            -- end
-            --             new_lsp.install(success_callback, error_callback, { force = true, version = update_version })
             return
         end
         local no_callback = function()
@@ -194,14 +197,20 @@ function lsp.register(languages, new_lsp)
             activate_lsp()
             return
         end
-        -- Lets delay this a bit so you aren't hit with it immediately
-        vim.defer_fn(function()
-            lsp._prompt_user(string.format("There is an update available for %s, update it? [Y/n]", new_lsp.name),
-                yes_callback, no_callback)
-        end, 1000)
-        return
+
+        local complete = function(needs_update)
+            if not needs_update then
+                -- Nothing to do
+                return
+            end
+            -- Lets delay this a bit so you aren't hit with it immediately
+            vim.defer_fn(function()
+                lsp._prompt_user(string.format("There is an update available for %s, update it? [Y/n]", new_lsp.name),
+                    yes_callback, no_callback)
+            end, 1000)
+        end
+        new_lsp.needs_update(complete)
     end
-    activate_lsp()
 end
 
 -- Asks the user if they want to perform an action
@@ -269,7 +278,8 @@ function lsp.activate(target_lsp)
         return
     end
     local replacement_map = {
-        ["$LSP_BIN"] = target_lsp.get_binary_path()
+        ["$LSP_BIN"] = target_lsp.get_binary_path(),
+        ["$VENV_BIN"] = target_lsp.get_editor_venv and target_lsp.get_editor_venv() or "NO VENV"
     }
     vim.lsp.config[target_lsp.name] = substitute_vars(target_lsp.config, replacement_map)
     if target_lsp.enable ~= false then
@@ -292,14 +302,28 @@ function lsp._install(lsp_name, success_callback, error_callback, is_update)
     end
     local lsp_details = lsp.lsp_details[op_lsp.name]
     lsp_details.last_update_check = os.time()
-    local version = op_lsp.pin and op_lsp.pin or op_lsp.latest_version()
-    if is_update then
-        lsp_details.last_update_check = os.time()
-    else
-        lsp_details.last_install_check = os.time()
+    ---@param version string?
+    local complete = function(version)
+        if op_lsp.pin and op_lsp.bin == version then
+            -- Nothing to do
+            success_callback()
+            return
+        end
+        if is_update then
+            lsp_details.last_update_check = os.time()
+        else
+            lsp_details.last_install_check = os.time()
+        end
+        if not version then
+            -- Nothing to do
+            error_callback(string.format("%s was not able to provide most recent version to install", lsp_name))
+            return
+        end
+        vim.schedule(function()
+            op_lsp.install(success_callback, error_callback, { force = true, version = version })
+        end)
     end
-    op_lsp.install(success_callback, error_callback, { force = true, version = version })
-    return
+    op_lsp.latest_version(complete)
 end
 
 -- Updates either a specific tool (lsp or otherwise) for a language,
