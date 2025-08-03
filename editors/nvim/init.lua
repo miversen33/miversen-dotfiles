@@ -306,16 +306,17 @@ local function setup_plugins()
     local lazy_opts = {
         dev = {
             path = "~/git",
-            patterns = {"miversen33", "nvim-island"},
+            patterns = { "miversen33" },
             fallback = true
         },
-        change_detection = {enabled = false, notify = true},
-        ui = {border = 'rounded'},
+        change_detection = { enabled = false, notify = true },
+        ui = { border = 'rounded' },
         spec = {
-           {import = "plugins.ui.theme"},
-           {import = "plugins.ui"},
-           {import = "plugins.ide"},
-           ---------------------------------------------
+            { import = "plugins.ui.theme" },
+            { import = "plugins.ui" },
+            { import = "plugins.ide.languages" },
+            { import = "plugins.ide" },
+            ---------------------------------------------
             -- {import = "plugins.ui.theme"},
             -- {import = "plugins.ui"},
             -- {import = "plugins.ui.core"},
