@@ -1,4 +1,3 @@
----@module "illuminate"
 local illuminate_opts = {
     providers = {
         "lsp",
@@ -9,7 +8,6 @@ local illuminate_opts = {
     filetypes_denylist = vim.g.excluded_filetypes
 }
 
----@module "lazy"
 ---@type LazySpec
 return {
     "RRethy/vim-illuminate",

@@ -26,7 +26,6 @@ local dropbar_opts = {
         }
     },
     sources = {
-        ---@module "dropbar.utils.menu"
         ---@type dropbar_select_opts_t
         path = {
             ---@param item any
@@ -38,7 +37,6 @@ local dropbar_opts = {
     }
 }
 
----@module "lazy"
 ---@type LazySpec
 return {
     "Bekaboo/dropbar.nvim",

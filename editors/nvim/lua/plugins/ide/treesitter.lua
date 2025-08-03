@@ -24,10 +24,9 @@ local treesitter_config = {
 }
 
 local treesitter_dependencies = {
-    { "nushell/tree-sitter-nu", build = ":TSUpdate nu"}
+    { "nushell/tree-sitter-nu", build = ":TSUpdate nu" }
 }
 
----@module "lazy"
 ---@type LazySpec
 return {
     "nvim-treesitter/nvim-treesitter",

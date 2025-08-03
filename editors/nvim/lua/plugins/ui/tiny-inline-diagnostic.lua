@@ -1,4 +1,3 @@
----@module "lazy"
 ---@type LazySpec
 local tiny_diagnostic = {
     "rachartier/tiny-inline-diagnostic.nvim",

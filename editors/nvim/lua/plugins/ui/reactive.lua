@@ -10,7 +10,6 @@ local reactive_opts = {
     }
 }
 
----@module "lazy"
 ---@type LazySpec
 return {
     "rasulomaroff/reactive.nvim",

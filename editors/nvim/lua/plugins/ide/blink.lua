@@ -37,7 +37,6 @@ vim.api.nvim_set_hl(0, "BlinkCmpKindInterface", { fg = "#58B5A8" })
 vim.api.nvim_set_hl(0, "BlinkCmpKindColor", { fg = "#58B5A8" })
 vim.api.nvim_set_hl(0, "BlinkCmpKindTypeParameter", { fg = "#58B5A8" })
 
----@module 'blink.cmp'
 ---@type blink.cmp.Config
 local blink_opts = {
     -- 'default' (recommended) for mappings similar to built-in completions (C-y to accept)
@@ -55,7 +54,6 @@ local blink_opts = {
     keymap = {
         preset = 'default',
         ["<C-Space>"] = {
-            ---@module 'blink.cmp'
             ---@param cmp blink.cmp.API
             function(cmp)
                 if cmp.is_menu_visible() then
@@ -66,21 +64,18 @@ local blink_opts = {
             end
         },
         ["<C-Up>"] = {
-            ---@module 'blink.cmp'
             ---@param cmp blink.cmp.API
             function(cmp)
                 cmp.scroll_documentation_up(4)
             end
         },
         ["<C-Down>"] = {
-            ---@module 'blink.cmp'
             ---@param cmp blink.cmp.API
             function(cmp)
                 cmp.scroll_documentation_down(4)
             end
         },
         ["<Esc>"] = {
-            ---@module 'blink.cmp'
             ---@param cmp blink.cmp.API
             function(cmp)
                 if cmp.is_menu_visible() then
@@ -183,7 +178,6 @@ local blink_opts = {
 }
 
 
----@module "lazy"
 ---@type LazySpec
 local blink = {
     'saghen/blink.cmp',
@@ -205,4 +199,3 @@ local blink = {
 }
 
 return blink
-

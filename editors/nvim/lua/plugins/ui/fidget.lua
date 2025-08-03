@@ -1,4 +1,3 @@
----@module "lazy"
 local fidget_opts = {
     progress = {
         display = {

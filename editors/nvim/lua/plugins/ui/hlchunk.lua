@@ -22,10 +22,9 @@ local hlchunk_opts = {
     }
 }
 
----@module "lazy"
 ---@type LazySpec
 return {
     "shellRaining/hlchunk.nvim",
-    event = {"BufReadPre", "BufNewFile"},
+    event = { "BufReadPre", "BufNewFile" },
     opts = hlchunk_opts
 }
