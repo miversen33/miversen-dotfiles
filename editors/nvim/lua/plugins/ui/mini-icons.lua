@@ -5,4 +5,3 @@ local mini_icons = {
 }
 
 return mini_icons
-

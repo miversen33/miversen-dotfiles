@@ -5,7 +5,7 @@ local function dropbar_ignore_buffer(buf, win)
         and ft ~= ''
         and vim.api.nvim_buf_get_name(buf) ~= ''
         and not vim.wo[win].diff
-    for _, buftype in ipairs(_G.__miversen_config_excluded_filetypes_array) do
+    for _, buftype in ipairs(vim.g._config.excluded_filetypes) do
         if ft == buftype then
             acceptable = false
             break

@@ -29,7 +29,7 @@ local function vim_settings()
     -- Sets what the cursor will look like in each mode. I did not make this mess, I found it on /r/neovim somewhere
     -- It basically ensures I have a "blinking line" when in insert mode and a block all other times
     vim.opt.guicursor =
-        'n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175'
+    'n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175'
     vim.opt.whichwrap = '<,>,[,]'
     vim.opt.encoding = 'UTF-8'
     vim.log.level = "warn"
@@ -48,7 +48,7 @@ local function vim_settings()
     vim.opt.termguicolors = true
     -- A tab is 4 spaces. If you think otherwise, you are wrong
     vim.opt.tabstop = 4
-    -- I use lualine (and a tabbar and my cursorline) to tell me what mode I am in. I 
+    -- I use lualine (and a tabbar and my cursorline) to tell me what mode I am in. I
     -- don't need vim to also tell me
     vim.opt.showmode = false
     -- If tabs are 4 spaces, indents should be 1 tab. Vim defaulting to 8 is just fucking silly
@@ -120,19 +120,19 @@ local function vim_settings()
     -- Session options for resuming neovim where I was before. Use whatever the session plugin you are using recommends
     -- NOTE: You don't need to use a plugin for session management, I just chose to because I am lazy
     vim.opt.sessionoptions =
-            "blank,buffers,curdir,folds,globals,localoptions,help,tabpages,terminal"
-        -- "blank,buffers,curdir,folds,tabpages,winsize,winpos,terminal,localoptions,options,resize"
+    "blank,buffers,curdir,folds,globals,localoptions,help,tabpages,terminal"
+    -- "blank,buffers,curdir,folds,tabpages,winsize,winpos,terminal,localoptions,options,resize"
     for _, group in ipairs(vim.fn.getcompletion("@lsp", "highlight")) do
         vim.api.nvim_set_hl(0, group, {})
     end
     local _print = _G.print
 
     local clean_string = function(...)
-        local args = {n = select("#", ...), ...}
+        local args = { n = select("#", ...), ... }
         local formatted_args = {}
         for i = 1, args.n do
             local item = select(i, ...)
-            if not item then item = 'nil' end
+            if item == nil then item = 'nil' end
             local t_item = type(item)
             if t_item == 'table' or t_item == 'function' or t_item == 'userdata' then
                 item = vim.inspect(item)
@@ -149,7 +149,7 @@ local function vim_settings()
         if vim.g.__miversen_theme and vim.g.__miversen_theme ~= 'default' and
             vim.g.__miversen_theme ~= new_theme then
             print('Replacing previously selected theme "',
-                  vim.g.__miversen_theme, '" with', new_theme)
+                vim.g.__miversen_theme, '" with', new_theme)
         end
         vim.g.__miversen_theme = new_theme
         vim.g.__miversen_lualine_theme = lualine_theme
@@ -167,13 +167,11 @@ local function vim_settings()
             vim.g.__miversen_lualine_theme = lualine_theme
         end
     end
-    local uv = vim.uv or vim.loop
     vim.g.__miversen_background_color = "#1e1e1e"
-    _G.os_sep = uv.os_uname().sysname:lower():match('windows') and '\\' or '/' -- \ for windows, mac and linux both use \
     _G.__miversen_border_color = "#806d9c"
     _G.__miversen_augroup = "miversen_config_augroup"
-    vim.api.nvim_create_augroup(_G.__miversen_augroup, {clear = true})
-    vim.api.nvim_create_autocmd({'FocusGained', 'BufEnter', 'VimResume'}, {
+    vim.api.nvim_create_augroup(_G.__miversen_augroup, { clear = true })
+    vim.api.nvim_create_autocmd({ 'FocusGained', 'BufEnter', 'VimResume' }, {
         command = "checktime",
         pattern = "*"
     })
@@ -183,13 +181,19 @@ local function vim_settings()
         desc = "Set cursor back to beam when leaving Neovim."
     })
 
-    local symbols = { Error = "󰅙 ", Info = "󰋼 ", Hint = "󰌵 ", Warn = " " }
 
-    for name, icon in pairs(symbols) do
-        local hl = "DiagnosticSign" .. name
-        vim.fn.sign_define(hl, { text = icon, numhl = hl, texthl = hl })
-    end
-
+    vim.diagnostic.config({
+        virtual_text = false,
+        signs = {
+            text = {
+                [vim.diagnostic.severity.ERROR] = "󰅙 ",
+                [vim.diagnostic.severity.INFO]  = "󰋼 ",
+                [vim.diagnostic.severity.HINT]  = "󰌵 ",
+                [vim.diagnostic.severity.WARN]  = " "
+            }
+        },
+        severity_sort = true
+    })
 end
 
 local function setup_basic_keycommands()
@@ -200,7 +204,7 @@ local function setup_basic_keycommands()
             vim.notify(string.format("Saving %s", filename), vim.log.levels.INFO)
         else
             vim.notify(string.format("Error while saving %s\n\t%s", filename,
-                                     error_message), vim.log.levels.ERROR)
+                error_message), vim.log.levels.ERROR)
         end
         local esc = vim.api.nvim_replace_termcodes('<ESC>', true, false, true)
         vim.api.nvim_feedkeys(esc, 'm', false)
@@ -222,57 +226,64 @@ local function setup_basic_keycommands()
     end
 
     local jump_to_next_word_pattern =
-        [[\v['"({[< ]@<=(\w)|^(\w)|([]'"\>)}]\.)@<=(\w)|(['"])@<=([][(){}.,;])(['"])]]
+    [[\v['"({[< ]@<=(\w)|^(\w)|([]'"\>)}]\.)@<=(\w)|(['"])@<=([][(){}.,;])(['"])]]
 
     -- Keymappings
-    vim.keymap.set('n', '<Space>', '<Nop>', {silent = true})
+    vim.keymap.set('n', '<Space>', '<Nop>', { silent = true })
     vim.g.mapleader = ' '
     vim.g.maplocalleader = ','
 
-    vim.keymap.set('n', 'AA', 'ggVG', {silent = true})
-    vim.keymap.set('v', 'AA', 'ggV', {silent = true})
-    vim.keymap.set('n', '<A-Down>', 'ddjP', {silent = true})
-    vim.keymap.set('n', '<A-Up>', 'ddkP', {silent = true})
-    vim.keymap.set('n', '<C-x>', 'dd', {silent = true})
-    vim.keymap.set('n', '<C-X>', 'ddO', {silent = true})
-    vim.keymap.set('i', '<S-Tab>', '<esc>:<<CR>i', {silent = true})
-    vim.keymap.set('n', '<S-Tab>', ':<<CR>', {silent = true})
-    vim.keymap.set('n', '<Up>', 'gk', {silent = true})
-    vim.keymap.set('n', '<Down>', 'gj', {silent = true})
-    vim.keymap.set('v', '<Up>', 'gk', {silent = true})
-    vim.keymap.set('v', '<Down>', 'gj', {silent = true})
-    vim.keymap.set('v', '<Tab>', ':><CR>', {silent = true})
-    vim.keymap.set('v', '<S-Tab>', ':<<CR>', {silent = true})
-    vim.keymap.set('n', '<C-Del>', 'dw', {silent = true})
-    vim.keymap.set('i', '<C-Del>', '<esc>ldwi', {silent = true})
-    vim.keymap.set({"n", "i", "v"}, "<C-s>", save, {silent = true})
-    vim.keymap.set('n', 'zz', 'zc', {silent = true}) -- Fold
-    vim.keymap.set('n', 'Zz', 'zo', {silent = true}) -- Unfold
-    vim.keymap.set({'n', 'i', 'v', 's', 'c', 'x'}, '<Esc>', do_exit, {silent = true})
+    vim.keymap.set('n', 'AA', 'ggVG', { silent = true })
+    vim.keymap.set('v', 'AA', 'ggV', { silent = true })
+    vim.keymap.set('n', '<A-Down>', 'ddjP', { silent = true })
+    vim.keymap.set('n', '<A-Up>', 'ddkP', { silent = true })
+    vim.keymap.set('n', '<C-x>', 'dd', { silent = true })
+    vim.keymap.set('n', '<C-X>', 'ddO', { silent = true })
+    vim.keymap.set('i', '<S-Tab>', '<esc>:<<CR>i', { silent = true })
+    vim.keymap.set('n', '<S-Tab>', ':<<CR>', { silent = true })
+    vim.keymap.set('n', '<Up>', 'gk', { silent = true })
+    vim.keymap.set('n', '<Down>', 'gj', { silent = true })
+    vim.keymap.set('v', '<Up>', 'gk', { silent = true })
+    vim.keymap.set('v', '<Down>', 'gj', { silent = true })
+    vim.keymap.set('v', '<Tab>', ':><CR>', { silent = true })
+    vim.keymap.set('v', '<S-Tab>', ':<<CR>', { silent = true })
+    vim.keymap.set('n', '<C-Del>', 'dw', { silent = true })
+    vim.keymap.set('i', '<C-Del>', '<esc>ldwi', { silent = true })
+    vim.keymap.set({ "n", "i", "v" }, "<C-s>", save, { silent = true })
+    vim.keymap.set('n', 'zz', 'zc', { silent = true }) -- Fold
+    vim.keymap.set('n', 'Zz', 'zo', { silent = true }) -- Unfold
+    vim.keymap.set({ 'n', 'i', 'v', 's', 'c', 'x' }, '<Esc>', do_exit, { silent = true })
+    vim.keymap.set("n", "<S-h>", ":tabp<CR>", { silent = true })
+    vim.keymap.set("n", "<S-l>", ":tabn<CR>", { silent = true })
+    vim.keymap.set("n", "<S-t>", ":tabnew<CR>", { silent = true })
 end
 
 local function check_if_debug()
     vim.g.__miversen_debug_config = vim.loop.os_getenv('DEBUG_NEOVIM_CONFIG')
     if vim.g.__miversen_debug_config then
-        vim.notify("Running Neovim in Configuration Debug Mode!", "warn")
+        vim.notify("Running Neovim in Configuration Debug Mode!", vim.log.levels.WARN)
     end
 end
 
 local function setup_plugins()
-    _G.__miversen_config_excluded_filetypes_array = {
+    local editor_config = vim.g._config
+    vim.lsp.log.set_level(vim.log.levels.DEBUG)
+    editor_config.excluded_filetypes = {
         "lsp-installer", "grug-far", "lspinfo", "Outline", "lazy", "help",
         "packer", "netrw", "qf", "dbui", "Trouble", "fugitive", "floaterm",
         "spectre_panel", "spectre_panel_write", "checkhealth", "man",
         "dap-repl", "toggleterm", "neo-tree", "ImportManager", "aerial",
         "TelescopePrompt", "TelescopeResults", "NetmanLogs", "neo-tree-popup", "",
-        "dapui_scopes", "dapui_breakpoints", "dapui_stacks", "dapui_watches", "dap-repl", 
+        "dapui_scopes", "dapui_breakpoints", "dapui_stacks", "dapui_watches", "dap-repl",
         "dapui_console", "neo-tree-popup"
     }
 
-    _G.__miversen_config_excluded_filetypes_as_table = {}
-    for _, exclusion in ipairs(_G.__miversen_config_excluded_filetypes_array) do
-        _G.__miversen_config_excluded_filetypes_as_table[exclusion] = true
+    editor_config.excluded_filetypes_as_table = {}
+    for _, exclusion in ipairs(editor_config.excluded_filetypes) do
+        editor_config.excluded_filetypes_as_table[exclusion] = true
     end
+
+    vim.g._config = editor_config
 
     local lazypath = "/dev/shm/lazy.nvim"
     -- local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
