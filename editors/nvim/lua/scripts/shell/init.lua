@@ -50,14 +50,14 @@ Shell.CONSTANTS = {
         -- If provided, is used to join STDOUT into one string
         -- with the char(s) provided with this key as the
         -- join between each item in STDOUT
-        STDOUT_JOIN = "STDOUT_JOIN",
+        STDOUT_JOIN           = "STDOUT_JOIN",
         -- If provided, is used to join STDERR into one string
         -- with the char(s) provided with this key as the
         -- join between each item in STDERR
-        STDERR_JOIN = "STDERR_JOIN",
+        STDERR_JOIN           = "STDERR_JOIN",
         -- If provided, STDOUT will be dumped to this file.
         -- If the file doesn't exist, we will try to create it
-        STDOUT_FILE = "STDOUT_FILE",
+        STDOUT_FILE           = "STDOUT_FILE",
         -- If STDOUT_FILE is provided, this can be provided to specify
         -- that the STDOUT_FILE is binary. Default assumption is that the file
         -- is text
@@ -68,7 +68,7 @@ Shell.CONSTANTS = {
         STDOUT_FILE_OVERWRITE = "STDOUT_FILE_OVERWRITE",
         -- If provided, STDERR will be dumped to this file.
         -- If the file doesn't exist, we will try to create it
-        STDERR_FILE = "STDERR_FILE",
+        STDERR_FILE           = "STDERR_FILE",
         -- If STDERR_FILE is provided, this can be provided to specify
         -- that the STDERR_FILE is binary. Default assumption is that the file
         -- is text
@@ -82,52 +82,52 @@ Shell.CONSTANTS = {
         -- STDOUT/STDERR CALLBACK. If you care about the
         -- output from the process. Run will return
         -- immediately when running in async mode
-        ASYNC       = "ASYNC",
+        ASYNC                 = "ASYNC",
         -- If provided, a function is expected as the key,
         -- and the function will be called once the
         -- shell process completes. Will be provided
         -- the output of @see Shell:dump_self_to_table
         -- as the only param
-        EXIT_CALLBACK = "EXIT_CALLBACK",
+        EXIT_CALLBACK         = "EXIT_CALLBACK",
         -- If provided, a function is expected as the key,
         -- and the function will be called everytime
         -- STDOUT emits anything.
-        STDOUT_CALLBACK = "STDOUT_CALLBACK",
+        STDOUT_CALLBACK       = "STDOUT_CALLBACK",
         -- If provided, expects an integer and will
         -- limit the amount of content saved to the internal
         -- STDOUT buffer to this integer. Use if you expect
         -- alot of output you don't care about or set to 0
         -- if you are using STDOUT_CALLBACK
-        STDOUT_PIPE_LIMIT = "STDOUT_PIPE_LIMIT",
+        STDOUT_PIPE_LIMIT     = "STDOUT_PIPE_LIMIT",
         -- If provided, a function is expected as the key,
         -- and the function will be called everytime
         -- STDERR emits anything.
-        STDERR_CALLBACK = "STDERR_CALLBACK",
+        STDERR_CALLBACK       = "STDERR_CALLBACK",
         -- If provided, expects an integer and will
         -- limit the amount of content saved to the internal
         -- STDERR buffer to this integer. Use if you expect
         -- alot of output you don't care about or set to 0
         -- if you are using STDERR_CALLBACK
-        STDERR_PIPE_LIMIT = "STDERR_PIPE_LIMIT",
+        STDERR_PIPE_LIMIT     = "STDERR_PIPE_LIMIT",
         -- If provided, a function is expected as the value,
         -- and the function will be called the shell
         -- process receives any signals. Expects a return
         -- of true/false, where true indicates that the
         -- signal was consumed by the callback and false
         -- indicates that the signal wasn't consumed
-        SIGNAL_CALLBACK  = "SIGNAL_CALLBACK",
+        SIGNAL_CALLBACK       = "SIGNAL_CALLBACK",
         -- @see https://github.com/luvit/luv/blob/master/docs.md#uvspawnpath-options-on_exit
-        ENV = "ENV",
+        ENV                   = "ENV",
         -- @see https://github.com/luvit/luv/blob/master/docs.md#uvspawnpath-options-on_exit
-        UID = "UID",
+        UID                   = "UID",
         -- @see https://github.com/luvit/luv/blob/master/docs.md#uvspawnpath-options-on_exit
-        GID = "GID",
+        GID                   = "GID",
         -- If provided, expects a boolean to indicate if you want the shell to run in detached mode
         -- or not. By default, this is set to false. Note, this will only work if @see ASYNC is also
         -- provided and _will_ throw an error if that option is not set too
         -- For more details, checkout @see https://github.com/luvit/luv/blob/master/docs.md#uvspawnpath-options-on_exit
         -- specifically the "detached" option that can be provided here
-        DETACHED = "DETACHED"
+        DETACHED              = "DETACHED"
     }
 }
 
@@ -142,7 +142,7 @@ Shell.CONSTANTS = {
 ---     - "manual" (See below for the requirements for that)
 ---     - "plenary"
 ---     - "vimjob"
---- 
+---
 --- @param handler_opts table
 ---     This is a bit complicated so hang on!
 ---     There are several ways to create a new async handler, and they are all associated with the
@@ -244,7 +244,7 @@ function Shell.new_async_handler(type, handler_opts)
     }
     local required_attrs = {}
     if type == 'vimjob' then
-        required_attrs = {"id"}
+        required_attrs = { "id" }
         for _, attr in ipairs(required_attrs) do
             assert(handler_opts[attr], string.format("No %s attribute provided with async handle!", attr))
         end
@@ -253,7 +253,7 @@ function Shell.new_async_handler(type, handler_opts)
         -- TODO: Finish setting this up. Looks like there might be some weirdness with
         -- reading from the stdio pipes here...
     elseif type == 'plenary' then
-        required_attrs = {"job"}
+        required_attrs = { "job" }
         for _, attr in ipairs(required_attrs) do
             assert(handler_opts[attr], string.format("No %s attribute provided with async handle!", attr))
         end
@@ -348,64 +348,64 @@ function Shell:reset(command, options)
     command = command or self._orig_command or {}
     assert(type(command) == "table", "Command must be a table!")
     assert(#command > 0, "Cannot run empty command!")
-    self.__type = 'netman_shell'
-    self._orig_command = command
-    self._command = command[1]
-    options = options or self._options or {}
-    self._options = options
-    self._args = { unpack(command, 2) }
-    self._command_as_string = table.concat(command, " ")
-    self._stdout_joiner = options[Shell.CONSTANTS.FLAGS.STDOUT_JOIN]
-    self._stderr_joiner = options[Shell.CONSTANTS.FLAGS.STDERR_JOIN]
-    self._stdout_file   = options[Shell.CONSTANTS.FLAGS.STDOUT_FILE]
-    self._stderr_file   = options[Shell.CONSTANTS.FLAGS.STDERR_FILE]
-    self._stdout_append = not options[Shell.CONSTANTS.FLAGS.STDOUT_FILE_OVERWRITE]
-    self._stderr_append = not options[Shell.CONSTANTS.FLAGS.STDERR_FILE_OVERWRITE]
-    self._stdout_is_binary = options[Shell.CONSTANTS.FLAGS.STDOUT_FILE_IS_BINARY]
-    self._stderr_is_binary = options[Shell.CONSTANTS.FLAGS.STDERR_FILE_IS_BINARY]
-    self._stdout_filehandle = nil
-    self._stderr_filehandle = nil
-    self._user_stdout_callbacks = {options[Shell.CONSTANTS.FLAGS.STDOUT_CALLBACK]} or {}
-    self._user_stderr_callbacks = {options[Shell.CONSTANTS.FLAGS.STDERR_CALLBACK]} or {}
-    self._user_signal_callback = options[Shell.CONSTANTS.FLAGS.SIGNAL_CALLBACK]
-    self._stdout_pipe_limit = options[Shell.CONSTANTS.FLAGS.STDOUT_PIPE_LIMIT] or -1
-    self._stderr_pipe_limit = options[Shell.CONSTANTS.FLAGS.STDERR_PIPE_LIMIT] or -1
-    self._is_async = options[Shell.CONSTANTS.FLAGS.ASYNC]
-    self._user_exit_callbacks = options[Shell.CONSTANTS.FLAGS.EXIT_CALLBACK] or {}
-    self._env = options[Shell.CONSTANTS.FLAGS.ENV]
-    self._uid = options[Shell.CONSTANTS.FLAGS.UID]
-    self._gid = options[Shell.CONSTANTS.FLAGS.GID]
-    self._detached = options[Shell.CONSTANTS.FLAGS.DETACHED]
-    self._stdin_pipe = nil
-    self._stdin_write_count = 0
-    self._attempted_kill = false
-    self._running = false
-    self._stdout_pipe = nil
-    self._stderr_pipe = nil
-    self.stdout = {}
-    self.stderr = {}
-    self._process_handle = nil
-    self.handle = nil
-    self.signal = nil
-    self.exit_code = nil
-    self._pid = nil
-    self._dun = false
-    self._timeout_timer = nil
-    self._start_time = nil
-    self._end_time = nil
+    self.__type                 = 'netman_shell'
+    self._orig_command          = command
+    self._command               = command[1]
+    options                     = options or self._options or {}
+    self._options               = options
+    self._args                  = { unpack(command, 2) }
+    self._command_as_string     = table.concat(command, " ")
+    self._stdout_joiner         = options[Shell.CONSTANTS.FLAGS.STDOUT_JOIN]
+    self._stderr_joiner         = options[Shell.CONSTANTS.FLAGS.STDERR_JOIN]
+    self._stdout_file           = options[Shell.CONSTANTS.FLAGS.STDOUT_FILE]
+    self._stderr_file           = options[Shell.CONSTANTS.FLAGS.STDERR_FILE]
+    self._stdout_append         = not options[Shell.CONSTANTS.FLAGS.STDOUT_FILE_OVERWRITE]
+    self._stderr_append         = not options[Shell.CONSTANTS.FLAGS.STDERR_FILE_OVERWRITE]
+    self._stdout_is_binary      = options[Shell.CONSTANTS.FLAGS.STDOUT_FILE_IS_BINARY]
+    self._stderr_is_binary      = options[Shell.CONSTANTS.FLAGS.STDERR_FILE_IS_BINARY]
+    self._stdout_filehandle     = nil
+    self._stderr_filehandle     = nil
+    self._user_stdout_callbacks = { options[Shell.CONSTANTS.FLAGS.STDOUT_CALLBACK] } or {}
+    self._user_stderr_callbacks = { options[Shell.CONSTANTS.FLAGS.STDERR_CALLBACK] } or {}
+    self._user_signal_callback  = options[Shell.CONSTANTS.FLAGS.SIGNAL_CALLBACK]
+    self._stdout_pipe_limit     = options[Shell.CONSTANTS.FLAGS.STDOUT_PIPE_LIMIT] or -1
+    self._stderr_pipe_limit     = options[Shell.CONSTANTS.FLAGS.STDERR_PIPE_LIMIT] or -1
+    self._is_async              = options[Shell.CONSTANTS.FLAGS.ASYNC]
+    self._user_exit_callbacks   = options[Shell.CONSTANTS.FLAGS.EXIT_CALLBACK] or {}
+    self._env                   = options[Shell.CONSTANTS.FLAGS.ENV]
+    self._uid                   = options[Shell.CONSTANTS.FLAGS.UID]
+    self._gid                   = options[Shell.CONSTANTS.FLAGS.GID]
+    self._detached              = options[Shell.CONSTANTS.FLAGS.DETACHED]
+    self._stdin_pipe            = nil
+    self._stdin_write_count     = 0
+    self._attempted_kill        = false
+    self._running               = false
+    self._stdout_pipe           = nil
+    self._stderr_pipe           = nil
+    self.stdout                 = {}
+    self.stderr                 = {}
+    self._process_handle        = nil
+    self.handle                 = nil
+    self.signal                 = nil
+    self.exit_code              = nil
+    self._pid                   = nil
+    self._dun                   = false
+    self._timeout_timer         = nil
+    self._start_time            = nil
+    self._end_time              = nil
 
     if self._detached then
         assert(self._is_async, "Command cannot be detached and sychronous. Ensure you are specifying the ASYNC flag")
     end
 
     if type(self._user_exit_callbacks) == 'function' then
-        self._user_exit_callbacks = {self._user_exit_callbacks}
+        self._user_exit_callbacks = { self._user_exit_callbacks }
     end
     if type(self._user_stdout_callbacks) == 'function' then
-        self._user_stdout_callbacks = {self._user_stdout_callbacks}
+        self._user_stdout_callbacks = { self._user_stdout_callbacks }
     end
     if type(self._user_stderr_callback) == 'function' then
-        self._user_stderr_callback = {self._user_stderr_callback}
+        self._user_stderr_callback = { self._user_stderr_callback }
     end
 end
 
@@ -456,7 +456,8 @@ function Shell:_prepare()
         end,
         read = function(read_target, save)
             read_target = read_target or 'stdout'
-            assert(read_target == 'stdout' or read_target == 'stderr', string.format("Invalid read target %s. Read target must be stdout or stderr", read_target))
+            assert(read_target == 'stdout' or read_target == 'stderr',
+                string.format("Invalid read target %s. Read target must be stdout or stderr", read_target))
             local pipe = {}
             local target_pipe = nil
             if read_target == 'stdout' then
@@ -465,7 +466,7 @@ function Shell:_prepare()
                 target_pipe = self.stderr
             end
             local pipe_length = #target_pipe
-            for index=1, pipe_length do
+            for index = 1, pipe_length do
                 table.insert(pipe, target_pipe[index])
                 if not save then target_pipe[index] = nil end
             end
@@ -501,7 +502,7 @@ function Shell:_stderr_callback(err, data)
     assert(not err, err)
     if not data then return end
     if #self._user_stderr_callbacks > 0 then
-        for _ ,callback in ipairs(self._user_stderr_callbacks) do
+        for _, callback in ipairs(self._user_stderr_callbacks) do
             callback(data)
         end
     end
@@ -578,7 +579,7 @@ end
 --- @return table/nil
 ---     @see Shell:dump_self_as_table()
 ---     Note: If the shell process is asynchronous, this
----     will return instead a table that contains a handle to the process, as well as 
+---     will return instead a table that contains a handle to the process, as well as
 ---     the pid of the process. This will look like
 ---     { handle: table, pid: integer }
 ---     This handle will contain the following 4 attriutes.
@@ -644,7 +645,7 @@ function Shell:run(timeout)
         end
         -- Loop until done?
         return self:dump_self_to_table()
-    ---@diagnostic disable-next-line: missing-return
+        ---@diagnostic disable-next-line: missing-return
     end
     ::do_return::
     return Shell.new_async_handler('manual', self.handle)
@@ -683,7 +684,7 @@ function Shell:_on_exit(exit_code, signal)
         self._timeout_timer:close()
     end
     -- NOTE: I wonder if we should be checking if we need to shutdown stdin?
-    if not self._stdin_pipe:is_closing()  then
+    if not self._stdin_pipe:is_closing() then
         self._stdin_pipe:shutdown()
         self._stdin_pipe:close()
     end
@@ -711,7 +712,7 @@ function Shell:_on_exit(exit_code, signal)
         table.insert(stderr, line)
     end
     ---@diagnostic disable-next-line: cast-local-type
-     if self._stdout_joiner then stdout = table.concat(stdout, self._stdout_joiner) end
+    if self._stdout_joiner then stdout = table.concat(stdout, self._stdout_joiner) end
     ---@diagnostic disable-next-line: cast-local-type
     if self._stderr_joiner then stderr = table.concat(stderr, self._stderr_joiner) end
     self.stdout = stdout
@@ -746,7 +747,7 @@ end
 --- - exit_code
 ---     The exit code from teh command if it has been ran. This may not be in the table if @see Shell:run hasn't been called yet
 function Shell:dump_self_to_table()
-    local cmd_pieces = {self._command}
+    local cmd_pieces = { self._command }
     for _, arg in ipairs(self._args) do
         table.insert(cmd_pieces, arg)
     end
@@ -783,7 +784,8 @@ function Shell.join(shells, sleep_check)
     end
     local waiting_shells = {}
     for _, shell in ipairs(shells) do
-        assert(shell.__type == 'netman_shell_handle', string.format("Invalid object type %s. Must be a Netman Shell Handle", shell.__type))
+        assert(shell.__type == 'netman_shell_handle',
+            string.format("Invalid object type %s. Must be a Netman Shell Handle", shell.__type))
         assert(shell.pid, "Unable to find pid for shell!")
         table.insert(waiting_shells, shell.pid)
         local callback = function()
