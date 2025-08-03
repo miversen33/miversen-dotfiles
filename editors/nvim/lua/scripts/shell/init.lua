@@ -616,6 +616,7 @@ function Shell:run(timeout)
         -- Something horrific happened. Exit immediately
         self:_stderr_callback(nil, "MISSING JOB HANDLE")
         self:close()
+        self.handle.pid = -1
         self._running = false
         goto do_return
     end
