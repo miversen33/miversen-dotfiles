@@ -21,7 +21,6 @@ local catppuccin_opts = {
 -- vim.g.__miversen_set_theme('catppuccin-macchiato')
 vim.g.__miversen_set_theme('catppuccin-mocha')
 
----@module "lazy"
 ---@type LazySpec
 return {
     "catppuccin/nvim", -- catppuccin theme

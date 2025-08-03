@@ -10,7 +10,6 @@ local vscode_opts = {
 -- Uncomment this if you want to set the theme to vscode
 -- vim.g.__miversen_set_theme('vscode')
 
----@module "lazy"
 ---@type LazySpec
 return {
     "Mofiqul/vscode.nvim",

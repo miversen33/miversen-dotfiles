@@ -2,11 +2,10 @@
 -- vim.g.__miversen_set_theme("kanagawa-dragon", "auto")
 
 local kanagawa_opts = {
-    
+
 }
 
 
----@module "lazy"
 ---@type LazySpec
 return {
     "rebelot/kanagawa.nvim",

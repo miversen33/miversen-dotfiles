@@ -8,7 +8,6 @@
 -- Uncomment this line if you want to use neon theme
 -- vim.g.__miversen_set_theme('neon')
 
----@module "lazy"
 ---@type LazySpec
 return {
     "rafamadriz/neon",

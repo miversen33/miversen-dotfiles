@@ -16,7 +16,6 @@ local onedark_opts = {
     }
 }
 
----@module "lazy"
 ---@type LazySpec
 return {
     "navarasu/onedark.nvim",

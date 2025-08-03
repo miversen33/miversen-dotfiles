@@ -3,7 +3,6 @@
 
 local neosolarized_opts = {}
 
----@module "lazy"
 ---@type LazySpec
 return {
     "Tsuzat/NeoSolarized.nvim",

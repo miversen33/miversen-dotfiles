@@ -1,4 +1,3 @@
-
 -- Uncomment if you want to use cyberdream theme
 -- vim.g.__miversen_set_theme("cyberdream", "auto")
 
@@ -8,7 +7,6 @@ local cyberdream_opts = {
     transparent = true
 }
 
----@module "lazy"
 ---@type LazySpec
 return {
     "scottmckendry/cyberdream.nvim",

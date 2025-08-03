@@ -33,7 +33,7 @@ local material_opts = {
             Parameter = { fg = '#E6D47C', bold = true, italic = true },
             ['@variable.parameter'] = { link = "Parameter" },
             ['@lsp.type.parameter'] = { link = "Parameter" },
-            ['@lsp.typemod.parameter'] = { link = "Parameter"},
+            ['@lsp.typemod.parameter'] = { link = "Parameter" },
 
             Conditional = { fg = color.main.blue },
             ['@keyword'] = { fg = color.main.darkpurple },
@@ -78,7 +78,6 @@ vim.g.material_style = "deep ocean"
 -- Uncomment this if you want to set the theme to material
 -- vim.g.__miversen_set_theme('material')
 
----@module "lazy"
 ---@type LazySpec
 return {
     "marko-cerovac/material.nvim", -- Material theme

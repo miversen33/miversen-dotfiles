@@ -1,4 +1,3 @@
-
 -- Uncomment this if you want to set the theme to tokyonight
 -- vim.g.__miversen_set_theme('tokyonight')
 -- vim.g.__miversen_set_theme('tokyonight-night')
@@ -8,7 +7,6 @@
 
 local tokyonight_opts = {}
 
----@module "lazy"
 ---@type LazySpec
 return {
     "folke/tokyonight.nvim", -- Tokyo night folke theme

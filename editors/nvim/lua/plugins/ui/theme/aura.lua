@@ -6,7 +6,6 @@
 
 local aura_opts = {}
 
----@module "lazy"
 ---@type LazySpec
 return {
     "daltonmenezes/aura-theme", -- Aura theme

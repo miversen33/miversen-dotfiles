@@ -3,7 +3,6 @@
 
 local nordic_opts = {}
 
----@module "lazy"
 ---@type LazySpec
 return {
     "AlexvZyl/nordic.nvim",

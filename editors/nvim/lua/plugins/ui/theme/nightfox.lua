@@ -1,4 +1,3 @@
-
 -- Uncomment this if you want to use the nightfox theme
 -- vim.g.__miversen_set_theme('nightfox')
 -- vim.g.__miversen_set_theme('dayfox')
@@ -15,7 +14,6 @@ local nightfox_opts = {
         }
     }
 }
----@module "lazy"
 ---@type LazySpec
 return {
     "EdenEast/nightfox.nvim", -- lazy
