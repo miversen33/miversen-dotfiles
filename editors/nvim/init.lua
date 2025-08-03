@@ -344,6 +344,15 @@ local function setup_plugins()
     vim.api.nvim_set_hl(0, "NormalFloat", { fg = "NONE", bg = "NONE" })
 end
 
+local function setup_advanced_keycommands()
+    vim.keymap.set('n', 'ff', require("fzf-lua").files, { desc = "Fzf Fuzzy File Find" })
+    vim.keymap.set('n', 'fr', require("fzf-lua").resume, { desc = "Fzf Resume" })
+    vim.keymap.set('n', 'fg', require("fzf-lua").grep_project, { desc = "Fzf Grep files Find" })
+    vim.keymap.set('v', 'fv', require("fzf-lua").grep_visual, { desc = "Fzf Fuzzy Find WITH Visual Selection" })
+    vim.keymap.set('n', 'fb', require("fzf-lua").buffers, { desc = "Fzf Fuzzy Buffer" })
+    vim.keymap.set('n', 'fd', require("fzf-lua").diagnostics_document, { desc = "Fzf Fuzzy Diagnostics" })
+    vim.keymap.set('n', 'fw', require("fzf-lua").diagnostics_workspace, { desc = "Fzf Fuzzy Workspace Diagnostics" })
+    vim.keymap.set('n', 'fa', require("fzf-lua").lsp_code_actions, { desc = "Fzf Fuzzy Code Actions" })
 end
 
 -- Actually do setup
@@ -353,5 +362,5 @@ check_if_debug()
 if not vim.g.__miversen_debug_config then
     require("scripts")
     setup_plugins()
+    setup_advanced_keycommands()
 end
-
