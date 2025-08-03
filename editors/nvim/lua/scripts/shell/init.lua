@@ -215,6 +215,8 @@ Shell.CONSTANTS = {
 ---         - @param force boolean | Optional
 ---             - Default: false
 ---             - This will stop the shell process. Force will execute a kill -9 on the process.
+---     - close function
+---         - Closes stdin on the current process
 ---     - add_exit_callback function
 ---         - @param callback function
 ---             - Saves the callback for later callback when the handle's underlying process is complete
@@ -232,6 +234,7 @@ function Shell.new_async_handler(type, handler_opts)
         read = nil,
         write = nil,
         stop = nil,
+        close = nil,
         exit_code = nil,
         exit_signal = nil,
         add_exit_callback = nil,
@@ -293,7 +296,7 @@ function Shell.new_async_handler(type, handler_opts)
             table.insert(handle.__exit_callbacks, callback)
         end
     else
-        required_attrs = {"pid", "read", "write", "stop", "add_exit_callback"}
+        required_attrs = { "pid", "read", "write", "close", "stop", "add_exit_callback" }
         for _, attr in ipairs(required_attrs) do
             assert(handler_opts[attr], string.format("No %s attribute provided with async handle!", attr))
             handle[attr] = handler_opts[attr]
@@ -470,6 +473,9 @@ function Shell:_prepare()
         end,
         add_exit_callback = function(callback)
             Shell.add_exit_callback(self, callback)
+        end,
+        close = function()
+            Shell.close(self)
         end
     }
 end
