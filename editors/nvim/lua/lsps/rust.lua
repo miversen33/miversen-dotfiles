@@ -1,15 +1,4 @@
----@class Rust
----@field configured boolean Is rust configured yet?
----@field lsps table<string, Lsp> Lsps associated with rust
-
----@class RustVersion
----@field release string The release version per github api
----@field semantic string The version per the binary.
-
-local M = {}
-
-local RUST_ANALYZER_URL =
-"https://github.com/rust-lang/rust-analyzer/releases/download/${VERSION}/rust-analyzer-x86_64-${OS}"
+-- lsps/rust.lua
 
 local uv = vim.uv or vim.loop
 local jit = require("jit")
@@ -21,15 +10,26 @@ local os_map = {
     Windows = 'pc-windows-msvc.zip'
 }
 
+-- We know its grumpy, the fields are declared below. Shut up
+---@diagnostic disable-next-line: missing-fields
+---@type Lsp
+local rust_analyzer = {
+    url = "https://github.com/rust-lang/rust-analyzer/releases/download/${VERSION}/rust-analyzer-x86_64-${OS}",
+    name = "rust-analyzer",
+    _latest_version = nil,
+    _current_version = nil,
+    enable = false,
+    required = true,
+    config = {
+        cmd = { "$LSP_BIN" },
+        filetypes = { "rust" },
+    }
+}
 
-
--- Declared at the bottom of this script. Deal with it
----@type Rust
-local rust = {}
 
 ---@param ignore boolean? If provided, we will still return the proper path even if we aren't installed
 ---@return string The path to the bianry. May be "MISSING BINARY" if the binary is not able to be located
-function M.rust_analyzer_get_binary_path(ignore)
+function rust_analyzer.get_binary_path(ignore)
     local editor_dir = string.format("%s/miversen", vim.fn.stdpath("data"))
     local editor_lsp_dir = string.format("%s/lsps/rust/rust-analyzer", editor_dir)
     if ignore or vim.fn.isdirectory(editor_lsp_dir) == 1 then
@@ -40,42 +40,42 @@ function M.rust_analyzer_get_binary_path(ignore)
 end
 
 ---@return boolean A true/false on if rust_analyzer is installed
-function M.is_rust_analyzer_installed()
-    return vim.fn.filereadable(M.rust_analyzer_get_binary_path()) == 1
+function rust_analyzer.needs_install()
+    return vim.fn.filereadable(rust_analyzer.get_binary_path()) ~= 1
 end
 
 -- Gets the version of the currently installed rust_analyzer
 -- NOTE: Will return "-1" if it cannot find the lsp
 ---@return string
-function M.get_current_rust_analyzer_version()
-    if not M.is_rust_analyzer_installed() then
-        rust.lsps.rust_analyzer._current_version = nil
+function rust_analyzer.version()
+    if not rust_analyzer.needs_install() then
+        rust_analyzer._current_version = nil
         return "-1"
     end
-    if rust.lsps.rust_analyzer._current_version then
-        return rust.lsps.rust_analyzer._current_version
+    if rust_analyzer._current_version then
+        return rust_analyzer._current_version
     end
-    local editor_lsp = M.rust_analyzer_get_binary_path()
+    local editor_lsp = rust_analyzer.get_binary_path()
 
     local rust_analyzer_current_version = shell:new({ editor_lsp, "--version" }):run().stdout
     if not rust_analyzer_current_version or #rust_analyzer_current_version < 1 then
-        rust.lsps.rust_analyzer._current_version = nil
+        rust_analyzer._current_version = nil
         return "-1"
     end
     rust_analyzer_current_version = rust_analyzer_current_version[1]:gsub("rust-analyzer ", "")
     if not rust_analyzer_current_version then
-        rust.lsps.rust_analyzer._current_version = nil
+        rust_analyzer._current_version = nil
         return "-1"
     else
-        rust.lsps.rust_analyzer._current_version = rust_analyzer_current_version
+        rust_analyzer._current_version = rust_analyzer_current_version
         return rust_analyzer_current_version
     end
 end
 
 ---@param callback fun(version: RustVersion?)
-function M._get_latest_rust_analyzer_version(callback)
-    if rust.lsps.rust_analyzer._latest_version then
-        callback(rust.lsps.rust_analyzer._latest_version)
+function get_latest_rust_analyzer_verion(callback)
+    if rust_analyzer._latest_version then
+        callback(rust_analyzer._latest_version)
         return
     end
 
@@ -84,7 +84,7 @@ function M._get_latest_rust_analyzer_version(callback)
     ---@param result Shell.Serial
     local complete = function(result)
         if result.exit_code ~= 0 then
-            rust.lsps.rust_analyzer._latest_version = nil
+            rust_analyzer._latest_version = nil
             -- Complain
             callback({
                 release = "-1",
@@ -94,7 +94,7 @@ function M._get_latest_rust_analyzer_version(callback)
         end
         local output = vim.json.decode(result.stdout)
         if not output or not next(output) then
-            rust.lsps.rust_analyzer._latest_version = nil
+            rust_analyzer._latest_version = nil
             callback({
                 release = "-1",
                 semantic = "-1"
@@ -104,18 +104,18 @@ function M._get_latest_rust_analyzer_version(callback)
         local semantic_version = output.body:match("Release:.-%(`v(%d+%.%d+%.%d+)`%)")
         local release_version = output.tag_name
         if not semantic_version or not release_version then
-            rust.lsps.rust_analyzer._latest_version = nil
+            rust_analyzer._latest_version = nil
             callback({
                 release = "-1",
                 semantic = "-1"
             })
             return
         end
-        rust.lsps.rust_analyzer._latest_version = {
+        rust_analyzer._latest_version = {
             release = release_version,
             semantic = semantic_version
         }
-        callback(rust.lsps.rust_analyzer._latest_version)
+        callback(rust_analyzer._latest_version)
         return
     end
     local handle = shell:new(
@@ -135,18 +135,18 @@ end
 
 -- Gets the most recent version of rust_analyzer from github
 ---@param callback fun(version: string?)
-function M.get_latest_rust_analyzer_version(callback)
+function rust_analyzer.latest_version(callback)
     ---@param version RustVersion?
     local complete = function(version)
         callback(version.release)
     end
-    M._get_latest_rust_analyzer_version(complete)
+    get_latest_rust_analyzer_verion(complete)
 end
 
 -- Checks to see if we need an update
 ---@param callback fun(needs_update: boolean?)
-function M.rust_analyzer_needs_update(callback)
-    local current_version = M.get_current_rust_analyzer_version()
+function rust_analyzer.needs_update(callback)
+    local current_version = rust_analyzer.version()
     ---@param latest_version string?
     local complete = function(latest_version)
         if not latest_version then
@@ -156,18 +156,18 @@ function M.rust_analyzer_needs_update(callback)
         callback(latest_version > current_version)
         return
     end
-    M.get_latest_rust_analyzer_version(complete)
+    rust_analyzer.latest_version(complete)
 end
 
 -- Installs Rust Analyzer
 ---@param success_callback fun() The function to call when install completes successfully
 ---@param error_callback fun(error: string, exit_code: number) The function to call when install fails
 ---@param opts LspInstallOpts? Options to use when installing
-function M.install_rust_analyzer(success_callback, error_callback, opts)
+function rust_analyzer.install(success_callback, error_callback, opts)
     opts = opts or {}
     local force = opts.force or false
-    local version = opts.version or M._get_latest_rust_analyzer_version().release
-    local editor_lsp = M.rust_analyzer_get_binary_path(true)
+    local version = opts.version
+    local editor_lsp = rust_analyzer.get_binary_path(true)
     local editor_lsp_dir = vim.fs.dirname(editor_lsp)
     local temp_dir = string.format("%s/neovim_miversen_lsp_download-rust-analyzer-%s", uv.os_tmpdir(),
         os.date("%Y%m%d%H%M%S"))
@@ -185,7 +185,7 @@ function M.install_rust_analyzer(success_callback, error_callback, opts)
     vim.fs.mkdir(temp_dir, 'p')
     vim.fs.mkdir(editor_lsp_dir, 'p')
 
-    local url = string.gsub(RUST_ANALYZER_URL, '${VERSION}', version)
+    local url = string.gsub(rust_analyzer.url, '${VERSION}', version)
     url = string.gsub(url, '${OS}', os_map[jit.os])
     local output_file = string.format("%s/rust-analyzer.gz", temp_dir)
     vim.notify(string.format("Downloading rust-analyzer from %s", url), vim.log.levels.DEBUG, {})
@@ -241,50 +241,6 @@ function M.install_rust_analyzer(success_callback, error_callback, opts)
     download_lsp()
 end
 
------------------------------------------------------------------------------------------------------
---============================================ INIT ===============================================--
------------------------------------------------------------------------------------------------------
-
--- Check if the lua language server is in our path
-local editor_config = vim.g._config
-if not editor_config.languages then
-    editor_config.languages = {}
-end
-if not editor_config.languages.rust then
-    ---@type Rust
-    editor_config.languages.rust = {
-        configured = false,
-        ---@type Lsp[]
-        lsps = {
-            ---@type Lsp
-            rust_analyzer = {
-                name = "rust-analyzer",
-                enable = false,
-                required = true,
-                needs_update = M.rust_analyzer_needs_update,
-                needs_install = function() return not M.is_rust_analyzer_installed() end,
-                version = M.get_current_rust_analyzer_version,
-                install = function(s, e, opts) M.install_rust_analyzer(s, e, opts) end,
-                get_binary_path = M.rust_analyzer_get_binary_path,
-                latest_version = M.get_latest_rust_analyzer_version,
-                config = {
-                    cmd = { "$LSP_BIN" }
-                }
-            }
-        }
-    }
-end
-
-rust = editor_config.languages.rust
-if rust.configured then
-    -- If we have already configured lua, there is nothing else for us to do
-    return
-end
-
-local lsp = require('scripts.lsp')
-for _, rust_lsp in pairs(rust.lsps) do
-    lsp.register("rust", rust_lsp)
-end
-
-rust.configured = true
-vim.g._config = editor_config
+return {
+    rust_analyzer
+}

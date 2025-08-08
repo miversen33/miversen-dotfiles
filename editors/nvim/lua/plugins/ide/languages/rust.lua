@@ -9,7 +9,7 @@ return {
                 auto_attach = true,
                 -- We should probably deal with the fact that the binary may not be installed yet
                 cmd = function()
-                    local binary_path = vim.g._config.languages.rust.lsps.rust_analyzer.get_binary_path()
+                    local binary_path = require("lsps.rust")[1].get_binary_path()
                     if not binary_path or binary_path == 'MISSING BINARY' then
                         vim.notify("Unable to locate rust-analyzer binary for rustaceanvim", vim.log.levels.WARN, {})
                     end
