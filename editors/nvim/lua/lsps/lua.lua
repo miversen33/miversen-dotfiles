@@ -3,8 +3,6 @@
 ---@field configured boolean Is lua configured yet?
 ---@field lsps table<string, Lsp> Lsps associated with lua
 
-local M = {}
-
 local uv = vim.loop or vim.uv
 local jit = require("jit")
 local architecture = jit.arch
