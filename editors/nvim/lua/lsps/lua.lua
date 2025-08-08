@@ -1,15 +1,11 @@
+-- lsps/lua.lua
 ---@class LuaLsp
 ---@field configured boolean Is lua configured yet?
 ---@field lsps table<string, Lsp> Lsps associated with lua
 
 local M = {}
 
-local LUA_LSP_URL =
-"https://github.com/LuaLS/lua-language-server/releases/download/${VERSION}/lua-language-server-${VERSION}-${OS}-${ARCH}.tar.gz"
-local EMMY_LSP_URL =
-"https://github.com/EmmyLuaLs/emmylua-analyzer-rust/releases/download/${VERSION}/emmylua_ls-${OS}-${ARCH}.tar.gz"
-
-local uv = vim.uv or vim.loop
+local uv = vim.loop or vim.uv
 local jit = require("jit")
 local architecture = jit.arch
 local shell = require("scripts.shell")
@@ -24,11 +20,58 @@ local os_map = {
 ---@type LuaLsp
 local lua = {}
 
+-- We know its grumpy, the fields are declared below. Shut up
+---@diagnostic disable-next-line: missing-fields
+---@type Lsp
+local emmy = {
+    url =
+    "https://github.com/EmmyLuaLs/emmylua-analyzer-rust/releases/download/${VERSION}/emmylua_ls-${OS}-${ARCH}.tar.gz",
+    name = "emmylua_ls",
+    enable = true,
+    _latest_version = nil,
+    _current_version = nil,
+    pin = "0.10.0",
+    ---@type vim.lsp.Config
+    config = {
+        cmd = { "$LSP_BIN", "--communication", "stdio" },
+        filetypes = { "lua" },
+        root_markers = { { ".luarc.json", ".luarc.jsonc", ".emmyrc.json" }, ".git" },
+        -- We should _only_ do this if we are editing a neovim plugin or our neovim configuration...?
+        cmd_env = { EMMYLUALS_CONFIG = string.format("%s/.emmyrc.json", vim.fn.stdpath('config')) }
+    },
+}
+
+-- We know its grumpy, the fields are declared below. Shut up
+---@diagnostic disable-next-line: missing-fields
+---@type Lsp
+local luals = {
+    url =
+    "https://github.com/LuaLS/lua-language-server/releases/download/${VERSION}/lua-language-server-${VERSION}-${OS}-${ARCH}.tar.gz",
+    name = "lua_ls",
+    enable = false,
+    _latest_version = nil,
+    _current_version = nil,
+    pin = "3.15.0",
+    ---@type vim.lsp.Config
+    config = {
+        cmd = { "$LSP_BIN" },
+        filetypes = { "lua" },
+        root_markers = { { ".luarc.json", ".luarc.jsonc", }, ".git" },
+        settings = {
+            Lua = {
+                runtime = {
+                    version = "LuaJIT"
+                }
+            }
+        },
+    },
+}
+
 ---------- Emmy LS
 
 ---@param ignore boolean? If provided, we will still return the proper path even if we aren't installed
 ---@return string The path to the binary. May be "MISSING BINARY" if the binary is not able to be located
-function M.emmylua_ls_get_binary_path(ignore)
+function emmy.get_binary_path(ignore)
     local editor_dir = string.format("%s/miversen", vim.fn.stdpath("data"))
     local editor_lsp_dir = string.format("%s/lsps/lua/emmylua", editor_dir)
     if ignore or vim.fn.isdirectory(editor_lsp_dir) == 1 then
@@ -38,19 +81,19 @@ function M.emmylua_ls_get_binary_path(ignore)
     end
 end
 
-function M.is_emmylua_ls_installed()
-    return vim.fn.filereadable(M.emmylua_ls_get_binary_path()) == 1
+function emmy.needs_install()
+    return vim.fn.filereadable(emmy.get_binary_path()) ~= 1
 end
 
 -- Installs EmmyLuaLS
 ---@param success_callback fun() The function to call when install completes successfully
 ---@param error_callback fun(error: string, exit_code: number) The function to call when install fails
 ---@param opts LspInstallOpts? Options to use when installing
-function M.install_emmyls(success_callback, error_callback, opts)
+function emmy.install(success_callback, error_callback, opts)
     opts = opts or {}
     local force = opts.force or false
-    local version = opts.version or M.get_current_emmylua_ls_version()
-    local editor_lsp = M.emmylua_ls_get_binary_path(true)
+    local version = opts.version or emmy.version()
+    local editor_lsp = emmy.get_binary_path(true)
     local editor_lsp_dir = vim.fs.dirname(editor_lsp)
     local temp_dir = string.format("%s/neovim_miversen_lsp_download-emmylua-%s", uv.os_tmpdir(),
         os.date("%Y%m%d%H%M%S"))
@@ -68,7 +111,7 @@ function M.install_emmyls(success_callback, error_callback, opts)
     vim.fs.mkdir(temp_dir, 'p')
     vim.fs.mkdir(editor_lsp_dir, 'p')
 
-    local url = string.gsub(EMMY_LSP_URL, '${VERSION}', version)
+    local url = string.gsub(emmy.url, '${VERSION}', version)
     url = string.gsub(url, '${OS}', os_map[jit.os])
     url = string.gsub(url, '${ARCH}', architecture)
     local output_file = string.format("%s/emmylua-ls.tar.gz", temp_dir)
@@ -112,38 +155,38 @@ end
 --Checks the current lua ls version and returns it
 --NOTE: Will return -1 if it cannot find the lsp
 ---@return string
-function M.get_current_emmylua_ls_version()
-    if not M.is_emmylua_ls_installed() then
-        lua.lsps.emmylua_ls._current_version = nil
+function emmy.version()
+    if not emmy.needs_install() then
+        emmy._current_version = nil
         return "-1"
     end
-    if lua.lsps.emmylua_ls._current_version then
+    if emmy._current_version then
         -- Lets used the cached version
-        return lua.lsps.emmylua_ls._current_version
+        return emmy._current_version
     end
-    local editor_lsp = M.emmylua_ls_get_binary_path()
+    local editor_lsp = emmy.get_binary_path()
 
     local emmy_ls_current_version = shell:new({ editor_lsp, "--version" }):run().stdout
     if not emmy_ls_current_version or #emmy_ls_current_version < 1 then
-        lua.lsps.emmylua_ls._current_version = nil
+        emmy._current_version = nil
         return "-1"
     end
     emmy_ls_current_version = emmy_ls_current_version[1]:gsub("emmylua_ls ", "")
     if not emmy_ls_current_version then
-        lua.lsps.emmylua_ls._current_version = nil
+        emmy._current_version = nil
         return "-1"
     else
         -- Lets cache the version so we can quickly pull it again without needing to shell out
-        lua.lsps.emmylua_ls._current_version = emmy_ls_current_version
+        emmy._current_version = emmy_ls_current_version
         return emmy_ls_current_version
     end
 end
 
 ---@param callback fun(version: string?)
-function M.get_latest_emmylua_ls_version(callback)
-    if lua.lsps.emmylua_ls._latest_version then
+function emmy.latest_version(callback)
+    if emmy._latest_version then
         -- Lets use the cached version
-        callback(lua.lsps.emmylua_ls._latest_version)
+        callback(emmy._latest_version)
         return
     end
     local emmy_ls_api = "https://api.github.com/repos/EmmyLuaLs/emmylua-analyzer-rust/releases/latest"
@@ -151,7 +194,7 @@ function M.get_latest_emmylua_ls_version(callback)
     local complete = function(result)
         local emmy_ls_latest_version
         if result.exit_code ~= 0 then
-            lua.lsps.emmylua_ls._latest_version = nil
+            emmy._latest_version = nil
             callback()
             -- Complain?
             return
@@ -167,7 +210,7 @@ function M.get_latest_emmylua_ls_version(callback)
                 emmy_ls_latest_version = version
             end
         end
-        lua.lsps.emmylua_ls._latest_version = emmy_ls_latest_version
+        emmy._latest_version = emmy_ls_latest_version
         callback(emmy_ls_latest_version)
     end
     local handle = shell:new({ "curl", "-fsSL", emmy_ls_api },
@@ -180,13 +223,13 @@ function M.get_latest_emmylua_ls_version(callback)
 end
 
 ---@param callback fun(needs_update: boolean)
-function M.does_emmylua_ls_need_update(callback)
+function emmy.needs_update(callback)
     -- If we aren't installed, we can't update
-    if not M.is_emmylua_ls_installed() then
+    if not emmy.needs_install() then
         callback(false)
         return
     end
-    local current_version = M.get_current_emmylua_ls_version()
+    local current_version = emmy.version()
     ---@param latest_version string?
     local complete = function(latest_version)
         if not latest_version then
@@ -195,7 +238,7 @@ function M.does_emmylua_ls_need_update(callback)
             callback(current_version < latest_version)
         end
     end
-    M.get_latest_emmylua_ls_version(complete)
+    emmy.latest_version(complete)
     return
 end
 
@@ -205,11 +248,11 @@ end
 ---@param success_callback fun() The function to call when install completes successfully
 ---@param error_callback fun(error: string, exit_code: number) The function to call when install fails
 ---@param opts LspInstallOpts? Options to use when installing lua_ls
-function M.install_luals(success_callback, error_callback, opts)
+function luals.install(success_callback, error_callback, opts)
     opts = opts or {}
     local force = opts.force or false
-    local version = opts.version or M.get_latest_lua_ls_version()
-    local editor_lsp = M.lua_ls_get_binary_path(true)
+    local version = opts.version or luals.latest_version()
+    local editor_lsp = luals.get_binary_path(true)
     local editor_lsp_dir = vim.fs.dirname(vim.fs.dirname(editor_lsp))
     local temp_dir = string.format("%s/neovim_miversen_lsp_download-lua-%s", uv.os_tmpdir(),
         os.date("%Y%m%d%H%M%S"))
@@ -227,7 +270,7 @@ function M.install_luals(success_callback, error_callback, opts)
     vim.fs.mkdir(temp_dir, 'p')
     vim.fs.mkdir(editor_lsp_dir, 'p')
 
-    local url = string.gsub(LUA_LSP_URL, '${VERSION}', version)
+    local url = string.gsub(luals.url, '${VERSION}', version)
     url = string.gsub(url, '${OS}', os_map[jit.os])
     url = string.gsub(url, '${ARCH}', architecture)
     local output_file = string.format("%s/lua-language-server.tar.gz", temp_dir)
@@ -269,7 +312,7 @@ function M.install_luals(success_callback, error_callback, opts)
 end
 
 ---@param ignore boolean If provided, we will still return the proper path even if we aren't installed
-function M.lua_ls_get_binary_path(ignore)
+function luals.get_binary_path(ignore)
     local editor_dir = string.format("%s/miversen", vim.fn.stdpath("data"))
     local editor_lsp_dir = string.format("%s/lsps/lua/luals", editor_dir)
     if ignore or vim.fn.isdirectory(editor_lsp_dir) == 1 then
@@ -279,44 +322,44 @@ function M.lua_ls_get_binary_path(ignore)
     end
 end
 
-function M.is_lua_ls_installed()
-    return vim.fn.filereadable(M.lua_ls_get_binary_path()) == 1
+function luals.needs_install()
+    return vim.fn.filereadable(luals.get_binary_path()) ~= 1
 end
 
 --Checks the current lua ls version and returns it
 --NOTE: Will return -1 if it cannot find the lsp
 ---@return string
-function M.get_current_lua_ls_version()
-    if not M.is_lua_ls_installed() then
-        lua.lsps.lua_ls._current_version = nil
+function luals.version()
+    if not luals.needs_install() then
+        luals._current_version = nil
         return "-1"
     end
-    if lua.lsps.lua_ls._current_version then
+    if luals._current_version then
         -- Lets used the cached version
-        return lua.lsps.lua_ls._current_version
+        return luals._current_version
     end
-    local editor_lsp = M.lua_ls_get_binary_path()
+    local editor_lsp = luals.get_binary_path()
 
     local lua_ls_current_version = shell:new({ editor_lsp, "--version" }):run().stdout
     if not lua_ls_current_version or #lua_ls_current_version < 1 then
-        lua.lsps.lua_ls._current_version = nil
+        luals._current_version = nil
         return "-1"
     end
     lua_ls_current_version = lua_ls_current_version[1]
     if not lua_ls_current_version then
-        lua.lsps.lua_ls._current_version = nil
+        luals._current_version = nil
         return "-1"
     else
         -- Lets cache the version so we can quickly pull it again without needing to shell out
-        lua.lsps.lua_ls._current_version = lua_ls_current_version
+        luals._current_version = lua_ls_current_version
         return lua_ls_current_version
     end
 end
 
 ---@param callback fun(version: string?)
-function M.get_latest_lua_ls_version(callback)
-    if lua.lsps.lua_ls._latest_version then
-        callback(lua.lsps.lua_ls._latest_version)
+function luals.latest_version(callback)
+    if luals._latest_version then
+        callback(luals._latest_version)
         return
     end
     local lua_ls_api = "https://api.github.com/repos/LuaLS/lua-language-server/releases/latest"
@@ -324,7 +367,7 @@ function M.get_latest_lua_ls_version(callback)
     local complete = function(result)
         local lua_ls_latest_version
         if result.exit_code ~= 0 then
-            lua.lsps.lua_ls._latest_version = nil
+            luals._latest_version = nil
             -- Complain?
             callback()
             return
@@ -340,7 +383,7 @@ function M.get_latest_lua_ls_version(callback)
                 lua_ls_latest_version = version
             end
         end
-        lua.lsps.lua_ls._latest_version = lua_ls_latest_version
+        luals._latest_version = lua_ls_latest_version
         callback(lua_ls_latest_version)
     end
     local handle = shell:new({ "curl", "-fsSL", lua_ls_api },
@@ -352,13 +395,13 @@ function M.get_latest_lua_ls_version(callback)
 end
 
 ---@param callback fun(needs_update: boolean)
-function M.does_lua_ls_need_update(callback)
+function luals.needs_update(callback)
     -- If we aren't installed, we can't update
-    if not M.is_lua_ls_installed() then
+    if not luals.needs_install() then
         callback(false)
         return
     end
-    local current_version = M.get_current_lua_ls_version()
+    local current_version = luals.version()
     ---@param latest_version string?
     local complete = function(latest_version)
         if not latest_version then
@@ -367,82 +410,10 @@ function M.does_lua_ls_need_update(callback)
             callback(current_version < latest_version)
         end
     end
-    M.get_latest_lua_ls_version(complete)
+    luals.latest_version(complete)
 end
 
------------------------------------------------------------------------------------------------------
---============================================ INIT ===============================================--
------------------------------------------------------------------------------------------------------
-
--- Check if the lua language server is in our path
-local editor_config = vim.g._config
-if not editor_config.languages then
-    editor_config.languages = {}
-end
-if not editor_config.languages.lua then
-    ---@type LuaLsp
-    editor_config.languages.lua = {
-        configured = false,
-        ---@type Lsp[]
-        lsps = {
-            lua_ls = {
-                name = "lua_ls",
-                enable = false,
-                pin = "3.15.0",
-                version = M.get_current_lua_ls_version,
-                latest_version = M.get_latest_lua_ls_version,
-                ---@type vim.lsp.Config
-                config = {
-                    cmd = { "$LSP_BIN" },
-                    filetypes = { "lua" },
-                    root_markers = { { ".luarc.json", ".luarc.jsonc", }, ".git" },
-                    settings = {
-                        Lua = {
-                            runtime = {
-                                version = "LuaJIT"
-                            }
-                        }
-                    },
-                },
-                get_binary_path = M.lua_ls_get_binary_path,
-                install = function(s, e, opts) M.install_luals(s, e, opts) end,
-                needs_install = function() return not M.is_lua_ls_installed() end,
-                needs_update = M.does_lua_ls_need_update
-            },
-            ---@type Lsp
-            emmylua_ls = {
-                name = "emmylua_ls",
-                enable = true,
-                pin = "0.10.0",
-                version = M.get_current_emmylua_ls_version,
-                latest_version = M.get_latest_emmylua_ls_version,
-                ---@type vim.lsp.Config
-                config = {
-                    cmd = { "$LSP_BIN", "--communication", "stdio" },
-                    filetypes = { "lua" },
-                    root_markers = { { ".luarc.json", ".luarc.jsonc", ".emmyrc.json" }, ".git" },
-                    -- We should _only_ do this if we are editing a neovim plugin or our neovim configuration...?
-                    cmd_env = { EMMYLUALS_CONFIG = string.format("%s/.emmyrc.json", vim.fn.stdpath('config')) }
-                },
-                get_binary_path = M.emmylua_ls_get_binary_path,
-                install = function(s, e, opts) M.install_emmyls(s, e, opts) end,
-                needs_install = function() return not M.is_emmylua_ls_installed() end,
-                needs_update = M.does_emmylua_ls_need_update
-            }
-        }
-    }
-end
-
-lua = editor_config.languages.lua
-if lua.configured then
-    -- If we have already configured lua, there is nothing else for us to do
-    return
-end
-
-local lsp = require('scripts.lsp')
-for _, lua_lsp in pairs(lua.lsps) do
-    lsp.register("lua", lua_lsp)
-end
-
-lua.configured = true
-vim.g._config = editor_config
+return {
+    emmy,
+    luals
+}

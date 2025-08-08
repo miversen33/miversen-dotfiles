@@ -4,6 +4,8 @@
 
 ---@class Lsp
 ---@field name string The name of the lsp
+---@field dependencies string[]? A list of lsp/tools that this lsp is dependent on. Note, the name of the lsp/tool _must_ match the name of a registered (or soon to be registered) lsp/tool.
+---@field url string? The url to download the lsp from
 ---@field enable boolean? Should this lsp be enabled? Default is true
 ---@field required boolean? If provided, should we install this lsp? Default is false. Can be used with enable=false to ensure installation but not enablement of lsp. Useful if your lsp is managed by plugins
 ---@field pin string? If provided, we will tell the installer to only use this version and prevent update checks
@@ -109,6 +111,7 @@ function lsp.register(languages, new_lsp)
     if not lsp.lsps[new_lsp.name] then
         lsp.lsps[new_lsp.name] = new_lsp
     end
+
     for _, in_language in ipairs(languages) do
         if not lsp.language_map[in_language] then
             lsp.language_map[in_language] = {}
@@ -127,6 +130,7 @@ function lsp.register(languages, new_lsp)
             table.insert(lsp_details.languages, in_language)
         end
     end
+
     local function complete()
         vim.schedule(function()
             save_lsp_details()
