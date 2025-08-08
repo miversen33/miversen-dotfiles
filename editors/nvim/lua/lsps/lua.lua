@@ -1,7 +1,4 @@
 -- lsps/lua.lua
----@class LuaLsp
----@field configured boolean Is lua configured yet?
----@field lsps table<string, Lsp> Lsps associated with lua
 
 local uv = vim.loop or vim.uv
 local jit = require("jit")
@@ -13,10 +10,6 @@ local os_map = {
     darwin = 'darwin',
     Windows = 'win32'
 }
-
--- Declared at the bottom of this script. Deal with it
----@type LuaLsp
-local lua = {}
 
 -- We know its grumpy, the fields are declared below. Shut up
 ---@diagnostic disable-next-line: missing-fields
