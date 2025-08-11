@@ -287,7 +287,7 @@ function lsp.activate(target_lsp)
     end
     local replacement_map = {
         ["$LSP_BIN"] = target_lsp.get_binary_path(),
-        ["$VENV_BIN"] = target_lsp.get_editor_venv and target_lsp.get_editor_venv() or "NO VENV"
+        ["$VENV_PATH"] = target_lsp.get_editor_venv and target_lsp.get_editor_venv() or "NO VENV"
     }
     vim.lsp.config[target_lsp.name] = substitute_vars(target_lsp.config, replacement_map)
     if target_lsp.enable ~= false then
