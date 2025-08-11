@@ -1,6 +1,4 @@
----@class PythonLsp
----@field configured boolean Is python configured yet?
----@field lsps table<string, Lsp> Lsps associated python
+-- lsps/python.lua
 
 ---@class PythonPackageManager
 ---@field is_available fun(): boolean A function that is called to check if this package manager is available
@@ -17,6 +15,14 @@ local project_root_markers = {
 local KNOWN_TOOLS = {
     "basedpyright", "pyright", "ruff", "ty", "pyrefly", "isort", "pylint", "flake8", "black", "autopep8", "autoimport",
     "rope" }
+
+local KNOWN_LSPS = {
+    "pyright", "basedpyright", "pyrefly"
+}
+
+local KNOWN_FORMATTERS = {
+    "ruff"
+}
 
 local M = {}
 
@@ -154,17 +160,80 @@ local PACKAGE_MANAGERS = {
     }
 }
 
----@type PythonLsp
-local python = {}
+local pyrefly = {
+    name = "pyrefly",
+    ---@type vim.lsp.Config
+    config = {
+        cmd = { "$LSP_BIN", "lsp" },
+        root_markers = project_root_markers,
+        filetypes = { "python" },
+        settings = {},
+    },
+    _latest_version = nil,
+    _current_version = nil,
+    get_editor_venv = M._get_editor_venv,
+}
+
+local ruff = {
+    name = "ruff",
+    ---@type vim.lsp.Config
+    config = {
+        cmd = { "$LSP_BIN", "server" },
+        root_markers = project_root_markers,
+        filetypes = { "python" },
+        settings = {},
+    },
+    _latest_version = nil,
+    _current_version = nil,
+    get_editor_venv = M._get_editor_venv,
+}
+
+local basedpyright = {
+    name = "basedpyright",
+    enable = false,
+    ---@type vim.lsp.Config
+    config = {
+        cmd = { "$LSP_BIN-langserver", "--stdio" },
+        filetypes = { "python" },
+        settings = {
+            basedpyright = {
+                analysis = {
+                    typeCheckingMode = "standard",
+                    diagnosticSeverityOverrides = {
+                        reportAssignmentType = false,
+                        reportArgumentType = "information",
+                        reportUnusedFunction = "information",
+                        reportOptionalMemberAccess = "information",
+                        reportRedeclaration = "information",
+                        reportImplicitOverride = false,
+                        reportAny = false
+                    }
+                },
+                venvPath = "$VENV_PATH"
+            }
+        },
+    },
+    _latest_version = nil,
+    _current_version = nil,
+    get_editor_venv = M._get_editor_venv,
+}
+
+local ty = {
+    name = "ty",
+    enable = false,
+    ---@type vim.lsp.Config
+    config = {},
+    _latest_version = nil,
+    _current_version = nil,
+    get_editor_venv = M._get_editor_venv,
+}
 
 -- Gets all known lsps/tools from the provided venv
 ---@param venv string The absolute path to the venv to search
 ---@return string[]
 function M._get_venv_lsps(venv)
-    -- Lets see if there is a known venv in here
-    local venv_root = vim.fs.safe_root(0, venv)
-    if not venv_root then
-        -- We found a venv, lets use that
+    if not venv then
+        -- We didn't get a venv
         return {}
     end
     local tools = {}
@@ -215,7 +284,7 @@ end
 ---@param binaries string|string[] The binary to install
 ---@param success_callback fun() The function to call on successful insatllation
 ---@param error_callback fun(error: string, exit_code: number?) The function to call on error
-function M._install_binaries_in_editor_venv(binaries, success_callback, error_callback)
+function install_binaries_in_editor_venv(binaries, success_callback, error_callback)
     ---@type PythonPackageManager
     local pm
     for _, package_manager in pairs(PACKAGE_MANAGERS) do
@@ -253,14 +322,16 @@ function M._get_project_venv()
     local known_venvs = {
         'venv', '.venv'
     }
+    local buffer_name = vim.api.nvim_buf_get_name(0)
     -- Is there a way for us to read the venv from pyproject.toml?
-    local project_root = vim.fs.root(0, project_root_markers)
+    local project_root = vim.fs.safe_root(buffer_name, project_root_markers)
     if project_root then
         -- Lets see if there is a known venv in here
-        local venv_root = vim.fs.root(0, known_venvs)
-        if venv_root then
-            -- We found a venv, lets use that
-            return venv_root
+        for _, known_venv in ipairs(known_venvs) do
+            venv = string.format("%s/%s", project_root, known_venv)
+            if vim.fn.isdirectory(venv) == 1 then
+                return venv
+            end
         end
     end
     return
@@ -286,63 +357,63 @@ end
 
 ---@param ignore boolean? If provided, we will still return the proper path even if we aren't installed
 ---@return string The path to the binary. May be "MISSING BINARY" if the binary is not able to be located
-function M.basedpyright_get_path(ignore)
+function basedpyright.get_binary_path(ignore)
     return _get_binary_path("basedpyright", ignore)
 end
 
 ---@param ignore boolean? If provided, we will still return the proper path even if we aren't installed
 ---@return string The path to the binary. May be "MISSING BINARY" if the binary is not able to be located
-function M.pyrefly_get_path(ignore)
+function pyrefly.get_binary_path(ignore)
     return _get_binary_path("pyrefly", ignore)
 end
 
 ---@param ignore boolean? If provided, we will still return the proper path even if we aren't installed
 ---@return string The path to the binary. May be "MISSING BINARY" if the binary is not able to be located
-function M.ruff_get_path(ignore)
+function ruff.get_binary_path(ignore)
     return _get_binary_path("ruff", ignore)
 end
 
 ---@param ignore boolean? If provided, we will still return the proper path even if we aren't installed
 ---@return string The path to the binary. May be "MISSING BINARY" if the binary is not able to be located
-function M.ty_get_path(ignore)
+function ty.get_binary_path(ignore)
     return _get_binary_path("ty", ignore)
 end
 
 ---@return boolean
-function M.is_basedpyright_installed()
-    return vim.fn.filereadable(M.basedpyright_get_path()) == 1
+function basedpyright.needs_install()
+    return vim.fn.filereadable(basedpyright.get_binary_path()) ~= 1
 end
 
 ---@return boolean
-function M.is_pyrefly_installed()
-    return vim.fn.filereadable(M.pyrefly_get_path()) == 1
+function pyrefly.needs_install()
+    return vim.fn.filereadable(pyrefly.get_binary_path()) ~= 1
 end
 
 ---@return boolean
-function M.is_ruff_installed()
-    return vim.fn.filereadable(M.ruff_get_path()) == 1
+function ruff.needs_install()
+    return vim.fn.filereadable(ruff.get_binary_path()) ~= 1
 end
 
 ---@return boolean
-function M.is_ty_installed()
-    return vim.fn.filereadable(M.ty_get_path()) == 1
+function ty.needs_install()
+    return vim.fn.filereadable(ty.get_binary_path()) ~= 1
 end
 
 -- Checks the current basedpyright version and returns it
 ---@return string
-function M.get_basedpyright_version()
-    if not M.is_basedpyright_installed() then
-        python.lsps.basedpyright._current_version = nil
+function basedpyright.version()
+    if not basedpyright.needs_install() then
+        basedpyright._current_version = nil
         return "-1"
     end
-    if python.lsps.basedpyright._current_version then
-        return python.lsps.basedpyright._current_version
+    if basedpyright._current_version then
+        return basedpyright._current_version
     end
-    local editor_lsp = M.basedpyright_get_path()
+    local editor_lsp = basedpyright.get_binary_path()
 
     local basedpyright_current_version = shell:new({ editor_lsp, "--version" }):run().stdout
     if not basedpyright_current_version or #basedpyright_current_version < 1 then
-        python.lsps.basedpyright._current_version = nil
+        basedpyright._current_version = nil
         return "-1"
     end
     basedpyright_current_version = string.gsub(basedpyright_current_version[1], 'basedpyright ', '')
@@ -351,19 +422,19 @@ end
 
 -- Checks the current pyrefly version and returns it
 ---@return string
-function M.get_pyrefly_version()
-    if not M.is_pyrefly_installed() then
-        python.lsps.pyrefly._current_version = nil
+function pyrefly.version()
+    if not pyrefly.needs_install() then
+        pyrefly._current_version = nil
         return "-1"
     end
-    if python.lsps.pyrefly._current_version then
-        return python.lsps.pyrefly._current_version
+    if pyrefly._current_version then
+        return pyrefly._current_version
     end
-    local editor_lsp = M.basedpyright_get_path()
+    local editor_lsp = pyrefly.get_binary_path()
 
     local current_version = shell:new({ editor_lsp, "--version" }):run().stdout
     if not current_version or #current_version < 1 then
-        python.lsps.pyrefly._current_version = nil
+        pyrefly._current_version = nil
         return "-1"
     end
     current_version = string.gsub(current_version[1], 'pyrefly ', '')
@@ -372,19 +443,19 @@ end
 
 -- Checks the current ty version and returns it
 ---@return string
-function M.get_ty_version()
-    if not M.is_ty_installed() then
-        python.lsps.ty._current_version = nil
+function ty.version()
+    if not ty.needs_install() then
+        ty._current_version = nil
         return "-1"
     end
-    if python.lsps.ty._current_version then
-        return python.lsps.ty._current_version
+    if ty._current_version then
+        return ty._current_version
     end
-    local editor_lsp = M.ty_get_path()
+    local editor_lsp = ty.get_binary_path()
 
     local ty_current_version = shell:new({ editor_lsp, "--version" }):run().stdout
     if not ty_current_version or #ty_current_version < 1 then
-        python.lsps.ty._current_version = nil
+        ty._current_version = nil
         return "-1"
     end
     ty_current_version = string.gsub(ty_current_version[1], 'ty ', '')
@@ -393,19 +464,19 @@ end
 
 -- Checks the current ruff version and returns it
 ---@return string
-function M.get_ruff_version()
-    if not M.is_ruff_installed() then
-        python.lsps.ruff._current_version = nil
+function ruff.version()
+    if not ruff.needs_install() then
+        ruff._current_version = nil
         return "-1"
     end
-    if python.lsps.ruff._current_version then
-        return python.lsps.ruff._current_version
+    if ruff._current_version then
+        return ruff._current_version
     end
-    local editor_lsp = M.ruff_get_path()
+    local editor_lsp = ruff.get_binary_path()
 
     local ruff_current_version = shell:new({ editor_lsp, "--version" }):run().stdout
     if not ruff_current_version or #ruff_current_version < 1 then
-        python.lsps.ruff._current_version = nil
+        ruff._current_version = nil
         return "-1"
     end
     ruff_current_version = string.gsub(ruff_current_version[1], 'ruff ', '')
@@ -414,31 +485,31 @@ end
 
 -- Gets the most current version of basedpyright
 ---@param callback fun(version: string?)
-function M.get_basedpyright_latest_version(callback)
+function basedpyright.latest_version(callback)
     local basedpyright_api = "https://api.github.com/repos/DetachHead/basedpyright/releases/latest"
     ---@param result Shell.Serial
     local complete = function(result)
         if result.exit_code ~= 0 then
-            python.lsps.basedpyright._latest_version = nil
+            basedpyright._latest_version = nil
             callback()
             return
         end
         local output = vim.json.decode(result.stdout)
         if not output or not next(output) then
             -- Complain
-            python.lsps.basedpyright._latest_version = nil
+            basedpyright._latest_version = nil
             callback()
             return
         end
         local version = output.tag_name
         if not version then
             -- Complain
-            python.lsps.basedpyright._latest_version = nil
+            basedpyright._latest_version = nil
             callback()
             return
         end
         version = version:gsub('^v', '')
-        python.lsps.basedpyright._latest_version = version
+        basedpyright._latest_version = version
         callback(version)
         return
     end
@@ -457,30 +528,30 @@ end
 
 -- Gets the most current version of pyrefly
 ---@param callback fun(version: string?)
-function M.get_pyrefly_latest_version(callback)
+function pyrefly.latest_version(callback)
     local pyrefly_api = "https://api.github.com/repos/facebook/pyrefly/releases/latest"
     ---@param result Shell.Serial
     local complete = function(result)
         if result.exit_code ~= 0 then
-            python.lsps.pyrefly._latest_version = nil
+            pyrefly._latest_version = nil
             callback()
             return
         end
         local output = vim.json.decode(result.stdout)
         if not output or not next(output) then
             -- Complain
-            python.lsps.pyrefly._latest_version = nil
+            pyrefly._latest_version = nil
             callback()
             return
         end
         local version = output.tag_name
         if not version then
             -- Complain
-            python.lsps.pyrefly._latest_version = nil
+            pyrefly._latest_version = nil
             callback()
             return
         end
-        python.lsps.pyrefly._latest_version = version
+        pyrefly._latest_version = version
         callback(version)
         return
     end
@@ -499,30 +570,30 @@ end
 
 -- Gets the most current version of ruff
 ---@param callback fun(version: string?)
-function M.get_ruff_latest_version(callback)
+function ruff.latest_version(callback)
     local ruff_api = "https://api.github.com/repos/astral-sh/ruff/releases/latest"
     ---@param result Shell.Serial
     local complete = function(result)
         if result.exit_code ~= 0 then
-            python.lsps.ruff._latest_version = nil
+            ruff._latest_version = nil
             callback()
             return
         end
         local output = vim.json.decode(result.stdout)
         if not output or not next(output) then
             -- Complain
-            python.lsps.ruff._latest_version = nil
+            ruff._latest_version = nil
             callback()
             return
         end
         local version = output.tag_name
         if not version then
             -- Complain
-            python.lsps.ruff._latest_version = nil
+            ruff._latest_version = nil
             callback()
             return
         end
-        python.lsps.ruff._latest_version = version
+        ruff._latest_version = version
         callback(version)
         return
     end
@@ -543,8 +614,8 @@ end
 ---@param success_callback fun() The function to call after successful installation
 ---@param error_callback fun(error: string, exit_code: number?) The function to call on failure to install
 ---@param install_opts LspInstallOpts? Options to use on install
-function M._install_basedpyright(success_callback, error_callback, install_opts)
-    local current_version = M.get_basedpyright_version()
+function basedpyright.install(success_callback, error_callback, install_opts)
+    local current_version = basedpyright.version()
     install_opts = install_opts or {
         force = false
     }
@@ -565,10 +636,10 @@ function M._install_basedpyright(success_callback, error_callback, install_opts)
             return
         end
         local binary = string.format("basedpyright==%s", version)
-        M._install_binaries_in_editor_venv(binary, success_callback, error_callback)
+        install_binaries_in_editor_venv(binary, success_callback, error_callback)
     end
     if not install_opts.version then
-        M.get_basedpyright_latest_version(install)
+        basedpyright.latest_version(install)
     else
         install(install_opts.version)
     end
@@ -578,8 +649,8 @@ end
 ---@param success_callback fun() The function to call after successful installation
 ---@param error_callback fun(error: string, exit_code: number?) The function to call on failure to install
 ---@param install_opts LspInstallOpts? Options to use on install
-function M._install_pyrefly(success_callback, error_callback, install_opts)
-    local current_version = M.get_pyrefly_version()
+function pyrefly.install(success_callback, error_callback, install_opts)
+    local current_version = pyrefly.version()
     install_opts = install_opts or {
         force = false
     }
@@ -600,10 +671,10 @@ function M._install_pyrefly(success_callback, error_callback, install_opts)
             return
         end
         local binary = string.format("pyrefly==%s", version)
-        M._install_binaries_in_editor_venv(binary, success_callback, error_callback)
+        install_binaries_in_editor_venv(binary, success_callback, error_callback)
     end
     if not install_opts.version then
-        M.get_pyrefly_latest_version(install)
+        pyrefly.latest_version(install)
     else
         install(install_opts.version)
     end
@@ -613,8 +684,8 @@ end
 ---@param success_callback fun() The function to call after successful installation
 ---@param error_callback fun(error: string, exit_code: number?) The function to call on failure to install
 ---@param install_opts LspInstallOpts? Options to use on install
-function M._install_ruff(success_callback, error_callback, install_opts)
-    local current_version = M.get_ruff_version()
+function ruff.install(success_callback, error_callback, install_opts)
+    local current_version = ruff.version()
     install_opts = install_opts or {
         force = false
     }
@@ -635,10 +706,10 @@ function M._install_ruff(success_callback, error_callback, install_opts)
             return
         end
         local binary = string.format("ruff==%s", version)
-        M._install_binaries_in_editor_venv(binary, success_callback, error_callback)
+        install_binaries_in_editor_venv(binary, success_callback, error_callback)
     end
     if not install_opts.version then
-        M.get_ruff_latest_version(install)
+        ruff.latest_version(install)
     else
         install(install_opts.version)
     end
@@ -646,8 +717,8 @@ end
 
 -- Checks to see if basedpyright need an update
 ---@param callback fun(needs_update: boolean?)
-function M.basedpyright_needs_update(callback)
-    local current_version = M.get_basedpyright_version()
+function basedpyright.needs_update(callback)
+    local current_version = basedpyright.version()
     ---@param latest_version string?
     local complete = function(latest_version)
         if not latest_version then
@@ -657,13 +728,13 @@ function M.basedpyright_needs_update(callback)
         callback(latest_version > current_version)
         return
     end
-    M.get_basedpyright_latest_version(complete)
+    basedpyright.latest_version(complete)
 end
 
 -- Checks to see if pyrefly need an update
 ---@param callback fun(needs_update: boolean?)
-function M.pyrefly_needs_update(callback)
-    local current_version = M.get_pyrefly_version()
+function pyrefly.needs_update(callback)
+    local current_version = pyrefly.version()
     ---@param latest_version string?
     local complete = function(latest_version)
         if not latest_version then
@@ -673,13 +744,13 @@ function M.pyrefly_needs_update(callback)
         callback(latest_version > current_version)
         return
     end
-    M.get_pyrefly_latest_version(complete)
+    pyrefly.latest_version(complete)
 end
 
 -- Checks to see if ruff need an update
 ---@param callback fun(needs_update: boolean?)
-function M.ruff_needs_update(callback)
-    local current_version = M.get_ruff_version()
+function ruff.needs_update(callback)
+    local current_version = ruff.version()
     ---@param latest_version string?
     local complete = function(latest_version)
         if not latest_version then
@@ -689,106 +760,55 @@ function M.ruff_needs_update(callback)
         callback(latest_version > current_version)
         return
     end
-    M.get_ruff_latest_version(complete)
+    ruff.latest_version(complete)
 end
 
------------------------------------------------------------------------------------------------------
---============================================ INIT ===============================================--
------------------------------------------------------------------------------------------------------
+local map = {
+    pyrefly = pyrefly,
+    ruff = ruff,
+    basedpyright = basedpyright
+}
 
--- Check if the lua language server is in our path
-local editor_config = vim.g._config
-if not editor_config.languages then
-    editor_config.languages = {}
-end
-if not editor_config.languages.python then
-    ---@type LuaLsp
-    editor_config.languages.python = {
-        configured = false,
-        ---@type Lsp[]
-        lsps = {
-            basedpyright = {
-                name = "basedpyright",
-                enable = false,
-                version = M.get_basedpyright_version,
-                latest_version = M.get_basedpyright_latest_version,
-                ---@type vim.lsp.Config
-                config = {
-                    cmd = { "$LSP_BIN-langserver", "--stdio" },
-                    settings = {
-                        basedpyright = {
-                            analysis = {
-                                typeCheckingMode = "standard",
-                                diagnosticSeverityOverrides = {
-                                    reportAssignmentType = false,
-                                    reportArgumentType = "information",
-                                    reportUnusedFunction = "information",
-                                    reportOptionalMemberAccess = "information",
-                                    reportRedeclaration = "information",
-                                    reportImplicitOverride = false,
-                                    reportAny = false
-                                }
-                            },
-                            venvPath = "$VENV_PATH"
-                        }
-                    },
-                },
-                get_binary_path = M.basedpyright_get_path,
-                get_editor_venv = M._get_editor_venv,
-                needs_install = function() return not M.is_basedpyright_installed() end,
-                needs_update = M.basedpyright_needs_update,
-                install = M._install_basedpyright,
-            },
-            pyrefly = {
-                name = "pyrefly",
-                version = M.get_pyrefly_version,
-                latest_version = M.get_pyrefly_latest_version,
-                ---@type vim.lsp.Config
-                config = {
-                    cmd = { "$LSP_BIN", "lsp" },
-                    root_markers = project_root_markers,
-                    filetypes = { "python" },
-                    settings = {},
-                },
-                get_editor_venv = M._get_editor_venv,
-                get_binary_path = M.pyrefly_get_path,
-                needs_install = function() return not M.is_pyrefly_installed() end,
-                needs_update = M.pyrefly_needs_update,
-                install = M._install_pyrefly,
-            },
-            ruff = {
-                name = "ruff",
-                version = M.get_ruff_version,
-                latest_version = M.get_ruff_latest_version,
-                ---@type vim.lsp.Config
-                config = {
-                    cmd = { "$LSP_BIN", "server" },
-                    root_markers = project_root_markers,
-                    filetypes = { "python" },
-                    settings = {},
-                },
-                get_editor_venv = M._get_editor_venv,
-                get_binary_path = M.ruff_get_path,
-                needs_install = function() return not M.is_ruff_installed() end,
-                needs_update = M.ruff_needs_update,
-                install = M._install_ruff,
-            }
-        }
-    }
+local venv_lsps = M._get_venv_lsps(M._get_project_venv())
+local _lsps = {}
+local found_lsp = false
+for _, lsp_name in ipairs(venv_lsps) do
+    for _, known_lsp in ipairs(KNOWN_LSPS) do
+        if lsp_name == known_lsp then
+            found_lsp = true
+            break
+        end
+    end
+    local _lsp = map[lsp_name]
+    if _lsp then
+        _lsp.enable = true
+        table.insert(_lsps, _lsp)
+    end
 end
 
-python = editor_config.languages.python
-if python.configured then
-    -- If we have already configured python, there is nothing else for us to do
-    return
+if not found_lsp then
+    -- We need to provide our own LSPs
+    table.insert(_lsps, pyrefly)
 end
 
-python.M = M
-
-local lsp = require('scripts.lsp')
-for _, python_lsp in pairs(python.lsps) do
-    lsp.register("python", python_lsp)
+local found_formatter = false
+for _, tool_name in ipairs(KNOWN_FORMATTERS) do
+    for _, _lsp in ipairs(_lsps) do
+        if tool_name == _lsp.name then
+            found_formatter = true
+            break
+        end
+    end
+    local _tool = map[tool_name]
+    if _tool then
+        _tool.enable = true
+        table.insert(_lsps, _tool)
+    end
 end
 
-python.configured = true
-vim.g._config = editor_config
+if not found_formatter then
+    -- We need to provide our own formatters
+    table.insert(_lsps, ruff)
+end
+
+return _lsps
