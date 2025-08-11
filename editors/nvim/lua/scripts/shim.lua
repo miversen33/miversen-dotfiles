@@ -76,9 +76,7 @@ function M.cp(from, to, opts)
         error("Destination exists: " .. to .. " (use force option to overwrite)")
     end
 
-    if from_stat.type == "file" then
-        M._copy_file(from, to, from_stat, preserve)
-    elseif from_stat.type == "directory" then
+    if from_stat.type == "directory" then
         if not recursive then
             error("Cannot copy directory '" .. from .. "' without recursive option")
         end
@@ -86,6 +84,27 @@ function M.cp(from, to, opts)
     else
         -- Handle other types (symlinks, etc.)
         M._copy_file(from, to, from_stat, preserve)
+    end
+end
+
+-- Helper function to copy a symlink
+function M._copy_symlink(from, to, preserve)
+    local target = uv.fs_readlink(from)
+    if not target then
+        error("Failed to read symlink: " .. from)
+    end
+
+    local success, err = uv.fs_symlink(target, to)
+    if not success then
+        error("Failed to create symlink '" .. to .. "' -> '" .. target .. "': " .. err)
+    end
+
+    if preserve then
+        -- Preserve symlink timestamps (using lstat since we don't want to follow the link)
+        local lstat = uv.fs_lstat(from)
+        if lstat then
+            pcall(uv.fs_lutime, to, lstat.atime.sec, lstat.mtime.sec) -- lutime for symlinks
+        end
     end
 end
 
@@ -127,12 +146,14 @@ function M._copy_directory(from, to, from_stat, preserve)
 
             local from_path = from .. "/" .. name
             local to_path = to .. "/" .. name
-            local child_stat = uv.fs_stat(from_path)
+            local _stat = preserve and uv.fs_stat(from_path) or nil
 
-            if type == "directory" then
-                M._copy_directory(from_path, to_path, child_stat, preserve)
+            if type == "link" then
+                M._copy_symlink(from_path, to_path, preserve)
+            elseif type == "directory" then
+                M._copy_directory(from_path, to_path, _stat, preserve)
             else
-                M._copy_file(from_path, to_path, child_stat, preserve)
+                M._copy_file(from_path, to_path, _stat, preserve)
             end
         end
     end
@@ -231,7 +252,6 @@ function M.mv(from, to)
     success, err = uv.fs_rename(from, to)
     if not success then
         if err:match('^EXDEV') then
-            -- if err == "EXDEV" then
             -- Cross-device move: fall back to copy + delete
             M.cp(from, to, { recursive = true, preserve = true })
             vim.fs.rm(from, { recursive = true })
