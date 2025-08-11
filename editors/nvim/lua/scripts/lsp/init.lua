@@ -91,6 +91,10 @@ end
 ---@param languages string[]|string The language(s) that this LSP should be associated with
 ---@param new_lsp Lsp The LSP to manage
 function lsp.register(languages, new_lsp)
+    if lsp.lsps[new_lsp.name] then
+        -- This lsp is already registered, fuck off
+        return
+    end
     -- logging?
     if not lsp.lsp_details[new_lsp.name] then
         lsp.lsp_details[new_lsp.name] = {
