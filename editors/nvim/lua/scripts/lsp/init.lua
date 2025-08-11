@@ -266,8 +266,18 @@ local function substitute_vars(intable, replacement_map, builder)
     for key, item in iter_func(intable) do
         if type(item) == "table" then
             builder[key] = substitute_vars(item, replacement_map)
-        elseif type(item) == "string" and replacement_map[item] then
-            builder[key] = replacement_map[item]
+        elseif type(item) == "string" then
+            local replaced = false
+            for rep_key, rep_item in pairs(replacement_map) do
+                if item:match(rep_key) then
+                    local rep = item:gsub(rep_key, rep_item)
+                    builder[key] = rep
+                    replaced = true
+                end
+            end
+            if not replaced then
+                builder[key] = item
+            end
         else
             builder[key] = item
         end
