@@ -15,7 +15,7 @@
 ---@field config vim.lsp.Config The valid lsp configuration to use for this LSP
 ---@field needs_install fun(): boolean A function that we can call to check if the LSP needs to be installed
 ---@field needs_update fun(callback: fun(needs_update: boolean)) A function that we can call to check if an update is available for this LSP
----@filed get_editor_venv fun()? A function that can be called to get the venv for the editor for this lsp
+---@field get_venv fun()?: string A function that can be called to get the venv for the editor for this lsp
 ---@field install fun(success_callback: fun(), error_callback: fun(error: string, exit_code: number), opts: LspInstallOpts?) A function to call to install the LSP
 
 ---@class LspDetails
