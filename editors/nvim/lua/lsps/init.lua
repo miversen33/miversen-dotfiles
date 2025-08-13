@@ -29,30 +29,9 @@ for _, file_path in ipairs(lsp_files) do
     -- Wrap the lsp_module in a table so we can iterate
     local _lsps = lsp_module.name and { lsp_module } or lsp_module
     for _, _lsp in ipairs(_lsps) do
-        table.insert(M._lsps, _lsp)
-        -- Group lsps by their filetypes so we can more easily manipulate them
-        if _lsp.config.filetypes then
-            for _, filetype in ipairs(_lsp.config.filetypes) do
-                if M[filetype] == nil then
-                    M[filetype] = {}
-                end
-                M[filetype][_lsp.name] = _lsp
-            end
-        end
+        lsp_manager.register(_lsp.config.filetypes and _lsp.config.filetypes or {}, _lsp)
     end
     ::continue::
 end
-
-for _, lsp in pairs(M._lsps) do
-    vim.api.nvim_create_autocmd("FileType", {
-        pattern = lsp.config.filetypes or {},
-        callback = function(ev)
-            lsp_manager.register(lsp.config.filetypes, lsp)
-        end,
-        desc = string.format("Auto lsp handler for %s", lsp.name),
-        once = true -- There is never a reason to have this fire more than once ever
-    })
-end
-::continue::
 
 return M

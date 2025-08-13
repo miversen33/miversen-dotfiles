@@ -171,7 +171,6 @@ local pyrefly = {
     },
     _latest_version = nil,
     _current_version = nil,
-    get_editor_venv = M._get_editor_venv,
 }
 
 local ruff = {
@@ -185,7 +184,6 @@ local ruff = {
     },
     _latest_version = nil,
     _current_version = nil,
-    get_editor_venv = M._get_editor_venv,
 }
 
 local basedpyright = {
@@ -215,8 +213,8 @@ local basedpyright = {
     },
     _latest_version = nil,
     _current_version = nil,
-    get_editor_venv = M._get_editor_venv,
 }
+
 
 local ty = {
     name = "ty",
@@ -225,8 +223,17 @@ local ty = {
     config = {},
     _latest_version = nil,
     _current_version = nil,
-    get_editor_venv = M._get_editor_venv,
 }
+
+---@return string?
+function M.get_venv()
+    local project_venv = M._get_project_venv()
+    if project_venv then
+        return project_venv
+    else
+        return M._get_editor_venv()
+    end
+end
 
 -- Gets all known lsps/tools from the provided venv
 ---@param venv string The absolute path to the venv to search
@@ -809,6 +816,10 @@ end
 if not found_formatter then
     -- We need to provide our own formatters
     table.insert(_lsps, ruff)
+end
+
+for _, lsp in ipairs(_lsps) do
+    lsp.get_venv = M.get_venv
 end
 
 return _lsps

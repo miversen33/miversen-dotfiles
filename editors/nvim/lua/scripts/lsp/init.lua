@@ -1,3 +1,4 @@
+local language = require("vim.treesitter.language")
 ---@class LspInstallOpts
 ---@field force boolean? Indicates if you want to forcibly install this lsp
 ---@field version string? If provided, tells the lsp to install this version specifically. If not provided, treat as "latest"
@@ -15,7 +16,7 @@
 ---@field config vim.lsp.Config The valid lsp configuration to use for this LSP
 ---@field needs_install fun(): boolean A function that we can call to check if the LSP needs to be installed
 ---@field needs_update fun(callback: fun(needs_update: boolean)) A function that we can call to check if an update is available for this LSP
----@filed get_editor_venv fun()? A function that can be called to get the venv for the editor for this lsp
+---@field get_venv fun()?: string A function that can be called to get the venv for the editor for this lsp
 ---@field install fun(success_callback: fun(), error_callback: fun(error: string, exit_code: number), opts: LspInstallOpts?) A function to call to install the LSP
 
 ---@class LspDetails
@@ -87,6 +88,21 @@ local function save_lsp_details()
     return
 end
 
+---@param lsp_name string The name of the lsp to get the dtails for
+---@return LspDetails
+function lsp.get_details(lsp_name)
+    if not lsp.lsp_details[lsp_name] then
+        lsp.lsp_details[lsp_name] = {
+            last_update_check  = -1,
+            next_update_check  = -1,
+            last_install_check = -1,
+            next_install_check = -1,
+            languages          = {},
+        }
+    end
+    return lsp.lsp_details[lsp_name]
+end
+
 -- Registers an LSP with a langauge
 ---@param languages string[]|string The language(s) that this LSP should be associated with
 ---@param new_lsp Lsp The LSP to manage
@@ -96,19 +112,7 @@ function lsp.register(languages, new_lsp)
         return
     end
     -- logging?
-    if not lsp.lsp_details[new_lsp.name] then
-        lsp.lsp_details[new_lsp.name] = {
-            last_update_check  = -1,
-            next_update_check  = -1,
-            last_install_check = -1,
-            next_install_check = -1,
-            languages          = {},
-        }
-    end
-    -- Lets first check to see if the LSP is installed
-    ---@type LspDetails
-    local lsp_details = lsp.lsp_details[new_lsp.name]
-
+    local lsp_details = lsp.get_details(new_lsp.name)
     if type(languages) == 'string' then
         languages = { languages }
     end
@@ -116,6 +120,10 @@ function lsp.register(languages, new_lsp)
         lsp.lsps[new_lsp.name] = new_lsp
     end
 
+    if not languages or #languages == 0 then
+        -- There is nothing to do with this LSP
+        return
+    end
     for _, in_language in ipairs(languages) do
         if not lsp.language_map[in_language] then
             lsp.language_map[in_language] = {}
@@ -134,7 +142,24 @@ function lsp.register(languages, new_lsp)
             table.insert(lsp_details.languages, in_language)
         end
     end
+    vim.api.nvim_create_autocmd("FileType", {
+        pattern = new_lsp.config.filetypes or {},
+        callback = function(ev)
+            lsp.activate(new_lsp.name)
+        end,
+        desc = string.format("Auto lsp handler for %s", lsp.name),
+        once = true -- There is never a reason to have this fire more than once ever
+    })
+end
 
+---@param lsp_name string
+function lsp.activate(lsp_name)
+    local new_lsp = lsp.lsps[lsp_name]
+    if not new_lsp then
+        vim.notify(string.format("No lsp associated with %s", lsp_name), vim.log.levels.DEBUG)
+        return
+    end
+    local lsp_details = lsp.get_details(lsp_name)
     local function complete()
         vim.schedule(function()
             save_lsp_details()
@@ -142,7 +167,7 @@ function lsp.register(languages, new_lsp)
     end
     local function activate_lsp()
         vim.schedule(function()
-            lsp.activate(new_lsp)
+            lsp._activate(new_lsp)
         end)
         complete()
     end
@@ -153,31 +178,84 @@ function lsp.register(languages, new_lsp)
         return
     end
 
-    if new_lsp.needs_install() and lsp_details.next_install_check <= os.time() and (new_lsp.enable ~= false or new_lsp.required == true) then
-        lsp_details.last_install_check = os.time()
+    ---@param _lsp Lsp
+    ---@param _lsp_details LspDetails
+    ---@param complete_callback fun()
+    ---@param activate_callback fun()? If not provided, we will use activate_lsp
+    local _needs_install = function(_lsp, _lsp_details, complete_callback, activate_callback)
+        _lsp_details.last_install_check = os.time()
+        activate_callback = activate_callback or activate_lsp
         local yes_callback = function()
             local error_callback = function(error, _)
                 vim.notify(error, vim.log.levels.DEBUG)
                 -- In the event that an install fails, lets timeout for 15 minutes
-                lsp_details.next_install_check = os.time() + (15 * 60)
-                vim.notify(string.format("Unable to install lsp %s, trying again in 15 minutes", new_lsp.name),
+                _lsp_details.next_install_check = os.time() + (15 * 60)
+                vim.notify(string.format("Unable to install lsp %s, trying again in 15 minutes", _lsp.name),
                     vim.log.levels.INFO)
-                complete()
+                complete_callback()
                 return
             end
-            lsp._install(new_lsp.name, activate_lsp, error_callback)
+            lsp._install(_lsp.name, activate_callback, error_callback)
             return
         end
         local no_callback = function()
-            lsp_details.next_install_check = os.time() + (60 * 60)
-            complete()
+            _lsp_details.next_install_check = os.time() + (60 * 60)
+            complete_callback()
             return
         end
         -- Lets delay this a bit so you aren't hit with it immediately
         vim.defer_fn(function()
-            lsp._prompt_user(string.format("%s is not installed, install it? [Y/n]", new_lsp.name), yes_callback,
+            lsp._prompt_user(string.format("%s is not installed, install it? [Y/n]", _lsp.name), yes_callback,
                 no_callback)
         end, 1000)
+        return
+    end
+    -- We're running into an issue where the dependencies for an LSP may be being registered later
+    -- It might make sense to push all of this logic to activate instead of register
+    ---@type Lsp[]
+    local missing_deps = {}
+    local fail = false
+    for _, dep_name in ipairs(new_lsp.dependencies and new_lsp.dependencies or {}) do
+        local dep = lsp.lsps[dep_name]
+        if not dep then
+            -- Complain about missing dependency
+            vim.notify(string.format("Unable to locate dependency %s for lsp %s", dep_name, new_lsp.name),
+                vim.log.levels.DEBUG)
+            fail = true
+        else
+            if dep.needs_install() then
+                table.insert(missing_deps, dep)
+            end
+        end
+    end
+    if fail then
+        -- We cannot activate this lsp
+        vim.notify(string.format("Unable to locate dependencies for %s. Check :Notifications for details", new_lsp.name),
+            vim.log.levels.WARN)
+        return
+    end
+    if (new_lsp.needs_install() or #missing_deps > 0) and lsp_details.next_install_check <= os.time() and (new_lsp.enable ~= false or new_lsp.required == true) then
+        local missing_dep_count = #missing_deps
+        local _complete = function()
+            missing_dep_count = missing_dep_count - 1
+            if missing_dep_count <= 0 then
+                if new_lsp.needs_install() then
+                    _needs_install(new_lsp, lsp_details, function() end, activate_lsp)
+                else
+                    activate_lsp()
+                end
+            end
+        end
+        if #missing_deps > 0 then
+            vim.notify(string.format("Installing dependencies for %s", new_lsp.name), vim.log.levels.DEBUG)
+            -- Lets fine every dep that needs to be installed
+            for _, dep in ipairs(missing_deps) do
+                local dep_details = lsp.get_details(dep.name)
+                _needs_install(dep, dep_details, function() end, _complete)
+            end
+        else
+            _complete()
+        end
         return
     end
     activate_lsp()
@@ -206,7 +284,7 @@ function lsp.register(languages, new_lsp)
             return
         end
 
-        local complete = function(needs_update)
+        local _complete = function(needs_update)
             if not needs_update then
                 -- Nothing to do
                 return
@@ -217,7 +295,7 @@ function lsp.register(languages, new_lsp)
                     yes_callback, no_callback)
             end, 1000)
         end
-        new_lsp.needs_update(complete)
+        new_lsp.needs_update(_complete)
     end
 end
 
@@ -287,7 +365,7 @@ end
 
 -- Activates and potentially enables a new lsp configuration
 ---@param target_lsp Lsp The lsp to enable
-function lsp.activate(target_lsp)
+function lsp._activate(target_lsp)
     if vim.lsp.config[target_lsp.name] then
         vim.notify(
             string.format("A configuration for lsp \"%s\" already exists and opts.override is false. Ignoring",
@@ -295,9 +373,10 @@ function lsp.activate(target_lsp)
             vim.log.levels.DEBUG, {})
         return
     end
+    print(target_lsp.name, target_lsp.get_venv and target_lsp.get_venv() or "NO VENV")
     local replacement_map = {
         ["$LSP_BIN"] = target_lsp.get_binary_path(),
-        ["$VENV_PATH"] = target_lsp.get_editor_venv and target_lsp.get_editor_venv() or "NO VENV"
+        ["$VENV_PATH"] = target_lsp.get_venv and target_lsp.get_venv() or "NO VENV"
     }
     vim.lsp.config[target_lsp.name] = substitute_vars(target_lsp.config, replacement_map)
     if target_lsp.enable ~= false then
