@@ -342,12 +342,23 @@ local function setup_plugins()
     vim.api.nvim_set_hl(0, "FloatBorder", { fg = _G.__miversen_border_color })
     vim.api.nvim_set_hl(0, "FzfLuaBorder", { fg = _G.__miversen_border_color })
     vim.api.nvim_set_hl(0, "NormalFloat", { fg = "NONE", bg = "NONE" })
+
+    require("lsps")
 end
 
 local function setup_advanced_keycommands()
-    vim.keymap.set('n', 'ff', require("fzf-lua").files, { desc = "Fzf Fuzzy File Find" })
+    vim.keymap.set('n', 'ff',
+        function() return require("fzf-lua").files({ cmd = 'rg --files --sortr modified --glob !.git' }) end,
+        { desc = "Fzf Fuzzy File Find" })
     vim.keymap.set('n', 'fr', require("fzf-lua").resume, { desc = "Fzf Resume" })
-    vim.keymap.set('n', 'fg', require("fzf-lua").grep_project, { desc = "Fzf Grep files Find" })
+    vim.keymap.set('n', 'fg',
+        function()
+            return require("fzf-lua").grep_project({
+                cmd =
+                "rg --sortr modified --glob !.git --columns --line-number"
+            })
+        end,
+        { desc = "Fzf Grep files Find" })
     vim.keymap.set('v', 'fv', require("fzf-lua").grep_visual, { desc = "Fzf Fuzzy Find WITH Visual Selection" })
     vim.keymap.set('n', 'fb', require("fzf-lua").buffers, { desc = "Fzf Fuzzy Buffer" })
     vim.keymap.set('n', 'fd', require("fzf-lua").diagnostics_document, { desc = "Fzf Fuzzy Diagnostics" })
