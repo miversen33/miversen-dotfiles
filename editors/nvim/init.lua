@@ -121,6 +121,10 @@ local function vim_settings()
     -- NOTE: You don't need to use a plugin for session management, I just chose to because I am lazy
     vim.opt.sessionoptions =
     "blank,buffers,curdir,folds,globals,localoptions,help,tabpages,terminal"
+    -- Enable absolute line numbers
+    vim.opt.nu = true
+    -- Enable relative line numbers
+    vim.opt.relativenumber = true
     -- "blank,buffers,curdir,folds,tabpages,winsize,winpos,terminal,localoptions,options,resize"
     for _, group in ipairs(vim.fn.getcompletion("@lsp", "highlight")) do
         vim.api.nvim_set_hl(0, group, {})
