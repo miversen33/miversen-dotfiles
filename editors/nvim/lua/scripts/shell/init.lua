@@ -329,7 +329,7 @@ end
 ---     https://github.com/luvit/luv/blob/master/docs.md#uvspawnpath-options-on_exit
 ---     works, need this to be a single argument per item in the command.
 ---     Note: We do _not_ verify this, make sure you aren't writing 💩 code.
---- @param options Shell.Flag[]? Any optional flags you want to provide on shell run
+--- @param options table<string, any>? Any optional flags you want to provide on shell run
 --- @throws "Command must be a table!" error if the command is not a table
 --- @throws "Cannot run empty command!" error if the command table is empty
 function Shell:new(command, options)
