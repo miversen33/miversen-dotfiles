@@ -32,7 +32,6 @@ local lazydev = {
     { "Bilal2453/luvit-meta", lazy = true }, -- optional `vim.uv` typings
     { "LuaCATS/luassert",     name = "luassert-types", lazy = true },
     { "LuaCATS/busted",       name = "busted-types",   lazy = true },
-    -- { "folke/neodev.nvim", enabled = false }, -- make sure to uninstall or disable neodev.nvim
 }
 
 return lazydev
