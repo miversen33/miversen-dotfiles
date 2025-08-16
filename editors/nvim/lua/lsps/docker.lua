@@ -197,6 +197,9 @@ function docker.install(success_callback, error_callback, opts)
 
     vim.fs.mkdir(editor_lsp_dir, 'p')
     local url = string.gsub(docker.url, "${OS}", os_map[jit.os]):gsub("${ARCH}", arch_map[jit.arch])
+    if jit.os == 'Windows' then
+        url = string.format("%s.exe", url)
+    end
     if not url then
         error_callback("Unable to determine matching \"os\" or \"architecture\" for lsp url", -1)
         return
