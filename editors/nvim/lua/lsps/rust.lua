@@ -1,5 +1,9 @@
 -- lsps/rust.lua
 
+---@class RustVersion
+---@field release string The string form of the release
+---@field semantic string The string form of the semantic version
+
 local uv = vim.uv or vim.loop
 local jit = require("jit")
 local shell = require("scripts.shell")
