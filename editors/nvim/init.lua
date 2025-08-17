@@ -359,7 +359,7 @@ local function setup_advanced_keycommands()
         function()
             return require("fzf-lua").grep_project({
                 cmd =
-                "rg --sortr modified --glob !.git --columns --line-number"
+                "rg --sortr modified --glob !.git --column --line-number"
             })
         end,
         { desc = "Fzf Grep files Find" })
