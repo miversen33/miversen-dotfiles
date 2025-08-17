@@ -89,38 +89,9 @@ end
 -- Gets the most recent version of marksman from github
 ---@param callback fun(version: string?)
 function marksman.latest_version(callback)
+    -- We actually can't read the latest version for marksman because their binary versions and what they release are literally
+    -- different. So that's cool
     callback("-1")
-    -- if marksman._latest_version then
-    --     callback(marksman._latest_version)
-    --     return
-    -- end
-    -- local marksman_api = "https://api.github.com/repos/artempyanykh/marksman/releases/latest"
-    -- ---@param result Shell.Serial
-    -- local complete = function(result)
-    --     if not result or result.exit_code ~= 0 then
-    --         -- complain
-    --         callback()
-    --         return
-    --     end
-    --     local version = vim.json.decode(result.stdout)
-    --     if not version then
-    --         callback()
-    --         return
-    --     end
-    --     marksman._current_version = version.tag_name
-    --     callback(version.tag_name)
-    --     return
-    -- end
-    -- local handle = shell:new({ "curl", "-fsSL", marksman_api }, {
-    --     [shell.CONSTANTS.FLAGS.ASYNC] = true,
-    --     [shell.CONSTANTS.FLAGS.EXIT_CALLBACK] = complete,
-    --     [shell.CONSTANTS.FLAGS.STDOUT_JOIN] = ""
-    -- }):run()
-    -- if not handle then
-    --     -- complain
-    --     callback()
-    -- end
-    -- return
 end
 
 -- Installs marksman
