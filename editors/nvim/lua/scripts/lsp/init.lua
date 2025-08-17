@@ -373,7 +373,6 @@ function lsp._activate(target_lsp)
             vim.log.levels.DEBUG, {})
         return
     end
-    print(target_lsp.name, target_lsp.get_venv and target_lsp.get_venv() or "NO VENV")
     local replacement_map = {
         ["$LSP_BIN"] = target_lsp.get_binary_path(),
         ["$VENV_PATH"] = target_lsp.get_venv and target_lsp.get_venv() or "NO VENV"
@@ -420,7 +419,11 @@ function lsp._install(lsp_name, success_callback, error_callback, is_update)
             op_lsp.install(success_callback, error_callback, { force = true, version = version })
         end)
     end
-    op_lsp.latest_version(complete)
+    if op_lsp.pin then
+        complete(op_lsp.pin)
+    else
+        op_lsp.latest_version(complete)
+    end
 end
 
 -- Updates either a specific tool (lsp or otherwise) for a language,
