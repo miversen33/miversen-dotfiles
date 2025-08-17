@@ -6,7 +6,7 @@ local shell = require("scripts.shell")
 
 local os_map = {
     Linux = 'linux',
-    darwin = 'mac',
+    OSX = 'mac',
     Windows = 'windows'
 }
 

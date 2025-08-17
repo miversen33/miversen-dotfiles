@@ -25,7 +25,7 @@ local uv = vim.uv or vim.loop
 
 local os_map = {
     Linux = 'linux',
-    darwin = 'darwin',
+    OSX = 'darwin',
     Windows = 'win32'
 }
 
@@ -532,6 +532,7 @@ function shellfmt.latest_version(callback)
         if not version then
             shellfmt._latest_version = nil
             callback()
+            return
         end
         version = version:gsub('^v', '')
         callback(version)

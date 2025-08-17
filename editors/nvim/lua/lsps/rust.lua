@@ -10,7 +10,7 @@ local shell = require("scripts.shell")
 
 local os_map = {
     Linux = 'unknown-linux-gnu.gz',
-    darwin = 'apple-darwin.gz',
+    OSX = 'apple-darwin.gz',
     Windows = 'pc-windows-msvc.zip'
 }
 
