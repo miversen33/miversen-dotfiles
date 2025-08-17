@@ -10,7 +10,7 @@ local language = require("vim.treesitter.language")
 ---@field enable boolean? Should this lsp be enabled? Default is true
 ---@field required boolean? If provided, should we install this lsp? Default is false. Can be used with enable=false to ensure installation but not enablement of lsp. Useful if your lsp is managed by plugins
 ---@field pin string? If provided, we will tell the installer to only use this version and prevent update checks
----@field get_binary_path fun(): string A function we can call to retrieve the path to the binary for this LSP
+---@field get_binary_path fun(ignore: boolean?): string A function we can call to retrieve the path to the binary for this LSP
 ---@field version fun(): string A function to call to get current version of this LSP
 ---@field latest_version fun(callback: fun(version: string?)) A function to call to get the most recent version of this LSP
 ---@field config vim.lsp.Config The valid lsp configuration to use for this LSP
