@@ -2,6 +2,22 @@ local uv = require('luv')
 
 local M = {}
 
+---@param mode string The permissions to parse. An example, "rw-r-----" would mean user: read/write, group: read, all:
+local function parse_permissions(mode)
+    local octal_mode = 0
+    local perms = { mode:sub(1, 3), mode:sub(4, 6), mode:sub(7, 9) }
+    local multipliers = { 64, 8, 1 } -- 8^2, 8^1, 8^0
+
+    for i, perm in ipairs(perms) do
+        local value = 0
+        if perm:sub(1, 1) == 'r' then value = value + 4 end
+        if perm:sub(2, 2) == 'w' then value = value + 2 end
+        if perm:sub(3, 3) == 'x' then value = value + 1 end
+        octal_mode = octal_mode + (value * multipliers[i])
+    end
+    return octal_mode
+end
+
 -- Find the first parent directory containing a specific "marker"
 ---@param source string File path (absolute or relative) to begin the search from
 ---@param marker string|string[]|fun(name: string, path: string): boolean A marker, or list of markers, to search for
@@ -223,18 +239,7 @@ function M.chmod(name, mode)
         error("Invalid permission format: " .. mode)
     end
 
-    local octal_mode = 0
-    local perms = { mode:sub(1, 3), mode:sub(4, 6), mode:sub(7, 9) }
-    local multipliers = { 64, 8, 1 } -- 8^2, 8^1, 8^0
-
-    for i, perm in ipairs(perms) do
-        local value = 0
-        if perm:sub(1, 1) == 'r' then value = value + 4 end
-        if perm:sub(2, 2) == 'w' then value = value + 2 end
-        if perm:sub(3, 3) == 'x' then value = value + 1 end
-        octal_mode = octal_mode + (value * multipliers[i])
-    end
-
+    local octal_mode = parse_permissions(mode)
     local success, err = uv.fs_chmod(name, octal_mode)
     if not success then
         error("Failed to set permissions on '" .. name .. "': " .. err)
