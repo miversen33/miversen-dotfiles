@@ -247,7 +247,6 @@ function docker.install(success_callback, error_callback, opts)
                 error_callback("No docker language server version found to download", -1)
                 return
             end
-            print(version)
             handle_version(version.semantic)
         end)
     end

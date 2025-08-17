@@ -146,7 +146,7 @@ function clangd.install(success_callback, error_callback, opts)
     local url = string.gsub(clangd.url, "${OS}", os_map[jit.os])
 
     local cleanup = function()
-        -- vim.fs.rm(temp_dir, { recursive = true, force = true })
+        vim.fs.rm(temp_dir, { recursive = true, force = true })
     end
 
     ---@param result Shell.Serial
@@ -179,7 +179,6 @@ function clangd.install(success_callback, error_callback, opts)
             cleanup()
             error_callback("Unable to download clangd lsp", result.exit_code and result.exit_code or -1)
         end
-        print("Unzipping", output_file)
         -- This only works on linux...
         local handle = shell:new({ "unzip", "-d", temp_dir, output_file }, {
             [shell.CONSTANTS.FLAGS.ASYNC] = true,
