@@ -136,6 +136,19 @@ function install(){
     popd >/dev/null 2>&1
     rm -rf "${tmp_dir}"
   fi
+  if [ ! -f ~/.local/bin/fd ]; then
+    readonly fd_version="v10.2.0"
+    debug "Installing fd version: ${fd_version}"
+    tmp_dir="/tmp/.miversen-dotfiles-$(date +%Y%m%d%H%M%S)"
+    mkdir -p "${tmp_dir}"
+    pushd "${tmp_dir}" > /dev/null 2>&1
+    curl -fsL -o "${tmp_dir}/fd.tar.gz" "https://github.com/sharkdp/fd/releases/download/${fd_version}/fd-${fd_version}-x86_64-unknown-linux-gnu.tar.gz"
+    tar -xzf "${tmp_dir}/fd.tar.gz"
+    mv ${tmp_dir}/fd-${fd_version}*/fd "${HOME}/.local/bin/fd"
+    chmod +x "${HOME}/.local/bin/fd"
+    popd >/dev/null 2>&1
+    rm -rf "${tmp_dir}"
+  fi
   if [ ! -d ~/.config/yazi ]; then
     debug "Configuring Yazi"
     mkdir -p ~/.config/yazi
