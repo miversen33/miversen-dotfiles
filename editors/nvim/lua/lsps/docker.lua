@@ -115,23 +115,27 @@ local function get_docker_latest_version(callback)
         if not output or not next(output) then
             docker._latest_version = nil
             callback()
+            return
         end
         local version = output.name
         if not version then
             docker._latest_version = nil
             callback()
+            return
         end
         local _date = ""
         _, _, version, _date = version:find('^v([%d.]+)%s*-%s*([%d-]+)')
         if not version or not _date then
             docker._latest_version = nil
             callback()
+            return
         else
             docker._latest_version = {
                 release_date = _date,
                 semantic = version
             }
             callback(docker._latest_version)
+            return
         end
     end
 

@@ -497,6 +497,7 @@ function shellcheck.latest_version(callback)
         if not version then
             shellcheck._latest_version = nil
             callback()
+            return
         end
         version = version:gsub('^v', '')
         callback(version)
@@ -568,9 +569,11 @@ function bashls.latest_version(callback)
         if not version then
             bashls._latest_version = nil
             callback()
+            return
         end
         version = version:gsub('^server%-', '')
         callback(version)
+        return
     end
 
     local handle = shell:new({ "curl", "-fsSL", bashls_api }, {
