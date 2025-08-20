@@ -1,15 +1,8 @@
--- lua/lsps/yaml.lua
+-- lsps/yaml.lua
 
 local shell = require("scripts.shell")
 
-local jit = require("jit")
 local uv = vim.uv or vim.loop
-
-local os_map = {
-    Linux = 'linux',
-    OSX = 'darwin',
-    Windows = 'win32'
-}
 
 local YAML_LSP_DOCKERFILE = [[
 FROM node:24-bookworm
@@ -417,7 +410,7 @@ local lsps = {
 if not vim.fn.executable("node") then
     -- Node isn't available, complain and die
     vim.notify("Unable to start yaml language server as it requires node and we couldn't find node", vim.log.levels
-    .DEBUG)
+        .DEBUG)
     return {}
 end
 

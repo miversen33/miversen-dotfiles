@@ -22,7 +22,6 @@ local tombi        = {
     url =
     "https://github.com/tombi-toml/tombi/releases/download/v${VERSION}/tombi-cli-${VERSION}-${ARCH}-${OS}",
     name = "tombi",
-    enable = true,
     _latest_version = nil,
     _current_version = nil,
     ---@type vim.lsp.Config
@@ -50,7 +49,7 @@ function tombi.needs_install()
     return vim.fn.filereadable(tombi.get_binary_path()) ~= 1
 end
 
--- Installs EmmyLuaLS
+-- Installs Tombi
 ---@param success_callback fun() The function to call when install completes successfully
 ---@param error_callback fun(error: string, exit_code: number) The function to call when install fails
 ---@param opts LspInstallOpts? Options to use when installing
@@ -73,7 +72,7 @@ function tombi.install(success_callback, error_callback, opts)
     vim.fs.rm(temp_dir, { recursive = true, force = true })
     vim.fs.rm(editor_lsp, { recursive = true, force = true })
     -- Download the lsp
-    vim.notify("Downloading tombi lua language server", vim.log.levels.DEBUG, {})
+    vim.notify("Downloading tombi language server", vim.log.levels.DEBUG, {})
     vim.fs.mkdir(editor_lsp_dir, 'p')
     vim.fs.mkdir(temp_dir, 'p')
 
@@ -170,7 +169,7 @@ function tombi.install(success_callback, error_callback, opts)
     end
 end
 
---Checks the current lua ls version and returns it
+--Checks the current tombi version and returns it
 --NOTE: Will return -1 if it cannot find the lsp
 ---@return string
 function tombi.version()

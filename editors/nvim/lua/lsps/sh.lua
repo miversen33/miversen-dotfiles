@@ -1,4 +1,4 @@
--- lua/lsps/sh.lua
+-- lsps/sh.lua
 
 ---@class BashLsp
 ---@field configrued boolean Is bash configured yet?
