@@ -45,6 +45,13 @@ local jq           = {
     ---@type vim.lsp.Config
     config = {
         filetypes = { "json", "jsonc" }
+    },
+    formatter_opts = {
+        meta = {
+            url = "https://github.com/jqlang/jq",
+            description = "Command-line JSON processor.",
+        },
+        command = "$LSP_BIN"
     }
 }
 
@@ -290,7 +297,7 @@ end
 ---@param ignore boolean? If provided, we will still return the proper path even if we aren't installed
 ---@return string The path to the binary. May be "MISSING BINARY" if the binary is not able to be located
 function jq.get_binary_path(ignore)
-    local editor_lsp = string.format("%s/jq", get_editor_lsp_dir())
+    local editor_lsp = string.format("%s/jq/jq", get_editor_lsp_dir())
     if ignore or vim.fn.filereadable(editor_lsp) == 1 then
         return editor_lsp
     else
