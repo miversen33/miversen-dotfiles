@@ -1,4 +1,3 @@
-local language = require("vim.treesitter.language")
 ---@class LspInstallOpts
 ---@field force boolean? Indicates if you want to forcibly install this lsp
 ---@field version string? If provided, tells the lsp to install this version specifically. If not provided, treat as "latest"
@@ -16,6 +15,7 @@ local language = require("vim.treesitter.language")
 ---@field config vim.lsp.Config The valid lsp configuration to use for this LSP
 ---@field needs_install fun(): boolean A function that we can call to check if the LSP needs to be installed
 ---@field needs_update fun(callback: fun(needs_update: boolean)) A function that we can call to check if an update is available for this LSP
+---@field formatter_opts conform.FileFormatterConfig? If provided, we will use these options as the options for conform after installation
 ---@field get_venv fun()?: string A function that can be called to get the venv for the editor for this lsp
 ---@field install fun(success_callback: fun(), error_callback: fun(error: string, exit_code: number), opts: LspInstallOpts?) A function to call to install the LSP
 
@@ -32,6 +32,44 @@ local BACKING_FILE = string.format("%s/lsp_details.json", EDITOR_DIR)
 if vim.fn.isdirectory(EDITOR_DIR) ~= 1 then
     vim.fn.mkdir(EDITOR_DIR, 'p')
 end
+
+---@param intable table<string, any> A map that contains items we need to process
+---@param replacement_map table<string, string> A map that contains known variables and their replacement values
+---@param builder table<string, any>? The map we are building
+---@return table<string, any> Our built substitution table
+local function substitute_vars(intable, replacement_map, builder)
+    assert(replacement_map, "no replacement_map provided")
+    builder = builder or {}
+    local iter_func = nil
+    if #intable ~= 0 then
+        -- This is a list and we need to process it as such
+        iter_func = ipairs
+    else
+        iter_func = pairs
+    end
+    for key, item in iter_func(intable) do
+        if type(item) == "table" then
+            builder[key] = substitute_vars(item, replacement_map)
+        elseif type(item) == "string" then
+            local replaced = false
+            for rep_key, rep_item in pairs(replacement_map) do
+                if item:match(rep_key) then
+                    local rep = item:gsub(rep_key, rep_item)
+                    builder[key] = rep
+                    replaced = true
+                end
+            end
+            if not replaced then
+                builder[key] = item
+            end
+        else
+            builder[key] = item
+        end
+    end
+    return builder
+end
+
+
 
 local lsp = {
     -- A list of registered lsps
@@ -166,6 +204,23 @@ function lsp.activate(lsp_name)
         end)
     end
     local function activate_lsp()
+        if new_lsp.formatter_opts then
+            -- Lets update conform with the details for this formatter
+            local ok, conform = pcall(require, "conform")
+            if not ok then
+                -- conform isn't installed
+                vim.notify(string.format("Unable to setup %s in conform", new_lsp.name), vim.log.levels.DEBUG)
+                return
+            end
+            vim.notify(string.format("Setting up %s as a formatter for conform", new_lsp.name), vim.log.levels.DEBUG)
+            local replacement_map = {
+                ["$LSP_BIN"] = new_lsp.get_binary_path(),
+                ["$VENV_PATH"] = new_lsp.get_venv and new_lsp.get_venv() or "NO VENV"
+            }
+            local formatter_opts = substitute_vars(new_lsp.formatter_opts, replacement_map)
+            print(formatter_opts)
+            conform.formatters[new_lsp.name] = formatter_opts
+        end
         vim.schedule(function()
             lsp._activate(new_lsp)
         end)
@@ -180,9 +235,9 @@ function lsp.activate(lsp_name)
 
     ---@param _lsp Lsp
     ---@param _lsp_details LspDetails
-    ---@param complete_callback fun()
+    ---@param failure_callback fun()
     ---@param activate_callback fun()? If not provided, we will use activate_lsp
-    local _needs_install = function(_lsp, _lsp_details, complete_callback, activate_callback)
+    local _needs_install = function(_lsp, _lsp_details, failure_callback, activate_callback)
         _lsp_details.last_install_check = os.time()
         activate_callback = activate_callback or activate_lsp
         local yes_callback = function()
@@ -192,7 +247,7 @@ function lsp.activate(lsp_name)
                 _lsp_details.next_install_check = os.time() + (15 * 60)
                 vim.notify(string.format("Unable to install lsp %s, trying again in 15 minutes", _lsp.name),
                     vim.log.levels.INFO)
-                complete_callback()
+                failure_callback()
                 return
             end
             lsp._install(_lsp.name, activate_callback, error_callback)
@@ -200,7 +255,7 @@ function lsp.activate(lsp_name)
         end
         local no_callback = function()
             _lsp_details.next_install_check = os.time() + (60 * 60)
-            complete_callback()
+            failure_callback()
             return
         end
         -- Lets delay this a bit so you aren't hit with it immediately
@@ -323,44 +378,6 @@ function lsp._prompt_user(message, yes_callback, no_callback)
             no_callback()
         end
     end)
-end
-
--- Performs in place substitutions of known variables in place of strings. Valid Substitution Strings are
--- - $LSP_BIN = This will be replaced with the path to the binary of the lsp as declared by lsp.get_binary_path
----@param intable table<string, any> A map that contains items we need to process
----@param replacement_map table<string, string> A map that contains known variables and their replacement values
----@param builder table<string, any>? The map we are building
----@return table<string, any> Our built substitution table
-local function substitute_vars(intable, replacement_map, builder)
-    assert(replacement_map, "no replacement_map provided")
-    builder = builder or {}
-    local iter_func = nil
-    if #intable ~= 0 then
-        -- This is a list and we need to process it as such
-        iter_func = ipairs
-    else
-        iter_func = pairs
-    end
-    for key, item in iter_func(intable) do
-        if type(item) == "table" then
-            builder[key] = substitute_vars(item, replacement_map)
-        elseif type(item) == "string" then
-            local replaced = false
-            for rep_key, rep_item in pairs(replacement_map) do
-                if item:match(rep_key) then
-                    local rep = item:gsub(rep_key, rep_item)
-                    builder[key] = rep
-                    replaced = true
-                end
-            end
-            if not replaced then
-                builder[key] = item
-            end
-        else
-            builder[key] = item
-        end
-    end
-    return builder
 end
 
 -- Activates and potentially enables a new lsp configuration
