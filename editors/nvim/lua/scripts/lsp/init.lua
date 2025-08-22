@@ -204,24 +204,30 @@ function lsp.activate(lsp_name)
         end)
     end
     local function activate_lsp()
-        if new_lsp.formatter_opts then
-            -- Lets update conform with the details for this formatter
-            local ok, conform = pcall(require, "conform")
-            if not ok then
-                -- conform isn't installed
-                vim.notify(string.format("Unable to setup %s in conform", new_lsp.name), vim.log.levels.DEBUG)
-                return
-            end
-            vim.notify(string.format("Setting up %s as a formatter for conform", new_lsp.name), vim.log.levels.DEBUG)
-            local replacement_map = {
-                ["$LSP_BIN"] = new_lsp.get_binary_path(),
-                ["$VENV_PATH"] = new_lsp.get_venv and new_lsp.get_venv() or "NO VENV"
-            }
-            local formatter_opts = substitute_vars(new_lsp.formatter_opts, replacement_map)
-            print(formatter_opts)
-            conform.formatters[new_lsp.name] = formatter_opts
-        end
         vim.schedule(function()
+            if new_lsp.formatter_opts then
+                -- Lets update conform with the details for this formatter
+                local ok, conform = pcall(require, "conform")
+                if not ok then
+                    -- conform isn't installed
+                    print(ok, conform, new_lsp)
+                    vim.notify(string.format("Unable to setup %s in conform", new_lsp.name), vim.log.levels.DEBUG)
+                    return
+                end
+                if new_lsp.get_binary_path() == "MISSING BINARY" then
+                    vim.notify(
+                        string.format("Formatter %s is currently not installed, unable to locate binary", new_lsp.name),
+                        vim.log.levels.DEBUG)
+                    return
+                end
+                vim.notify(string.format("Setting up %s as a formatter for conform", new_lsp.name), vim.log.levels.DEBUG)
+                local replacement_map = {
+                    ["$LSP_BIN"] = new_lsp.get_binary_path(),
+                    ["$VENV_PATH"] = new_lsp.get_venv and new_lsp.get_venv() or "NO VENV"
+                }
+                local formatter_opts = substitute_vars(new_lsp.formatter_opts, replacement_map)
+                conform.formatters[new_lsp.name] = formatter_opts
+            end
             lsp._activate(new_lsp)
         end)
         complete()
