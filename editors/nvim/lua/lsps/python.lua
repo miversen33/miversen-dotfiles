@@ -1,6 +1,7 @@
 -- lsps/python.lua
 
 ---@class PythonPackageManager
+---@field name string The name of the package manager
 ---@field is_available fun(): boolean A function that is called to check if this package manager is available
 ---@field install_venv fun(success_callback: fun(), error_callback: fun(error: string, exit_code: number?)) A function that can be called to create a new virtual environment
 ---@field install fun(packages: string|string[], success_callback: fun(), error_callback: fun(error: string, exit_code: number?)) A function to call to install new packages
@@ -29,6 +30,7 @@ local M = {}
 ---@type table<string, PythonPackageManager>
 local PACKAGE_MANAGERS = {
     uv = {
+        name = "uv",
         is_available = function()
             return vim.fn.executable("uv") == 1
         end,
@@ -94,6 +96,7 @@ local PACKAGE_MANAGERS = {
         update = function(packages, success_callback, error_callback) end,
     },
     pip = {
+        name = "pip",
         is_available = function()
             return vim.fn.executable("pip") == 1 and vim.fn.executable("virtualenv") == 1
         end,
