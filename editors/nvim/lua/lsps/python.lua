@@ -46,7 +46,7 @@ local PACKAGE_MANAGERS = {
 
             local _install = function(venv)
                 local python_path = string.format("%s/bin/python", venv)
-                local cmd = { "uv", "pip", "install", "--python", python_path, "--native-tls" }
+                local cmd = { "uv", "pip", "install", "--reinstall", "--python", python_path, "--native-tls" }
                 if type(packages) == "string" then
                     packages = { packages }
                 end
