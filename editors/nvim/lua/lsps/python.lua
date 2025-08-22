@@ -176,6 +176,7 @@ local pyrefly = {
     _current_version = nil,
 }
 
+---@type Lsp
 local ruff = {
     name = "ruff",
     ---@type vim.lsp.Config
