@@ -188,6 +188,9 @@ local ruff = {
     },
     _latest_version = nil,
     _current_version = nil,
+    formatter_opts = {
+        command = "$LSP_BIN format"
+    }
 }
 
 local basedpyright = {
