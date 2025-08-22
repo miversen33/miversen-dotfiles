@@ -98,7 +98,8 @@ local PACKAGE_MANAGERS = {
     pip = {
         name = "pip",
         is_available = function()
-            return vim.fn.executable("pip") == 1 and vim.fn.executable("virtualenv") == 1
+            return vim.fn.executable(string.format("%s/bin/pip", M._get_editor_venv(true))) == 1 and
+                vim.fn.executable("virtualenv") == 1
         end,
         install = function(packages, success_callback, error_callback)
             ---@param result Shell.Serial
