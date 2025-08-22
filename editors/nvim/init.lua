@@ -260,6 +260,10 @@ local function setup_basic_keycommands()
     vim.keymap.set("n", "<S-h>", ":tabp<CR>", { silent = true })
     vim.keymap.set("n", "<S-l>", ":tabn<CR>", { silent = true })
     vim.keymap.set("n", "<S-t>", ":tabnew<CR>", { silent = true })
+    vim.keymap.set("n", ';r', ':lua vim.lsp.buf.rename()<CR>', { silent = true })
+    vim.keymap.set("n", ";f", ":lua vim.lsp.buf.format()<CR>", { silent = true })
+    vim.keymap.set("n", ";d", ':lua vim.lsp.buf.definition()<CR>', { silent = true })
+    vim.keymap.set("n", ";h", ':lua vim.lsp.buf.signature_help()<CR>', { silent = true })
 end
 
 local function check_if_debug()
