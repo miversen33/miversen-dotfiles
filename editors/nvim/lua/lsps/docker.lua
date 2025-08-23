@@ -29,6 +29,13 @@ local docker = {
         -- We actually want this to only fire up on docker-compose.yml/docker-compose.yaml files
         filetypes = { "dockerfile", "yaml" },
         cmd = { "$LSP_BIN", "start", "--stdio" },
+        get_language_id = function(_, ftype)
+            if ftype == 'yaml.docker-compose' or ftype:lower():find('ya?ml') then
+                return 'dockercompose'
+            else
+                return ftype
+            end
+        end,
         root_dir = function(buffer, on_dir)
             local filename = vim.api.nvim_buf_get_name(buffer)
             if not filename or (
