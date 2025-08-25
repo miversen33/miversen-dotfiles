@@ -149,6 +149,16 @@ function install(){
     popd >/dev/null 2>&1
     rm -rf "${tmp_dir}"
   fi
+  if [ ! -f ~/.local/bin/delta ]; then
+    readonly delta_version="0.18.2"
+    debug "Installing delta version: ${delta_version}"
+    tmp_dir="/tmp/.miversen-dotfiles-$(date +%Y%m%d%H%M%S)"
+    mkdir -p "${tmp_dir}"
+    curl -fsSL "https://github.com/dandavison/delta/releases/download/${delta_version}/delta-${delta_version}-x86_64-unknown-linux-gnu.tar.gz" | tar -C "${tmp_dir}" -xz
+    mv ${tmp_dir}/delta-${version}*/delta "${HOME}/.local/bin/delta"
+    chmod +x "${HOME}/.local/bin/delta"
+    rm -rf "${tmp_dir}"
+  fi
   if [ ! -d ~/.config/yazi ]; then
     debug "Configuring Yazi"
     mkdir -p ~/.config/yazi
