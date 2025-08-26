@@ -155,7 +155,7 @@ function install(){
     tmp_dir="/tmp/.miversen-dotfiles-$(date +%Y%m%d%H%M%S)"
     mkdir -p "${tmp_dir}"
     curl -fsSL "https://github.com/dandavison/delta/releases/download/${delta_version}/delta-${delta_version}-x86_64-unknown-linux-gnu.tar.gz" | tar -C "${tmp_dir}" -xz
-    mv ${tmp_dir}/delta-${version}*/delta "${HOME}/.local/bin/delta"
+    mv ${tmp_dir}/delta-${delta_version}*/delta "${HOME}/.local/bin/delta"
     chmod +x "${HOME}/.local/bin/delta"
     rm -rf "${tmp_dir}"
   fi
