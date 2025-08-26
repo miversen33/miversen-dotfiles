@@ -469,7 +469,7 @@ if [ -z ${SKIP_CUSTOM+x} ]; then
   export LC_ALL=en_US.UTF-8
   export EDITOR
   export VIMRC
-  export BAT_THEME="OneHalfDark"
+  export BAT_THEME="Catppuccin Mocha"
 
   export whatsmyip
 
