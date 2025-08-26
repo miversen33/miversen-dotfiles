@@ -159,6 +159,16 @@ function install(){
     chmod +x "${HOME}/.local/bin/delta"
     rm -rf "${tmp_dir}"
   fi
+  if [ ! -f ~/.local/bin/bat ]; then
+    readonly bat_version="0.25.0"
+    debug "Installing bat version: ${bat_version}"
+    tmp_dir="/tmp/.miversen-dotfiles-$(date +%Y%m%d%H%M%S)"
+    mkdir -p "${tmp_dir}"
+    curl -fsSL "https://github.com/sharkdp/bat/releases/download/v${bat_version}/bat-v${bat_version}-x86_64-unknown-linux-gnu.tar.gz" | tar -C "${tmp_dir}" -xz
+    mv ${tmp_dir}/bat-v${bat_version}*/bat "${HOME}/.local/bin/bat"
+    rm -rf "${tmp_dir}"
+    chmod +x "${HOME}/.local/bin/bat"
+  fi
   if [ ! -d ~/.config/yazi ]; then
     debug "Configuring Yazi"
     mkdir -p ~/.config/yazi
