@@ -61,6 +61,19 @@ local function vim_settings()
     vim.opt.wrap = true
     -- force all yanks into clipboard
     vim.opt.clipboard:append('unnamedplus')
+    -- Forcing osc52
+    vim.g.clipboard = {
+      name = 'OSC 52',
+      copy = {
+        ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+        ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+      },
+      paste = {
+        ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
+        ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
+      },
+    }
+
     vim.opt.background = 'dark'
     -- Keep my last search highlighted until I disable it. I have <esc><esc> mapped to :nohl (among other things)
     vim.opt.hlsearch = true
