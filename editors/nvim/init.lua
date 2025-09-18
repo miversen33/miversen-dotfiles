@@ -62,6 +62,12 @@ local function vim_settings()
     -- force all yanks into clipboard
     vim.opt.clipboard:append('unnamedplus')
     -- Forcing osc52
+    local function paste()
+        return {
+            vim.fn.split(vim.fn.getreg(""), "\n"),
+            vim.fn.getregtype(""),
+        }
+    end
     vim.g.clipboard = {
       name = 'OSC 52',
       copy = {
@@ -69,8 +75,8 @@ local function vim_settings()
         ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
       },
       paste = {
-        ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
-        ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
+        ['+'] = paste,
+        ['*'] = paste,
       },
     }
 
