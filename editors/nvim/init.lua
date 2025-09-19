@@ -59,6 +59,7 @@ local function vim_settings()
     vim.opt.numberwidth = 3
     -- Enable line wrapping
     vim.opt.wrap = true
+    vim.opt.wildchar = 0
     -- force all yanks into clipboard
     vim.opt.clipboard:append('unnamedplus')
     -- Forcing osc52
