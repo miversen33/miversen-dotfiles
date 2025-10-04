@@ -3,18 +3,6 @@ local conform = {
     "stevearc/conform.nvim",
     event = { "BufWritePre" },
     cmd = { "ConformInfo" },
-    keys = {
-        {
-            -- Customize or remove this keymap to your liking
-            "<leader>f",
-            function()
-                require("conform").format({ async = true })
-            end,
-            mode = "",
-            desc = "Format buffer",
-        },
-    },
-    -- This will provide type hinting with LuaLS
     ---@module "conform"
     ---@type conform.setupOpts
     opts = {
@@ -22,7 +10,6 @@ local conform = {
         -- These should be dynamically defined?
         formatters_by_ft = {
             lua = { "stylua" },
-            python = { "isort", "black" },
             javascript = { "prettierd", "prettier", stop_after_first = true },
             json = { "jq" }
         },
