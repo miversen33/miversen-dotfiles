@@ -25,6 +25,10 @@ local KNOWN_FORMATTERS = {
     "ruff"
 }
 
+local KNOWN_DEBUGGERS = {
+    "debugpy"
+}
+
 local M = {}
 
 ---@type table<string, PythonPackageManager>
@@ -164,6 +168,7 @@ local PACKAGE_MANAGERS = {
     }
 }
 
+---@type Lsp
 local pyrefly = {
     name = "pyrefly",
     ---@type vim.lsp.Config
@@ -199,6 +204,20 @@ local ruff = {
             args = { "check", "--select", "I", "--fix", "--stdin-filename", "$FILENAME", "-" },
         }
     }
+}
+
+local debugpy = {
+    name = "debugpy",
+    _latest_version = nil,
+    _current_version = nil,
+    required = true,
+    enable = false,
+    config = {
+        cmd = { "$LSP_BIN" },
+        root_markers = project_root_markers,
+        filetypes = { "python" },
+        settings = {},
+    },
 }
 
 local basedpyright = {
@@ -401,6 +420,12 @@ function ty.get_binary_path(ignore)
     return _get_binary_path("ty", ignore)
 end
 
+---@param ignore boolean? If provided, we will still return the proper path even if we aren't installed
+---@return string The path to the binary. May be "MISSING BINARY" if the binary is not able to be located
+function debugpy.get_binary_path(ignore)
+    return _get_binary_path("debugpy", ignore)
+end
+
 ---@return boolean
 function basedpyright.needs_install()
     return vim.fn.filereadable(basedpyright.get_binary_path()) ~= 1
@@ -419,6 +444,11 @@ end
 ---@return boolean
 function ty.needs_install()
     return vim.fn.filereadable(ty.get_binary_path()) ~= 1
+end
+
+---@return boolean
+function debugpy.needs_install()
+    return vim.fn.filereadable(debugpy.get_binary_path()) ~= 1
 end
 
 -- Checks the current basedpyright version and returns it
@@ -503,6 +533,40 @@ function ruff.version()
     end
     ruff_current_version = string.gsub(ruff_current_version[1], 'ruff ', '')
     return ruff_current_version
+end
+
+-- Checks the current debugpy version and returns it
+---@return string
+function debugpy.version()
+    if not debugpy.needs_install() then
+        debugpy._current_version = nil
+        return "-1"
+    end
+    if debugpy._current_version then
+        return debugpy._current_version
+    end
+    local editor_lsp = debugpy.get_binary_path()
+
+    ---@type string[]
+    local debugpy_current_version = shell:new({ editor_lsp, "--version" }):run().stdout
+    if not debugpy_current_version or #debugpy_current_version < 1 then
+        debugpy._current_version = nil
+        return "-1"
+    end
+    -- Iterating through the output because debugpy might have some "complaints"
+    -- about frozen shit that I genuinely could not care less about
+    local version_glob = '[0-9.]+' --1.8.1
+    ---@type string
+    local version
+    for _, line in ipairs(debugpy_current_version) do
+        if line:match(version_glob) then
+            version = line
+            break
+        end
+    end
+
+    debugpy._current_version = version
+    return version
 end
 
 -- Gets the most current version of basedpyright
@@ -632,6 +696,50 @@ function ruff.latest_version(callback)
     end
 end
 
+-- Gets the most current version of debugpy
+---@param callback fun(version: string?)
+function debugpy.latest_version(callback)
+    local debugpy_api = "https://api.github.com/repos/microsoft/debugpy/releases/latest"
+    ---@param result Shell.Serial
+    local complete = function(result)
+        if result.exit_code ~= 0 then
+            debugpy._latest_version = nil
+            callback()
+            return
+        end
+        local output = vim.json.decode(result.stdout)
+        if not output or not next(output) then
+            -- Complain
+            debugpy._latest_version = nil
+            callback()
+            return
+        end
+        ---@type string
+        local version = output.tag_name
+        if not version then
+            -- Complain
+            debugpy._latest_version = nil
+            callback()
+            return
+        end
+        version = version:gsub('v', '')
+        debugpy._latest_version = version
+        callback(version)
+        return
+    end
+    local handle = shell:new({ "curl", "-fsSL", debugpy_api }, {
+        [shell.CONSTANTS.FLAGS.ASYNC] = true,
+        [shell.CONSTANTS.FLAGS.STDOUT_JOIN] = '',
+        [shell.CONSTANTS.FLAGS.EXIT_CALLBACK] = complete
+    }):run()
+    if not handle then
+        -- complain
+        vim.notify("Unable to get latest version of debugpy from github", vim.log.levels.DEBUG, {})
+        callback()
+        return
+    end
+end
+
 -- Installs basedpyright into the editor venv
 ---@param success_callback fun() The function to call after successful installation
 ---@param error_callback fun(error: string, exit_code: number?) The function to call on failure to install
@@ -737,6 +845,41 @@ function ruff.install(success_callback, error_callback, install_opts)
     end
 end
 
+-- Installs debugpy into the editor venv
+---@param success_callback fun() The function to call after successful installation
+---@param error_callback fun(error: string, exit_code: number?) The function to call on failure to install
+---@param install_opts LspInstallOpts? Options to use on install
+function debugpy.install(success_callback, error_callback, install_opts)
+    local current_version = debugpy.version()
+    install_opts = install_opts or {
+        force = false
+    }
+    if current_version and install_opts.version == current_version then
+        -- Nothing to do
+        success_callback()
+        return
+    end
+    ---@param version string?
+    local install = function(version)
+        if not version then
+            error_callback("Unable to determine the latest available version of basedpyright")
+            return
+        end
+        if version == current_version and not install_opts.force then
+            -- We are already up to date
+            success_callback()
+            return
+        end
+        local binary = string.format("debugpy==%s", version)
+        install_binaries_in_editor_venv(binary, success_callback, error_callback)
+    end
+    if not install_opts.version then
+        debugpy.latest_version(install)
+    else
+        install(install_opts.version)
+    end
+end
+
 -- Checks to see if basedpyright need an update
 ---@param callback fun(needs_update: boolean?)
 function basedpyright.needs_update(callback)
@@ -785,10 +928,27 @@ function ruff.needs_update(callback)
     ruff.latest_version(complete)
 end
 
+-- Checks to see if debugpy need an update
+---@param callback fun(needs_update: boolean?)
+function debugpy.needs_update(callback)
+    local current_version = debugpy.version()
+    ---@param latest_version string?
+    local complete = function(latest_version)
+        if not latest_version then
+            callback(false)
+            return
+        end
+        callback(latest_version > current_version)
+        return
+    end
+    debugpy.latest_version(complete)
+end
+
 local map = {
     pyrefly = pyrefly,
     ruff = ruff,
-    basedpyright = basedpyright
+    basedpyright = basedpyright,
+    debugpy = debugpy
 }
 
 local venv_lsps = M._get_venv_lsps(M._get_project_venv())
@@ -831,6 +991,17 @@ end
 if not found_formatter then
     -- We need to provide our own formatters
     table.insert(_lsps, ruff)
+end
+
+local found_debugger = false
+for _, debugger_name in ipairs(KNOWN_DEBUGGERS) do
+    for _, _debugger in ipairs(_lsps) do
+        if debugger_name == _debugger.name then
+            found_debugger = true
+            break
+        end
+    end
+    local _debugger = map[debugger_name]
 end
 
 for _, lsp in ipairs(_lsps) do
