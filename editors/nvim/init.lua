@@ -287,7 +287,7 @@ local function setup_basic_keycommands()
 end
 
 local function check_if_debug()
-    vim.g.__miversen_debug_config = vim.loop.os_getenv('DEBUG_NEOVIM_CONFIG')
+    vim.g.__miversen_debug_config = vim.fn.environ()['DEBUG_NEOVIM_CONFIG']
     if vim.g.__miversen_debug_config then
         vim.notify("Running Neovim in Configuration Debug Mode!", vim.log.levels.WARN)
     end
