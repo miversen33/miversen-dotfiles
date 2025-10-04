@@ -15,7 +15,7 @@
 ---@field config vim.lsp.Config The valid lsp configuration to use for this LSP
 ---@field needs_install fun(): boolean A function that we can call to check if the LSP needs to be installed
 ---@field needs_update fun(callback: fun(needs_update: boolean)) A function that we can call to check if an update is available for this LSP
----@field formatter_opts conform.FileFormatterConfig? If provided, we will use these options as the options for conform after installation
+---@field formatter_details table<string, conform.FileFormatterConfig> If provided, we will use these options as the options for conform after installation
 ---@field get_venv fun()?: string A function that can be called to get the venv for the editor for this lsp
 ---@field install fun(success_callback: fun(), error_callback: fun(error: string, exit_code: number), opts: LspInstallOpts?) A function to call to install the LSP
 
@@ -204,30 +204,44 @@ function lsp.activate(lsp_name)
         end)
     end
     local function activate_lsp()
-        vim.schedule(function()
-            if new_lsp.formatter_opts then
-                -- Lets update conform with the details for this formatter
-                local ok, conform = pcall(require, "conform")
-                if not ok then
-                    -- conform isn't installed
-                    print(ok, conform, new_lsp)
-                    vim.notify(string.format("Unable to setup %s in conform", new_lsp.name), vim.log.levels.DEBUG)
-                    return
-                end
-                if new_lsp.get_binary_path() == "MISSING BINARY" then
-                    vim.notify(
-                        string.format("Formatter %s is currently not installed, unable to locate binary", new_lsp.name),
-                        vim.log.levels.DEBUG)
-                    return
-                end
-                vim.notify(string.format("Setting up %s as a formatter for conform", new_lsp.name), vim.log.levels.DEBUG)
-                local replacement_map = {
-                    ["$LSP_BIN"] = new_lsp.get_binary_path(),
-                    ["$VENV_PATH"] = new_lsp.get_venv and new_lsp.get_venv() or "NO VENV"
-                }
-                local formatter_opts = substitute_vars(new_lsp.formatter_opts, replacement_map)
-                conform.formatters[new_lsp.name] = formatter_opts
+        local setup_formatters = function()
+            local ok, conform = pcall(require, "conform")
+            if not ok then
+                -- conform isn't installed
+                vim.notify(string.format("Unable to setup %s in conform", new_lsp.name), vim.log.levels.DEBUG)
+                return
             end
+
+            if new_lsp.formatter_details and next(new_lsp.formatter_details) then
+                for formatter_name, formatter in pairs(new_lsp.formatter_details) do
+                    local replacement_map = {
+                        ["$LSP_BIN"] = new_lsp.get_binary_path(),
+                        ["$VENV_PATH"] = new_lsp.get_venv and new_lsp.get_venv() or "NO VENV"
+                    }
+                    local formatter_opts = substitute_vars(formatter, replacement_map)
+                    vim.notify(string.format("Setting up %s as a formatter for conform", new_lsp.name),
+                        vim.log.levels.DEBUG)
+                    conform.formatters[formatter_name] = formatter_opts
+                    for _, ft in ipairs(new_lsp.config.filetypes) do
+                        vim.notify(string.format("setting up conform formatters_by_ft, %s", ft), vim.log.levels.DEBUG)
+                        local conform_formatters_by_ft = conform.formatters_by_ft[ft] or {}
+                        table.insert(conform_formatters_by_ft, formatter_name)
+                        conform.formatters_by_ft[ft] = conform_formatters_by_ft
+                    end
+                end
+            end
+            -- if new_lsp.formatter_opts then
+            --     if new_lsp.get_binary_path() == "MISSING BINARY" then
+            --         vim.notify(
+            --             string.format("Formatter %s is currently not installed, unable to locate binary", new_lsp.name),
+            --             vim.log.levels.DEBUG)
+            --         return
+            --     end
+            --     conform.formatters[new_lsp.name] = formatter_opts
+            -- end
+        end
+        vim.schedule(function()
+            setup_formatters()
             lsp._activate(new_lsp)
         end)
         complete()
