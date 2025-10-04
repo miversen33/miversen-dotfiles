@@ -303,7 +303,7 @@ local function setup_plugins()
         "dap-repl", "toggleterm", "neo-tree", "ImportManager", "aerial",
         "TelescopePrompt", "TelescopeResults", "NetmanLogs", "neo-tree-popup", "",
         "dapui_scopes", "dapui_breakpoints", "dapui_stacks", "dapui_watches", "dap-repl",
-        "dapui_console", "neo-tree-popup"
+        "dapui_console", "neo-tree-popup", "nvim-dap-view"
     }
 
     editor_config.excluded_filetypes_as_table = {}
@@ -393,6 +393,11 @@ local function setup_advanced_keycommands()
     vim.keymap.set('n', 'fd', require("fzf-lua").diagnostics_document, { desc = "Fzf Fuzzy Diagnostics" })
     vim.keymap.set('n', 'fw', require("fzf-lua").diagnostics_workspace, { desc = "Fzf Fuzzy Workspace Diagnostics" })
     vim.keymap.set('n', 'fa', require("fzf-lua").lsp_code_actions, { desc = "Fzf Fuzzy Code Actions" })
+    vim.keymap.set('n', '<leader>bb', require('dap').toggle_breakpoint, { desc = "Sets breakpoint" })
+    vim.keymap.set('n', '<leader>bB', function() print("Setting conditional breakpoint") end,
+        { desc = "Sets conditional breakpoint" })
+    vim.keymap.set('n', '<leader>bc', require("dap").continue, { desc = "Start/continue DAP" })
+    vim.keymap.set('n', '<leader>bs', require("dap").close, { desc = "Stops current DAP instance" })
 end
 
 -- Actually do setup
