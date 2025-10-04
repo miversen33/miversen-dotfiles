@@ -2,16 +2,15 @@ local catppuccin_opts = {
     default_integrations = false,
     transparent_background = true,
     integrations = {
-        "dap",
-        "fidget",
-        "gitsigns",
-        "illuminate",
-        "neotree",
-        "cmp",
+        dap = true,
+        fidget = true,
+        gitsigns = true,
+        illuminate = true,
+        cmp = true,
         -- "nvim-web-devicons",
-        "lsp_trouble",
-        "notify",
-        "aerial"
+        lsp_trouble = true,
+        notify = true,
+        aerial = true
     }
 }
 
