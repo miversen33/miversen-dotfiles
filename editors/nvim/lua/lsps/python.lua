@@ -189,8 +189,15 @@ local ruff = {
     },
     _latest_version = nil,
     _current_version = nil,
-    formatter_opts = {
-        command = "$LSP_BIN format"
+    formatter_details = {
+        ruff_format = {
+            command = "$LSP_BIN",
+            args = { "format", "--stdin-filename", "$FILENAME", "-" }
+        },
+        ruff_fix = {
+            command = "$LSP_BIN",
+            args = { "check", "--select", "I", "--fix", "--stdin-filename", "$FILENAME", "-" },
+        }
     }
 }
 
