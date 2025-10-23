@@ -60,27 +60,21 @@ local function vim_settings()
     -- Enable line wrapping
     vim.opt.wrap = true
     vim.opt.wildchar = 0
-    -- force all yanks into clipboard
-    vim.opt.clipboard:append('unnamedplus')
-    -- Forcing osc52
-    local function paste()
-        return {
-            vim.fn.split(vim.fn.getreg(""), "\n"),
-            vim.fn.getregtype(""),
+    vim.opt.clipboard:append("unnamedplus")
+    if vim.env.SSH_TTY then
+        local osc52 = require("vim.ui.clipboard.osc52")
+        vim.g.clipboard = {
+            name = "OSC 52",
+            copy = {
+                ["+"] = osc52.copy("+"),
+                ["*"] = osc52.copy("*"),
+            },
+            paste = {
+                ["+"] = osc52.paste("+"),
+                ["*"] = osc52.paste("*")
+            }
         }
     end
-    vim.g.clipboard = {
-        name = 'OSC 52',
-        copy = {
-            ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
-            ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
-        },
-        paste = {
-            ['+'] = paste,
-            ['*'] = paste,
-        },
-    }
-
     vim.opt.background = 'dark'
     -- Keep my last search highlighted until I disable it. I have <esc><esc> mapped to :nohl (among other things)
     vim.opt.hlsearch = true
