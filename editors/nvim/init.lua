@@ -327,6 +327,9 @@ local function setup_plugins()
     end
     local lazy = lazy_or_err
     local lazy_opts = {
+        rocks = {
+            enabled = false
+        },
         dev = {
             path = "~/git",
             patterns = { "miversen33" },
@@ -387,11 +390,15 @@ local function setup_advanced_keycommands()
     vim.keymap.set('n', 'fd', require("fzf-lua").diagnostics_document, { desc = "Fzf Fuzzy Diagnostics" })
     vim.keymap.set('n', 'fw', require("fzf-lua").diagnostics_workspace, { desc = "Fzf Fuzzy Workspace Diagnostics" })
     vim.keymap.set('n', 'fa', require("fzf-lua").lsp_code_actions, { desc = "Fzf Fuzzy Code Actions" })
-    vim.keymap.set('n', '<leader>bb', require('dap').toggle_breakpoint, { desc = "Sets breakpoint" })
-    vim.keymap.set('n', '<leader>bB', function() print("Setting conditional breakpoint") end,
-        { desc = "Sets conditional breakpoint" })
-    vim.keymap.set('n', '<leader>bc', require("dap").continue, { desc = "Start/continue DAP" })
-    vim.keymap.set('n', '<leader>bs', require("dap").close, { desc = "Stops current DAP instance" })
+    -- Dap stuff
+    local success, dap = pcall(require, 'dap')
+    if success then
+        vim.keymap.set('n', '<leader>bb', require('dap').toggle_breakpoint, { desc = "Sets breakpoint" })
+        vim.keymap.set('n', '<leader>bB', function() print("Setting conditional breakpoint") end,
+            { desc = "Sets conditional breakpoint" })
+        vim.keymap.set('n', '<leader>bc', require("dap").continue, { desc = "Start/continue DAP" })
+        vim.keymap.set('n', '<leader>bs', require("dap").close, { desc = "Stops current DAP instance" })
+    end
 end
 
 -- Actually do setup
